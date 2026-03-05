@@ -170,6 +170,7 @@
     </div>
 
     <button class="btn btn-primary hidden" id="btnAnalyze" onclick="startAnalyze()">🔍 오분석 감지 시작</button>
+    <button id="btnCancel" class="btn btn-red hidden" onclick="cancelAnalysis()" style="margin-left:8px;">⏹ 분석 중단</button>
 
     <!-- Progress -->
     <div class="progress-box" id="progressBox">
@@ -340,7 +341,7 @@
         📋 등록된 오분석 케이스
         <span id="totalCaseCount" style="font-size:12px;color:#666;font-weight:400;"></span>
       </div>
-      <input type="text" class="search-bar" id="caseSearch" placeholder="🔎 검색 (형태소, 단어 등)" oninput="renderCaseList()" />
+      <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap;"><select id="catFilter" onchange="renderCaseList()" style="background:#f9fafb;border:1px solid #d1d5db;border-radius:7px;color:#222;font-size:13px;padding:9px 12px;outline:none;font-family:inherit;"></select><input type="text" class="search-bar" id="caseSearch" placeholder="🔎 단어 검색..." oninput="renderCaseList()" style="flex:1;margin-bottom:0;" /><button class="btn" style="background:#f3f4f6;color:#444;border:1px solid #d1d5db;font-size:12px;padding:9px 14px;white-space:nowrap;" onclick="exportCases()">📥 내보내기</button><button class="btn" style="background:#f3f4f6;color:#444;border:1px solid #d1d5db;font-size:12px;padding:9px 14px;white-space:nowrap;" onclick="document.getElementById('importFile').click()">📤 가져오기</button><input type="file" id="importFile" accept=".json" style="display:none;" onchange="importCases(event)" /></div>
       <div id="caseListWrap"></div>
     </div>
 
@@ -632,62 +633,96 @@ function handleFile(input) {
 }
 
 // ===================== 분석 =====================
-async function startAnalyze() {
-  const apiKey = document.getElementById('apiKey').value.trim();
+
+function startAnalyze() {
+  var apiKey = document.getElementById('apiKey').value.trim();
   if (!apiKey) { showError('API 키를 입력해주세요.'); return; }
   if (!parsedRows.length) { showError('파일을 먼저 업로드해주세요.'); return; }
   hideError();
+  cancelRequested = false;
   document.getElementById('btnAnalyze').disabled = true;
+  document.getElementById('btnCancel').classList.remove('hidden');
   document.getElementById('progressBox').style.display = 'block';
-  const total = parsedRows.length;
-  const BATCH = 20;
+  var total = parsedRows.length;
+  var BATCH = 20;
   analysisResults = [];
-  const sysPrompt = buildSystemPrompt();
+  var sysPrompt = buildSystemPrompt();
 
-  for (let i = 0; i < parsedRows.length; i += BATCH) {
-    const batch = parsedRows.slice(i, i + BATCH);
-    const items = batch.map(r =>
-      `no: ${r.no}\n제조사: ${r.제조사명} | 브랜드: ${r.브랜드명} | 상품명: ${r.기준상품명}\n형태소분석: ${r.형태소분석}`
-    ).join('\n\n---\n\n');
-    try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true',
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          system: [
-            {
-              type: 'text',
-              text: sysPrompt,
-              cache_control: { type: 'ephemeral' }
-            }
-          ],
-          messages: [{ role: 'user', content: items }],
-        }),
-      });
-      if (!res.ok) { const ed = await res.json(); throw new Error(ed.error?.message || `HTTP ${res.status}`); }
-      const data = await res.json();
-      const text = data.content?.map(c => c.text || '').join('') || '[]';
-      const parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
-      analysisResults.push(...parsed);
-    } catch(err) {
-      batch.forEach(r => analysisResults.push({ no: r.no, 오분석유무: 'N', 내용: '', 코멘트: '분석실패: ' + err.message }));
+  function processBatch(i) {
+    if (cancelRequested) {
+      showToast('분석이 중단됐어요.', 'error');
+      document.getElementById('progressBox').style.display = 'none';
+      document.getElementById('btnCancel').classList.add('hidden');
+      document.getElementById('btnAnalyze').disabled = false;
+      return;
     }
-    const done = Math.min(i + BATCH, total);
-    document.getElementById('progressCount').textContent = `${done} / ${total}건`;
-    document.getElementById('progressBar').style.width = `${(done/total)*100}%`;
+    if (i >= parsedRows.length) {
+      document.getElementById('progressBox').style.display = 'none';
+      document.getElementById('btnCancel').classList.add('hidden');
+      document.getElementById('btnAnalyze').disabled = false;
+      renderResults();
+      return;
+    }
+    var batch = parsedRows.slice(i, i + BATCH);
+    var items = batch.map(function(r) {
+      return 'no: ' + r.no + '\n제조사: ' + r.제조사명 + ' | 브랜드: ' + r.브랜드명 + ' | 상품명: ' + r.기준상품명 + '\n형태소분석: ' + r.형태소분석;
+    }).join('\n\n---\n\n');
+
+    fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4096,
+        system: [{ type: 'text', text: sysPrompt, cache_control: { type: 'ephemeral' } }],
+        messages: [{ role: 'user', content: items }],
+      }),
+    })
+    .then(function(res) {
+      if (!res.ok) return res.json().then(function(ed) { throw new Error(ed.error && ed.error.message || 'HTTP ' + res.status); });
+      return res.json();
+    })
+    .then(function(data) {
+      var text = (data.content || []).map(function(c) { return c.text || ''; }).join('') || '[]';
+      var cleaned = text.replace(/```json|```/g, '').trim();
+      // JSON이 잘린 경우 마지막 완전한 객체까지만 파싱
+      var parsed;
+      try {
+        parsed = JSON.parse(cleaned);
+      } catch(e) {
+        var lastBracket = cleaned.lastIndexOf('},');
+        if (lastBracket > 0) {
+          try { parsed = JSON.parse(cleaned.substring(0, lastBracket + 1) + ']'); }
+          catch(e2) { parsed = []; }
+        } else { parsed = []; }
+      }
+      analysisResults.push.apply(analysisResults, parsed);
+    })
+    .catch(function(err) {
+      batch.forEach(function(r) {
+        analysisResults.push({ no: r.no, 오분석유무: 'N', 내용: '', 코멘트: '분석실패: ' + err.message });
+      });
+    })
+    .then(function() {
+      var done = Math.min(i + BATCH, total);
+      var batchNum = Math.ceil((i + BATCH) / BATCH);
+      var totalBatch = Math.ceil(total / BATCH);
+      document.getElementById('progressCount').textContent = done.toLocaleString() + ' / ' + total.toLocaleString() + '건 (' + batchNum + '/' + totalBatch + ' 배치)';
+      document.getElementById('progressBar').style.width = ((done / total) * 100) + '%';
+      var lbl = document.querySelector('.progress-label');
+      if (lbl) lbl.textContent = '🔄 AI 분석 중... ' + Math.round((done / total) * 100) + '%';
+      processBatch(i + BATCH);
+    });
   }
-  document.getElementById('progressBox').style.display = 'none';
-  renderResults();
+
+  processBatch(0);
 }
 
-// ===================== 결과 렌더링 =====================
 function renderResults() {
   const rm = {};
   analysisResults.forEach(r => { rm[r.no] = r; });
@@ -698,7 +733,7 @@ function renderResults() {
   document.getElementById('statTotal').textContent = parsedRows.length.toLocaleString();
   document.getElementById('statY').textContent = yCount.toLocaleString();
   const pctEl = document.getElementById('statErrorPct');
-  if (pctEl) pctEl.textContent = total > 0 ? ((yCount/total)*100).toFixed(1)+'%' : '0%';
+  if (pctEl) pctEl.textContent = parsedRows.length > 0 ? ((yCount/parsedRows.length)*100).toFixed(1)+'%' : '0%';
   document.getElementById('statN').textContent = nCount.toLocaleString();
   document.getElementById('statNew').textContent = newCount.toLocaleString();
   document.getElementById('statsGrid').classList.remove('hidden');
@@ -1037,6 +1072,7 @@ function populateCategorySelects() {
 loadCasesFromStorage();
 populateCategorySelects();
 updateCaseCountBadge();
+
 </script>
 </body>
 </html>
