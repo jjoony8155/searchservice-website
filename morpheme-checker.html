@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>형태소 오분석 감지 | Cowave</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;800&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { min-height: 100vh; background: #f5f6fa; color: #222; font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; padding: 32px 20px; }
+  .wrap { max-width: 960px; margin: 0 auto; }
+
+  /* Header */
+  .badge { display: inline-flex; align-items: center; gap: 8px; background: #e8f0fe; border: 1px solid #c7d9f8; border-radius: 6px; padding: 5px 14px; margin-bottom: 14px; }
+  .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: #3b82f6; }
+  .badge-text { font-size: 11px; font-weight: 700; color: #1d4ed8; letter-spacing: 2.5px; text-transform: uppercase; }
+  h1 { font-size: 24px; font-weight: 800; color: #111; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .subtitle { color: #888; font-size: 13px; line-height: 1.7; margin-bottom: 28px; }
+
+  /* API Key */
+  .apikey-box { background: #fff; border: 1px solid #c7d9f8; border-radius: 12px; padding: 18px 22px; margin-bottom: 20px; }
+  .apikey-box label { display: block; font-size: 11px; color: #1d4ed8; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .apikey-box input { width: 100%; background: #f9fafb; border: 1px solid #d1d5db; border-radius: 8px; color: #222; font-size: 14px; padding: 10px 14px; outline: none; font-family: monospace; transition: border-color 0.2s; }
+  .apikey-box input:focus { border-color: #3b82f6; }
+  .apikey-note { font-size: 11px; color: #999; margin-top: 6px; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb; padding-bottom: 0; }
+  .tab-btn { padding: 10px 20px; background: transparent; border: none; border-bottom: 2px solid transparent; color: #999; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; margin-bottom: -1px; }
+  .tab-btn:hover { color: #333; }
+  .tab-btn.active { color: #1d4ed8; border-bottom-color: #1d4ed8; }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  /* Upload */
+  #dropzone { border: 2px dashed #d1d5db; border-radius: 14px; padding: 32px 24px; text-align: center; cursor: pointer; background: #fff; transition: all 0.25s; margin-bottom: 16px; }
+  #dropzone.has-file { border-color: #22c55e; background: #f0fdf4; }
+  #dropzone:hover { border-color: #3b82f6; }
+  .drop-icon { font-size: 32px; margin-bottom: 8px; }
+  .drop-main { color: #888; font-size: 14px; }
+  .drop-sub { color: #bbb; font-size: 12px; margin-top: 4px; }
+  .drop-file { color: #4ade80; font-weight: 700; font-size: 14px; }
+  .drop-meta { color: #16a34a; font-size: 12px; margin-top: 4px; }
+
+  /* Buttons */
+  .btn { border: none; border-radius: 8px; font-family: inherit; cursor: pointer; font-weight: 700; transition: opacity 0.2s; }
+  .btn:hover { opacity: 0.88; }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .btn-primary { background: linear-gradient(135deg, #1e40af, #1d4ed8); color: #fff; padding: 13px 20px; font-size: 14px; width: 100%; margin-bottom: 16px; }
+  .btn-green { background: linear-gradient(135deg, #14532d, #166534); color: #fff; padding: 13px 20px; font-size: 14px; width: 100%; margin-bottom: 20px; }
+  .btn-orange { background: linear-gradient(135deg, #92400e, #b45309); color: #fff; padding: 8px 16px; font-size: 13px; }
+  .btn-red { background: linear-gradient(135deg, #7f1d1d, #991b1b); color: #fff; padding: 6px 12px; font-size: 12px; }
+  .btn-blue-sm { background: linear-gradient(135deg, #1e3a8a, #1d4ed8); color: #fff; padding: 6px 12px; font-size: 12px; }
+  .btn-ghost { background: transparent; border: 1px solid #222230; color: #555; padding: 10px; font-size: 13px; width: 100%; margin-top: 14px; }
+  .btn-ghost:hover { border-color: #444; color: #888; }
+
+  /* Progress */
+  .progress-box { background: #fff; border-radius: 12px; padding: 22px; border: 1px solid #e5e7eb; margin-bottom: 16px; display: none; }
+  .progress-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+  .progress-label { color: #666; font-size: 13px; }
+  .progress-count { color: #60a5fa; font-weight: 700; font-size: 14px; }
+  .progress-bar-bg { background: #e5e7eb; border-radius: 99px; height: 6px; overflow: hidden; }
+  .progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #1d4ed8, #60a5fa); transition: width 0.4s ease; border-radius: 99px; }
+  .progress-note { color: #666; font-size: 12px; margin-top: 8px; }
+
+  /* Stats */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+  .stat-card { background: #fff; border-radius: 10px; padding: 16px; border: 1px solid #e5e7eb; text-align: center; }
+  .stat-icon { font-size: 18px; margin-bottom: 5px; }
+  .stat-value { font-size: 24px; font-weight: 800; }
+  .stat-label { font-size: 11px; color: #999; margin-top: 3px; }
+
+  /* Tables */
+  .table-box { background: #fff; border-radius: 12px; border: 1px solid #e5e7eb; overflow: hidden; margin-bottom: 16px; }
+  .table-header { padding: 13px 18px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
+  .table-title { font-weight: 700; font-size: 14px; color: #222; }
+  .table-count { font-size: 13px; font-weight: 700; }
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { padding: 9px 13px; text-align: left; color: #888; font-weight: 600; font-size: 11px; border-bottom: 1px solid #e5e7eb; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.5px; background: #f9fafb; }
+  td { padding: 9px 13px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+  tr:nth-child(even) td { background: #fafafa; }
+  .td-no { color: #555; white-space: nowrap; }
+  .td-muted { color: #666; white-space: nowrap; }
+  .td-ellipsis { max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .td-error { color: #f87171; font-weight: 600; white-space: nowrap; }
+  .td-new { color: #fb923c; font-weight: 600; white-space: nowrap; }
+  .td-comment { color: #999; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .table-more { padding: 11px 18px; color: #666; font-size: 12px; text-align: center; border-top: 1px solid #e5e7eb; }
+
+  /* Case Manager */
+  .section-box { background: #fff; border-radius: 12px; border: 1px solid #e5e7eb; padding: 20px 22px; margin-bottom: 16px; }
+  .section-title { font-size: 14px; font-weight: 700; color: #222; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; align-items: end; margin-bottom: 10px; }
+  .form-group label { display: block; font-size: 11px; color: #888; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 5px; }
+  .form-group input, .form-group textarea { width: 100%; background: #f9fafb; border: 1px solid #d1d5db; border-radius: 7px; color: #222; font-size: 13px; padding: 9px 12px; outline: none; font-family: inherit; transition: border-color 0.2s; resize: vertical; }
+  .form-group input:focus, .form-group textarea:focus { border-color: #3b82f6; }
+  .case-count-badge { display: inline-block; background: #dbeafe; color: #1d4ed8; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; margin-left: 6px; }
+  .search-bar { width: 100%; background: #f9fafb; border: 1px solid #d1d5db; border-radius: 8px; color: #222; font-size: 13px; padding: 9px 14px; outline: none; font-family: inherit; margin-bottom: 14px; transition: border-color 0.2s; }
+  .search-bar:focus { border-color: #3b82f6; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+  .tag-builtin { background: #dbeafe; color: #1d4ed8; }
+  .tag-custom { background: #ede9fe; color: #7c3aed; }
+  .tag-corrected { background: #dcfce7; color: #16a34a; }
+  .empty-state { text-align: center; padding: 40px 20px; color: #bbb; font-size: 13px; }
+
+  /* Error/Success msg */
+  .error-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; padding: 16px 18px; color: #f87171; display: none; margin-bottom: 16px; font-size: 13px; }
+  .success-toast { position: fixed; bottom: 24px; right: 24px; background: #14532d; border: 1px solid #166534; color: #4ade80; padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 9999; display: none; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+
+  /* 도움말 */
+  .help-toggle { display: inline-flex; align-items: center; gap: 5px; background: #f0f4ff; border: 1px solid #c7d9f8; border-radius: 6px; padding: 4px 10px; font-size: 12px; color: #1d4ed8; font-weight: 600; cursor: pointer; margin-left: 8px; font-family: inherit; transition: background 0.15s; }
+  .help-toggle:hover { background: #dbeafe; }
+  .help-box { background: #f8faff; border: 1px solid #dbeafe; border-radius: 10px; padding: 16px 18px; margin-bottom: 16px; font-size: 13px; line-height: 1.8; display: none; }
+  .help-box.show { display: block; }
+  .help-row { display: flex; gap: 10px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #e8f0fe; }
+  .help-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .help-badge { flex-shrink: 0; width: 60px; text-align: center; padding: 3px 0; border-radius: 5px; font-size: 11px; font-weight: 700; }
+  .help-badge.case1 { background: #fef2f2; color: #dc2626; }
+  .help-badge.case2 { background: #f0fdf4; color: #16a34a; }
+  .help-content { flex: 1; color: #444; }
+  .help-content strong { color: #222; }
+  .help-example { display: inline-block; background: #f3f4f6; border-radius: 4px; padding: 1px 7px; font-family: monospace; font-size: 12px; color: #374151; margin: 0 2px; }
+  .help-tip { background: #fffbeb; border: 1px solid #fde68a; border-radius: 7px; padding: 10px 14px; font-size: 12px; color: #92400e; margin-top: 10px; }
+
+  .hidden { display: none !important; }
+  .divider { border: none; border-top: 1px solid #e5e7eb; margin: 16px 0; }
+
+  /* Correction modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000; display: none; align-items: center; justify-content: center; }
+  .modal-overlay.show { display: flex; }
+  .modal { background: #fff; border: 1px solid #c7d9f8; border-radius: 14px; padding: 28px; width: 100%; max-width: 520px; margin: 20px; }
+  .modal h3 { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 6px; }
+  .modal p { font-size: 13px; color: #888; margin-bottom: 20px; }
+  .modal-btns { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+  .btn-cancel { background: transparent; border: 1px solid #d1d5db; color: #888; padding: 9px 18px; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Header -->
+  <div class="badge"><div class="badge-dot"></div><span class="badge-text">Cowave · 형태소 오분석 감지</span></div>
+  <h1>신규 상품명 형태소 검수</h1>
+  <p class="subtitle">MinIO 원본 파일 업로드 → AI 오분석 자동 감지 → 검수결과 엑셀 다운로드</p>
+
+  <!-- API Key -->
+  <div class="apikey-box">
+    <label>Anthropic API Key</label>
+    <input type="password" id="apiKey" placeholder="sk-ant-api03-..." autocomplete="off" />
+    <div class="apikey-note">* API 키는 브라우저 내에서만 사용되며 외부로 전송되지 않습니다.</div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('analyze')">🔍 검수 분석</button>
+    <button class="tab-btn" onclick="switchTab('cases')">📚 오분석 케이스 관리 <span class="case-count-badge" id="caseCountBadge">0</span></button>
+  </div>
+
+  <!-- ===== TAB 1: 분석 ===== -->
+  <div class="tab-pane active" id="tab-analyze">
+
+    <!-- Upload -->
+    <div id="dropzone" onclick="document.getElementById('fileInput').click()">
+      <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="handleFile(this)" />
+      <div class="drop-icon" id="dropIcon">📂</div>
+      <div id="dropMain" class="drop-main">클릭하여 파일 선택</div>
+      <div id="dropSub" class="drop-sub">morpheme_analysis_data_YYYYMMDD_*.xlsx</div>
+    </div>
+
+    <button class="btn btn-primary hidden" id="btnAnalyze" onclick="startAnalyze()">🔍 오분석 감지 시작</button>
+
+    <!-- Progress -->
+    <div class="progress-box" id="progressBox">
+      <div class="progress-header">
+        <span class="progress-label">AI 분석 중...</span>
+        <span class="progress-count" id="progressCount">0 / 0건</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="progress-note">20건씩 배치 처리 중 · 잠시 기다려주세요</div>
+    </div>
+
+    <div class="error-box" id="errorBox"></div>
+
+    <!-- Stats -->
+    <div class="stats-grid hidden" id="statsGrid">
+      <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-value" id="statTotal" style="color:#60a5fa">0</div><div class="stat-label">전체 분석</div></div>
+      <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-value" id="statY" style="color:#f87171">0</div><div class="stat-label">오분석 의심</div></div>
+      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" id="statN" style="color:#4ade80">0</div><div class="stat-label">정상</div></div>
+      <div class="stat-card"><div class="stat-icon">🆕</div><div class="stat-value" id="statNew" style="color:#fb923c">0</div><div class="stat-label">신규단어 후보</div></div>
+    </div>
+
+    <button class="btn btn-green hidden" id="btnDownload" onclick="downloadExcel()">⬇️ 검수결과 엑셀 다운로드</button>
+
+    <!-- 오분석 테이블 -->
+    <div class="table-box hidden" id="tableBox">
+      <div class="table-header">
+        <span class="table-title">⚠️ 오분석 의심 목록</span>
+        <span class="table-count" id="tableCount" style="color:#f87171"></span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>no</th><th>제조사명</th><th>브랜드명</th><th>기준상품명</th><th>오분석 내용</th><th>코멘트</th><th>교정</th></tr></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <div class="table-more hidden" id="tableMore"></div>
+    </div>
+
+    <!-- 신규단어 테이블 -->
+    <div class="table-box hidden" id="newWordBox">
+      <div class="table-header">
+        <span class="table-title">🆕 신규단어 후보 목록</span>
+        <span class="table-count" id="newWordCount" style="color:#fb923c"></span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>no</th><th>제조사명</th><th>브랜드명</th><th>기준상품명</th><th>신규단어 후보</th><th>비고</th></tr></thead>
+          <tbody id="newWordBody"></tbody>
+        </table>
+      </div>
+      <div class="table-more hidden" id="newWordMore"></div>
+    </div>
+
+    <button class="btn btn-ghost hidden" id="btnReset" onclick="resetAll()">다른 파일 분석하기</button>
+  </div>
+
+  <!-- ===== TAB 2: 케이스 관리 ===== -->
+  <div class="tab-pane" id="tab-cases">
+
+    <!-- 케이스 추가 -->
+    <div class="section-box">
+      <div class="section-title">
+        ➕ 오분석 케이스 추가
+        <button class="help-toggle" onclick="toggleHelp('help-error')">❓ 도움말</button>
+      </div>
+      <div class="help-box" id="help-error">
+        <div class="help-row">
+          <span class="help-badge case1">오분석</span>
+          <div class="help-content">
+            <strong>형태소 분석기가 하나의 단어를 의미없는 조각으로 잘못 쪼갠 경우</strong><br>
+            잘못된 단어: <span class="help-example">푸,드렐라</span> → 올바른 단어: <span class="help-example">푸드렐라</span><br>
+            잘못된 단어: <span class="help-example">텔,루릭,스</span> → 올바른 단어: <span class="help-example">텔루릭스</span><br>
+            잘못된 단어: <span class="help-example">차,콜체스터</span> → 올바른 단어: <span class="help-example">차콜,체스터</span>
+          </div>
+        </div>
+        <div class="help-row">
+          <span class="help-badge" style="background:#f3f0ff;color:#7c3aed;width:60px;">입력법</span>
+          <div class="help-content">
+            · <strong>잘못된 단어</strong>: 형태소가 잘못 분리된 조각들을 콤마(,)로 구분<br>
+            · <strong>올바른 단어</strong>: 실제로 인식되어야 할 단어, 2개 이상이면 콤마(,)로 구분<br>
+            · <strong>카테고리</strong>: 해당 상품이 속한 카테고리 선택 (AI 학습 품질 향상)
+          </div>
+        </div>
+        <div class="help-tip">
+          💡 <strong>언제 등록하나요?</strong> · 검수 결과에서 AI가 맞게 잡은 오분석인데 케이스에 없는 경우, 또는 직접 발견한 오분석 패턴을 등록하세요. 등록하면 <strong>다음 분석부터 즉시 반영</strong>됩니다.
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:180px 1fr 1fr auto;gap:10px;align-items:end;margin-bottom:10px;">
+        <div class="form-group">
+          <label>카테고리</label>
+          <select id="newCategory" style="width:100%;background:#f9fafb;border:1px solid #d1d5db;border-radius:7px;color:#222;font-size:13px;padding:9px 12px;outline:none;font-family:inherit;">
+            <option value="">선택</option>
+            ${CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>잘못된 단어 (오분석)</label>
+          <input type="text" id="newWrong" placeholder="예: 푸,드렐라" />
+        </div>
+        <div class="form-group">
+          <label>올바른 단어</label>
+          <input type="text" id="newCorrect" placeholder="예: 푸드렐라" />
+        </div>
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button class="btn btn-orange" onclick="addCase()">+ 추가</button>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:4px;">
+        <label>메모 (선택)</label>
+        <input type="text" id="newMemo" placeholder="추가 설명 (선택사항)" />
+      </div>
+    </div>
+
+    <!-- 정상 케이스 추가 (오감지 교정) -->
+    <div class="section-box">
+      <div class="section-title">
+        ✅ 정상 케이스 추가
+        <span style="font-size:11px;color:#aaa;font-weight:400;margin-left:4px;">AI 오감지 교정</span>
+        <button class="help-toggle" onclick="toggleHelp('help-normal')">❓ 도움말</button>
+      </div>
+      <div class="help-box" id="help-normal">
+        <div class="help-row">
+          <span class="help-badge case2">정상</span>
+          <div class="help-content">
+            <strong>AI가 오분석으로 잘못 감지했지만 실제로는 정상 분리인 경우</strong><br>
+            예시: <span class="help-example">줄,사각,접시</span> → 줄 / 사각 / 접시 는 각각 의미있는 단어 → 정상<br>
+            예시: <span class="help-example">LG,전자</span> → LG / 전자 는 정상 분리
+          </div>
+        </div>
+        <div class="help-row">
+          <span class="help-badge" style="background:#f3f0ff;color:#7c3aed;width:60px;">입력법</span>
+          <div class="help-content">
+            · <strong>정상 단어</strong>: AI가 오분석으로 잡은 형태소 조각들을 콤마(,)로 입력<br>
+            · <strong>메모</strong>: 왜 정상인지 간략히 메모 (선택사항)
+          </div>
+        </div>
+        <div class="help-tip">
+          💡 <strong>언제 등록하나요?</strong> · 검수 결과에서 AI가 오분석으로 잡았는데 실제로는 정상인 경우 등록하세요. 등록하면 AI가 동일 패턴을 다음 분석부터 오분석으로 잡지 않습니다.
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:180px 1fr 1fr auto;gap:10px;align-items:end;margin-bottom:10px;">
+        <div class="form-group">
+          <label>카테고리</label>
+          <select id="newNormalCategory" style="width:100%;background:#f9fafb;border:1px solid #d1d5db;border-radius:7px;color:#222;font-size:13px;padding:9px 12px;outline:none;font-family:inherit;">
+            <option value="">선택</option>
+            ${CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>정상 단어 (AI가 오분석으로 잡은 것을 수정하여 등록)</label>
+          <input type="text" id="newNormalWrong" placeholder="예: 줄,사각,접시" />
+        </div>
+        <div class="form-group">
+          <label>메모 (선택)</label>
+          <input type="text" id="newNormalDesc" placeholder="메모 (선택사항)" />
+        </div>
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button class="btn btn-orange" style="background:linear-gradient(135deg,#14532d,#166534);" onclick="addNormalCase()">+ 추가</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 케이스 목록 -->
+    <div class="section-box">
+      <div class="section-title">
+        📋 등록된 오분석 케이스
+        <span id="totalCaseCount" style="font-size:12px;color:#666;font-weight:400;"></span>
+      </div>
+      <input type="text" class="search-bar" id="caseSearch" placeholder="🔎 검색 (형태소, 단어 등)" oninput="renderCaseList()" />
+      <div id="caseListWrap"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- 교정 모달 -->
+<div class="modal-overlay" id="corrModal">
+  <div class="modal">
+    <h3>🔧 AI 오감지 교정</h3>
+    <p>AI가 오분석으로 잘못 감지한 경우, 올바른 정보로 교정하고 케이스에 등록합니다.</p>
+    <div id="corrInfo" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:14px;margin-bottom:16px;font-size:13px;line-height:1.8;"></div>
+    <div class="form-group" style="margin-bottom:12px;">
+      <label>교정 내용 (올바른 설명)</label>
+      <input type="text" id="corrNote" placeholder="예: 정상 분리 (삼성/전자 각각 의미있음)" style="width:100%;background:#f9fafb;border:1px solid #d1d5db;border-radius:7px;color:#222;font-size:13px;padding:9px 12px;outline:none;font-family:inherit;" />
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <input type="checkbox" id="corrAddCase" checked style="width:14px;height:14px;" />
+      <label for="corrAddCase" style="font-size:13px;color:#555;cursor:pointer;">정상 케이스로 등록하여 AI 학습에 반영</label>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-cancel btn" onclick="closeCorrModal()">취소</button>
+      <button class="btn btn-blue-sm" onclick="submitCorrection()">교정 저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="success-toast" id="toast"></div>
+
+<script>
+// ===================== 카테고리 목록 =====================
+const CATEGORIES = [
+  '디지털 완제품', 'PC 주요 부품', '주변기기', '멀티미디어/네트워크',
+  '복합기/SW', '문구/사무', '주방가전', '생활가전', '계절가전',
+  '건강/실버', '영상음향', '디카', '태블릿/휴대폰', '게임',
+  '자동차 용품', '스포츠/레저', '의류', '화장품', '패션잡화',
+  '가구/침구', '생활/주방', '도서', '테스트용', '골프', '식품',
+  '공구/산업기계', '취미', '유아/완구', '기타'
+];
+
+// ===================== 내장 케이스 (31개 · 카테고리별 대표) =====================
+const BUILTIN_CASES = [ // {m:형태소, w:잘못된단어, c:올바른단어, cat:카테고리}
+  // [의류]
+  {m:'SG, 세계, 물산, 바쏘, 옴므, 차, 콜체스터, 핸드메이드',w:'차,콜체스터',c:'차콜,체스터',cat:'의류'},
+  {m:'오일릴리, 시르, 커스, 스커트',w:'시르,커스',c:'시르커스',cat:'의류'},
+  {m:'휴고, 보스, 다스, 타시',w:'다스,타시',c:'다스타시',cat:'의류'},
+  {m:'산드로, 데바, 르, 뒤, 르',w:'데바,르,뒤,르',c:'데바르뒤르',cat:'의류'},
+  {m:'버버리, 에쿠, 에, 스트리안',w:'에쿠,에,스트리안',c:'에쿠에스트리안',cat:'의류'},
+  {m:'이랜드, 스파오, 담곰, 이',w:'담곰,이',c:'담곰이',cat:'의류'},
+  {m:'LF, 더블, 플래그, 몽스, 터',w:'몽스,터',c:'몽스터',cat:'의류'},
+  // [패션잡화]
+  {m:'반스, 클램, 버, 미니, 백팩',w:'클램,버',c:'클램버',cat:'패션잡화'},
+  {m:'키플링, 나이, 라, NAIRA',w:'나이,라',c:'나이라',cat:'패션잡화'},
+  // [스포츠/레저]
+  {m:'스케쳐스, USA, 월셔, 블라바, 드, 슬립',w:'블라바,드',c:'블라바드',cat:'스포츠/레저'},
+  {m:'컬럼비아, 남성, 텔, 루릭, 스, 타이타늄',w:'텔,루릭,스',c:'텔루릭스',cat:'스포츠/레저'},
+  {m:'락포트, 아날, 라, 샌들',w:'아날,라',c:'아날라',cat:'스포츠/레저'},
+  {m:'데상트, 아크모, 션, 아노락',w:'아크모,션',c:'아크,모션',cat:'스포츠/레저'},
+  {m:'스피도, 프로세, 퍼, 레이츠',w:'프로세,퍼,레이츠',c:'세퍼레이츠',cat:'스포츠/레저'},
+  {m:'아레나, 선웨이, 브',w:'선웨이,브',c:'선,웨이브',cat:'스포츠/레저'},
+  // [유아/완구]
+  {m:'베이비, 스, 트램, 플러, 세트',w:'스,트램,플러',c:'스트램플러',cat:'유아/완구'},
+  {m:'해피, 랜드, 토곰, 이, 모달',w:'토곰,이',c:'토곰이',cat:'유아/완구'},
+  {m:'라벤스부르거, 마이셀, 리아',w:'마이셀,리아',c:'마이,셀리아',cat:'유아/완구'},
+  {m:'반다이, 쿠, 자쿠',w:'쿠,자쿠',c:'쿠자쿠',cat:'유아/완구'},
+  {m:'디즈니, 우루, 포, 차',w:'우루,포,차',c:'우루포차',cat:'유아/완구'},
+  {m:'레고, 래비, 저',w:'래비,저',c:'래비저',cat:'유아/완구'},
+  {m:'엠에이치앤코, 멍, 솜이',w:'멍,솜이',c:'멍솜이',cat:'유아/완구'},
+  // [화장품]
+  {m:'라메르, 제, 네상스, 더, 아이, 앤',w:'제,네상스',c:'제네상스',cat:'화장품'},
+  {m:'하, 블리크, 아포테, 카',w:'아포테,카',c:'아포테카',cat:'화장품'},
+  {m:'확인, 중, 이비, 온',w:'이비,온',c:'이비온',cat:'화장품'},
+  // [식품]
+  {m:'장스, 푸드, 푸, 드렐라, 저당, 토스트',w:'푸,드렐라',c:'푸드렐라',cat:'식품'},
+  {m:'맥널티, 티브, 루',w:'티브,루',c:'티,브루',cat:'식품'},
+  // [생활/주방]
+  {m:'지엔, 인터내셔널, 어, 슬릭, 주방',w:'어,슬릭',c:'어슬릭',cat:'생활/주방'},
+  {m:'신영, 스텐, 롤스보, 일',w:'롤스보,일',c:'롤스,보일',cat:'생활/주방'},
+  // [가구/침구]
+  {m:'동서, 가구, 파시, 드',w:'파시,드',c:'파시드',cat:'가구/침구'},
+  // [건강/실버]
+  {m:'바이탈, 버브, 론, 테라',w:'론,테라',c:'론테라',cat:'건강/실버'},
+];
+
+// ===================== 케이스 스토리지 (메모리) =====================
+// 구조: { id, type: 'builtin'|'custom'|'corrected', morpheme, wrong, correct, memo, addedAt }
+let customCases = []; // 사용자 추가 케이스
+let correctedCases = []; // 교정 케이스
+let deletedBuiltinIds = []; // 삭제된 기본 케이스 ID
+
+function getAllCases() {
+  const builtins = BUILTIN_CASES
+    .map((c, i) => ({ id: 'b_' + i, type: 'builtin', morpheme: c.m, wrong: c.w, correct: c.c, memo: '', category: c.cat || '의류' }))
+    .filter(c => !deletedBuiltinIds.includes(c.id));
+  return [...builtins, ...customCases, ...correctedCases];
+}
+
+function saveCasesToStorage() {
+  try {
+    sessionStorage.setItem('danawa_custom', JSON.stringify(customCases));
+    sessionStorage.setItem('danawa_corrected', JSON.stringify(correctedCases));
+    sessionStorage.setItem('danawa_deleted', JSON.stringify(deletedBuiltinIds));
+  } catch(e) {}
+}
+function loadCasesFromStorage() {
+  try {
+    const c = sessionStorage.getItem('danawa_custom');
+    const r = sessionStorage.getItem('danawa_corrected');
+    const d = sessionStorage.getItem('danawa_deleted');
+    if (c) customCases = JSON.parse(c);
+    if (r) correctedCases = JSON.parse(r);
+    if (d) deletedBuiltinIds = JSON.parse(d);
+  } catch(e) {}
+}
+
+// ===================== 시스템 프롬프트 빌더 =====================
+function buildSystemPrompt() {
+  const cases = getAllCases();
+  const exampleLines = cases
+    .filter(c => c.type !== 'corrected')
+    .map(c => `${c.morpheme} → ${c.wrong} → ${c.correct}`)
+    .join('\n');
+
+  const normalLines = correctedCases
+    .map(c => `${c.morpheme} (정상: ${c.memo || c.correct})`)
+    .join('\n');
+
+  return `당신은 한국 e-커머스 상품명 형태소 분석 결과를 검수하는 전문가입니다.
+형태소 분석기가 상품명을 잘못 분해한 "오분석" 케이스를 찾아내야 합니다.
+
+[오분석 판단 기준]
+형태소 분석 결과에서 단어가 의미없는 음절 조각으로 잘못 분리된 경우가 오분석입니다.
+- 예: "푸드렐라" → 푸, 드렐라 (오분석: 의미없는 조각)
+- 예: "텔루릭스" → 텔, 루릭, 스 (오분석: 모두 의미없는 조각)
+- 예: "삼성전자" → 삼성, 전자 (정상: 각각 의미있음)
+- 예: "LG전자" → LG, 전자 (정상)
+- 예: "깨끗한나라" → 깨끗, 한, 나라 (정상)
+
+[실제 오분석 예시 - 이 패턴을 학습하세요]
+형태소분석결과 → 잘못분리된단어 → 올바른단어
+${exampleLines}
+${normalLines ? '\n[정상으로 확인된 케이스 - 오분석으로 감지하지 마세요]\n' + normalLines : ''}
+
+[신규단어 탐지 기준]
+1. 신규 브랜드/제조사: 일반적으로 알려지지 않은 고유명사
+2. 동의어 등록 필요 외래어: 영문이 그대로 남아있는 경우 (COOLMAX 등 한글 동의어 없음)
+3. 신조어/합성어: 숫자+한글 혼합 신조어 등
+
+[응답 규칙]
+- 반드시 JSON 배열만 응답. 다른 텍스트 절대 금지.
+- 형식: [{"no": 번호, "오분석유무": "Y" 또는 "N", "내용": "잘못된단어 → 올바른단어", "코멘트": "간략한 이유", "신규단어여부": "Y" 또는 "N", "신규단어후보": "신규단어1, 신규단어2", "신규단어비고": "동의어등록필요/신규브랜드 등"}]
+- 정상이면 내용/코멘트 빈 문자열, 신규단어 없으면 신규단어 필드 빈 문자열`;
+}
+
+// ===================== 분석 변수 =====================
+let parsedRows = [], analysisResults = [], dateStr = '';
+let corrTargetNo = null;
+
+// ===================== 탭 =====================
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', ['analyze','cases'][i] === name);
+  });
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'cases') renderCaseList();
+}
+
+// ===================== 파일 파싱 =====================
+function parseDate(fn) {
+  const m = fn.match(/(\d{8})/);
+  if (m) { const d = m[1]; return `${d.slice(0,4)}-${d.slice(4,6)}-${d.slice(6,8)}`; }
+  return new Date().toISOString().slice(0,10);
+}
+
+function handleFile(input) {
+  const f = input.files[0]; if (!f) return;
+  hideError();
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const wb = XLSX.read(e.target.result, { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const data = XLSX.utils.sheet_to_json(ws, { defval: '' });
+      parsedRows = data.map((row, i) => ({
+        no: row['no'] ?? row['NO'] ?? i + 1,
+        제조사명: String(row['제조사명'] || ''),
+        브랜드명: String(row['브랜드명'] || ''),
+        기준상품명: String(row['상품명'] || row['기준상품명'] || ''),
+        형태소분석: String(row['형태소 분석'] || row['형태소분석'] || ''),
+      })).filter(r => r.형태소분석.trim());
+      dateStr = parseDate(f.name);
+      const dz = document.getElementById('dropzone');
+      dz.classList.add('has-file');
+      document.getElementById('dropIcon').textContent = '✅';
+      document.getElementById('dropMain').className = 'drop-file';
+      document.getElementById('dropMain').textContent = f.name;
+      document.getElementById('dropSub').className = 'drop-meta';
+      document.getElementById('dropSub').textContent = `${parsedRows.length.toLocaleString()}건 · 날짜: ${dateStr}`;
+      const btn = document.getElementById('btnAnalyze');
+      btn.textContent = `🔍 오분석 감지 시작 (${parsedRows.length.toLocaleString()}건)`;
+      btn.classList.remove('hidden');
+    } catch(err) { showError('파일 파싱 오류: ' + err.message); }
+  };
+  reader.readAsArrayBuffer(f);
+}
+
+// ===================== 분석 =====================
+async function startAnalyze() {
+  const apiKey = document.getElementById('apiKey').value.trim();
+  if (!apiKey) { showError('API 키를 입력해주세요.'); return; }
+  if (!parsedRows.length) { showError('파일을 먼저 업로드해주세요.'); return; }
+  hideError();
+  document.getElementById('btnAnalyze').disabled = true;
+  document.getElementById('progressBox').style.display = 'block';
+  const total = parsedRows.length;
+  const BATCH = 20;
+  analysisResults = [];
+  const sysPrompt = buildSystemPrompt();
+
+  for (let i = 0; i < parsedRows.length; i += BATCH) {
+    const batch = parsedRows.slice(i, i + BATCH);
+    const items = batch.map(r =>
+      `no: ${r.no}\n제조사: ${r.제조사명} | 브랜드: ${r.브랜드명} | 상품명: ${r.기준상품명}\n형태소분석: ${r.형태소분석}`
+    ).join('\n\n---\n\n');
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: [
+            {
+              type: 'text',
+              text: sysPrompt,
+              cache_control: { type: 'ephemeral' }
+            }
+          ],
+          messages: [{ role: 'user', content: items }],
+        }),
+      });
+      if (!res.ok) { const ed = await res.json(); throw new Error(ed.error?.message || `HTTP ${res.status}`); }
+      const data = await res.json();
+      const text = data.content?.map(c => c.text || '').join('') || '[]';
+      const parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
+      analysisResults.push(...parsed);
+    } catch(err) {
+      batch.forEach(r => analysisResults.push({ no: r.no, 오분석유무: 'N', 내용: '', 코멘트: '분석실패: ' + err.message }));
+    }
+    const done = Math.min(i + BATCH, total);
+    document.getElementById('progressCount').textContent = `${done} / ${total}건`;
+    document.getElementById('progressBar').style.width = `${(done/total)*100}%`;
+  }
+  document.getElementById('progressBox').style.display = 'none';
+  renderResults();
+}
+
+// ===================== 결과 렌더링 =====================
+function renderResults() {
+  const rm = {};
+  analysisResults.forEach(r => { rm[r.no] = r; });
+  const yCount = analysisResults.filter(r => r.오분석유무 === 'Y').length;
+  const nCount = analysisResults.filter(r => r.오분석유무 === 'N').length;
+  const newCount = analysisResults.filter(r => r.신규단어여부 === 'Y').length;
+
+  document.getElementById('statTotal').textContent = parsedRows.length.toLocaleString();
+  document.getElementById('statY').textContent = yCount.toLocaleString();
+  document.getElementById('statN').textContent = nCount.toLocaleString();
+  document.getElementById('statNew').textContent = newCount.toLocaleString();
+  document.getElementById('statsGrid').classList.remove('hidden');
+  document.getElementById('btnDownload').classList.remove('hidden');
+
+  // 오분석 테이블
+  const yRows = parsedRows.filter(r => rm[r.no]?.오분석유무 === 'Y');
+  if (yRows.length > 0) {
+    document.getElementById('tableCount').textContent = `${yRows.length}건`;
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+    yRows.slice(0, 100).forEach(r => {
+      const res = rm[r.no] || {};
+      const isCorrected = correctedCases.some(c => c.sourceNo == r.no);
+      const tr = document.createElement('tr');
+      tr.id = 'tr_' + r.no;
+      tr.innerHTML = `
+        <td class="td-no">${r.no}</td>
+        <td class="td-muted">${esc(r.제조사명)}</td>
+        <td class="td-muted">${esc(r.브랜드명)}</td>
+        <td class="td-ellipsis" title="${esc(r.기준상품명)}">${esc(r.기준상품명)}</td>
+        <td class="td-error">${esc(res.내용 || '')}</td>
+        <td class="td-comment" title="${esc(res.코멘트 || '')}">${esc(res.코멘트 || '')}</td>
+        <td>${isCorrected
+          ? '<span style="color:#4ade80;font-size:12px;">✅ 교정됨</span>'
+          : `<button class="btn btn-red" onclick="openCorrModal(${r.no})">오감지 교정</button>`
+        }</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    document.getElementById('tableBox').classList.remove('hidden');
+    if (yRows.length > 100) {
+      const more = document.getElementById('tableMore');
+      more.textContent = `상위 100건 미리보기 · 전체 ${yRows.length}건은 엑셀에서 확인`;
+      more.classList.remove('hidden');
+    }
+  }
+
+  // 신규단어 테이블
+  const newRows = parsedRows.filter(r => rm[r.no]?.신규단어여부 === 'Y');
+  if (newRows.length > 0) {
+    document.getElementById('newWordCount').textContent = `${newRows.length}건`;
+    const tbody2 = document.getElementById('newWordBody');
+    tbody2.innerHTML = '';
+    newRows.slice(0, 100).forEach(r => {
+      const res = rm[r.no] || {};
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="td-no">${r.no}</td>
+        <td class="td-muted">${esc(r.제조사명)}</td>
+        <td class="td-muted">${esc(r.브랜드명)}</td>
+        <td class="td-ellipsis" title="${esc(r.기준상품명)}">${esc(r.기준상품명)}</td>
+        <td class="td-new">${esc(res.신규단어후보 || '')}</td>
+        <td class="td-comment">${esc(res.신규단어비고 || '')}</td>
+      `;
+      tbody2.appendChild(tr);
+    });
+    document.getElementById('newWordBox').classList.remove('hidden');
+    if (newRows.length > 100) {
+      const more2 = document.getElementById('newWordMore');
+      more2.textContent = `상위 100건 미리보기 · 전체 ${newRows.length}건은 엑셀에서 확인`;
+      more2.classList.remove('hidden');
+    }
+  }
+  document.getElementById('btnReset').classList.remove('hidden');
+}
+
+// ===================== 교정 모달 =====================
+function openCorrModal(no) {
+  corrTargetNo = no;
+  const rm = {};
+  analysisResults.forEach(r => { rm[r.no] = r; });
+  const row = parsedRows.find(r => r.no == no) || {};
+  const res = rm[no] || {};
+  document.getElementById('corrInfo').innerHTML = `
+    <div style="color:#888;margin-bottom:6px;font-size:11px;text-transform:uppercase;letter-spacing:1px;">감지된 오분석 내용</div>
+    <div><span style="color:#999;">상품명:</span> <span style="color:#222;">${esc(row.기준상품명 || '')}</span></div>
+    <div><span style="color:#999;">형태소:</span> <span style="color:#555;">${esc(row.형태소분석 || '')}</span></div>
+    <div><span style="color:#999;">AI 판단:</span> <span style="color:#f87171;">${esc(res.내용 || '')} — ${esc(res.코멘트 || '')}</span></div>
+  `;
+  document.getElementById('corrNote').value = '';
+  document.getElementById('corrModal').classList.add('show');
+}
+
+function closeCorrModal() {
+  document.getElementById('corrModal').classList.remove('show');
+  corrTargetNo = null;
+}
+
+function submitCorrection() {
+  if (!corrTargetNo) return;
+  const rm = {};
+  analysisResults.forEach(r => { rm[r.no] = r; });
+  const row = parsedRows.find(r => r.no == corrTargetNo) || {};
+  const res = rm[corrTargetNo] || {};
+  const note = document.getElementById('corrNote').value.trim() || '정상으로 교정됨';
+  const addCase = document.getElementById('corrAddCase').checked;
+
+  // 결과에서 해당 건 N으로 변경
+  const idx = analysisResults.findIndex(r => r.no == corrTargetNo);
+  if (idx !== -1) {
+    analysisResults[idx].오분석유무 = 'N';
+    analysisResults[idx].코멘트 = '[교정] ' + note;
+  }
+
+  if (addCase) {
+    correctedCases.push({
+      id: 'corr_' + Date.now(),
+      type: 'corrected',
+      sourceNo: corrTargetNo,
+      morpheme: row.형태소분석 || '',
+      wrong: res.내용 || '',
+      correct: note,
+      memo: note,
+      addedAt: new Date().toLocaleDateString('ko-KR'),
+    });
+    saveCasesToStorage();
+    updateCaseCountBadge();
+  }
+
+  closeCorrModal();
+  renderResults();
+  showToast('교정이 저장됐어요! 다음 분석부터 반영됩니다.');
+}
+
+// ===================== 케이스 추가 =====================
+function addCase() {
+  const cat = document.getElementById('newCategory').value.trim();
+  const w = document.getElementById('newWrong').value.trim();
+  const c = document.getElementById('newCorrect').value.trim();
+  const memo = document.getElementById('newMemo').value.trim();
+  if (!w || !c) { showToast('잘못된 단어와 올바른 단어를 입력해주세요.', 'error'); return; }
+  customCases.push({
+    id: 'cust_' + Date.now(),
+    type: 'custom',
+    morpheme: '', wrong: w, correct: c, memo, category: cat,
+    addedAt: new Date().toLocaleDateString('ko-KR'),
+  });
+  saveCasesToStorage();
+  updateCaseCountBadge();
+  document.getElementById('newCategory').value = '';
+  document.getElementById('newWrong').value = '';
+  document.getElementById('newCorrect').value = '';
+  document.getElementById('newMemo').value = '';
+  renderCaseList();
+  showToast('케이스가 추가됐어요! 다음 분석부터 반영됩니다.');
+}
+
+// ===================== 정상 케이스 추가 =====================
+function addNormalCase() {
+  const cat = document.getElementById('newNormalCategory').value.trim();
+  const w = document.getElementById('newNormalWrong').value.trim();
+  const d = document.getElementById('newNormalDesc').value.trim();
+  if (!w) { showToast('정상 단어를 입력해주세요.', 'error'); return; }
+  correctedCases.push({
+    id: 'corr_' + Date.now(),
+    type: 'corrected',
+    morpheme: '',
+    wrong: w,
+    correct: d || '정상 분리',
+    memo: d || '정상으로 교정됨',
+    category: cat,
+    addedAt: new Date().toLocaleDateString('ko-KR'),
+  });
+  saveCasesToStorage();
+  updateCaseCountBadge();
+  document.getElementById('newNormalWrong').value = '';
+  document.getElementById('newNormalDesc').value = '';
+
+  renderCaseList();
+  showToast('정상 케이스가 등록됐어요! 다음 분석부터 반영됩니다.');
+}
+
+// ===================== 케이스 목록 렌더링 =====================
+function renderCaseList() {
+  const q = (document.getElementById('caseSearch')?.value || '').toLowerCase();
+  const all = getAllCases();
+  const filtered = q ? all.filter(c =>
+    c.morpheme.toLowerCase().includes(q) ||
+    c.wrong.toLowerCase().includes(q) ||
+    c.correct.toLowerCase().includes(q) ||
+    (c.memo||'').toLowerCase().includes(q) ||
+    (c.category||'').toLowerCase().includes(q)
+  ) : all;
+
+  document.getElementById('totalCaseCount').textContent = `전체 ${all.length}건 (기본 ${BUILTIN_CASES.length} + 추가 ${customCases.length} + 교정 ${correctedCases.length})`;
+
+  const wrap = document.getElementById('caseListWrap');
+  if (!filtered.length) {
+    wrap.innerHTML = '<div class="empty-state">검색 결과가 없어요</div>';
+    return;
+  }
+
+  const typeLabel = { builtin: '기본', custom: '추가', corrected: '교정' };
+  const typeClass = { builtin: 'tag-builtin', custom: 'tag-custom', corrected: 'tag-corrected' };
+
+  wrap.innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead>
+        <tr style="background:#f9fafb;">
+          <th style="padding:9px 13px;text-align:left;color:#888;font-weight:600;font-size:11px;border-bottom:1px solid #e5e7eb;white-space:nowrap;text-transform:uppercase;letter-spacing:.5px;">구분</th>
+          <th style="padding:9px 13px;text-align:left;color:#888;font-weight:600;font-size:11px;border-bottom:1px solid #e5e7eb;white-space:nowrap;">카테고리</th>
+          <th style="padding:9px 13px;text-align:left;color:#888;font-weight:600;font-size:11px;border-bottom:1px solid #e5e7eb;white-space:nowrap;">잘못된 단어</th>
+          <th style="padding:9px 13px;text-align:left;color:#888;font-weight:600;font-size:11px;border-bottom:1px solid #e5e7eb;white-space:nowrap;">올바른 단어</th>
+          <th style="padding:9px 13px;text-align:left;color:#888;font-weight:600;font-size:11px;border-bottom:1px solid #e5e7eb;">메모</th>
+          <th style="padding:9px 13px;text-align:left;color:#888;font-weight:600;font-size:11px;border-bottom:1px solid #e5e7eb;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filtered.slice(0, 200).map((c, i) => `
+          <tr style="border-bottom:1px solid #f3f4f6;${i%2===1?'background:#fafafa;':''}">
+            <td style="padding:8px 13px;background:transparent;"><span class="tag ${typeClass[c.type]}">${typeLabel[c.type]}</span></td>
+            <td style="padding:8px 13px;white-space:nowrap;"><span style="background:#f3f4f6;color:#555;font-size:11px;padding:2px 8px;border-radius:4px;">${esc(c.category||'미분류')}</span></td>
+            <td style="padding:8px 13px;font-weight:600;white-space:nowrap;color:${c.type==='corrected'?'#16a34a':'#ef4444'};">${esc(c.wrong)}</td>
+            <td style="padding:8px 13px;color:${c.type==='corrected'?'#888':'#16a34a'};white-space:nowrap;">${esc(c.correct.replace(/ /g, ','))}</td>
+            <td style="padding:8px 13px;color:#666;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(c.memo||'')}</td>
+            <td style="padding:8px 13px;background:transparent;">
+              <button class="btn btn-red" onclick="deleteCase('${c.id}')">삭제</button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+    ${filtered.length > 200 ? `<div class="table-more">상위 200건 표시 중 · 전체 ${filtered.length}건</div>` : ''}
+  `;
+}
+
+function deleteCase(id) {
+  if (id.startsWith('b_')) {
+    if (!deletedBuiltinIds.includes(id)) deletedBuiltinIds.push(id);
+  } else {
+    customCases = customCases.filter(c => c.id !== id);
+    correctedCases = correctedCases.filter(c => c.id !== id);
+  }
+  saveCasesToStorage();
+  updateCaseCountBadge();
+  renderCaseList();
+  showToast('케이스가 삭제됐어요.');
+}
+
+function updateCaseCountBadge() {
+  const total = BUILTIN_CASES.length + customCases.length + correctedCases.length;
+  document.getElementById('caseCountBadge').textContent = total;
+}
+
+// ===================== 엑셀 다운로드 =====================
+function downloadExcel() {
+  const rm = {};
+  analysisResults.forEach(r => { rm[r.no] = r; });
+  const output = parsedRows.map(r => {
+    const res = rm[r.no] || {};
+    return {
+      'no': r.no, '날짜': dateStr,
+      '제조사명': r.제조사명, '브랜드명': r.브랜드명,
+      '기준상품명': r.기준상품명, '형태소분석': r.형태소분석,
+      '오분석유무': res.오분석유무 || 'N',
+      '내용': res.내용 || '', '코멘트': res.코멘트 || '',
+      '신규단어여부': res.신규단어여부 || 'N',
+      '신규단어후보': res.신규단어후보 || '',
+      '신규단어비고': res.신규단어비고 || '',
+    };
+  });
+  const ws = XLSX.utils.json_to_sheet(output);
+  ws['!cols'] = [{wch:6},{wch:12},{wch:16},{wch:16},{wch:40},{wch:60},{wch:10},{wch:30},{wch:30},{wch:10},{wch:30},{wch:30}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, '형태소검수');
+  XLSX.writeFile(wb, `형태소_검수결과_${dateStr.replace(/-/g,'')}.xlsx`);
+}
+
+// ===================== 리셋 =====================
+function resetAll() {
+  parsedRows = []; analysisResults = []; dateStr = '';
+  document.getElementById('fileInput').value = '';
+  const dz = document.getElementById('dropzone');
+  dz.classList.remove('has-file');
+  document.getElementById('dropIcon').textContent = '📂';
+  document.getElementById('dropMain').className = 'drop-main';
+  document.getElementById('dropMain').textContent = '클릭하여 파일 선택';
+  document.getElementById('dropSub').className = 'drop-sub';
+  document.getElementById('dropSub').textContent = 'morpheme_analysis_data_YYYYMMDD_*.xlsx';
+  document.getElementById('btnAnalyze').classList.add('hidden');
+  document.getElementById('btnAnalyze').disabled = false;
+  document.getElementById('statsGrid').classList.add('hidden');
+  document.getElementById('btnDownload').classList.add('hidden');
+  document.getElementById('tableBox').classList.add('hidden');
+  document.getElementById('tableBody').innerHTML = '';
+  document.getElementById('tableMore').classList.add('hidden');
+  document.getElementById('newWordBox').classList.add('hidden');
+  document.getElementById('newWordBody').innerHTML = '';
+  document.getElementById('newWordMore').classList.add('hidden');
+  document.getElementById('btnReset').classList.add('hidden');
+  document.getElementById('progressBox').style.display = 'none';
+  hideError();
+}
+
+// ===================== 유틸 =====================
+function showError(msg) { const b = document.getElementById('errorBox'); b.textContent = '⚠️ ' + msg; b.style.display = 'block'; }
+function hideError() { document.getElementById('errorBox').style.display = 'none'; }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+let toastTimer;
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = type === 'error' ? '#7f1d1d' : '#14532d';
+  t.style.color = type === 'error' ? '#fca5a5' : '#4ade80';
+  t.style.borderColor = type === 'error' ? '#991b1b' : '#166534';
+  t.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.style.display = 'none'; }, 2800);
+}
+
+// ===================== 도움말 토글 =====================
+function toggleHelp(id) {
+  const box = document.getElementById(id);
+  box.classList.toggle('show');
+  const btn = box.previousElementSibling.querySelector('.help-toggle');
+  if (btn) btn.textContent = box.classList.contains('show') ? '✕ 닫기' : '❓ 도움말';
+}
+
+// ===================== 초기화 =====================
+function populateCategorySelects() {
+  ['newCategory', 'newNormalCategory'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    sel.innerHTML = '<option value="">선택</option>';
+    CATEGORIES.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c; opt.textContent = c;
+      sel.appendChild(opt);
+    });
+  });
+}
+loadCasesFromStorage();
+populateCategorySelects();
+updateCaseCountBadge();
+</script>
+</body>
+</html>
