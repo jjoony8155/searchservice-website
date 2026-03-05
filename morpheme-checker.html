@@ -186,7 +186,7 @@
     <!-- Stats -->
     <div class="stats-grid hidden" id="statsGrid">
       <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-value" id="statTotal" style="color:#60a5fa">0</div><div class="stat-label">전체 분석</div></div>
-      <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-value" id="statY" style="color:#f87171">0</div><div class="stat-label">오분석 의심</div></div>
+      <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-value" id="statY" style="color:#f87171">0</div><div id="statErrorPct" style="font-size:12px;font-weight:600;color:#f87171;margin-top:2px;">0%</div><div class="stat-label">오분석 의심</div></div>
       <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" id="statN" style="color:#4ade80">0</div><div class="stat-label">정상</div></div>
       <div class="stat-card"><div class="stat-icon">🆕</div><div class="stat-value" id="statNew" style="color:#fb923c">0</div><div class="stat-label">신규단어 후보</div></div>
     </div>
@@ -383,16 +383,35 @@ const CATEGORIES = [
   '공구/산업기계', '취미', '유아/완구', '기타'
 ];
 
-// ===================== 내장 케이스 (31개 · 카테고리별 대표) =====================
+// ===================== 내장 케이스 (62개 · 카테고리별 대표) =====================
 const BUILTIN_CASES = [ // {m:형태소, w:잘못된단어, c:올바른단어, cat:카테고리}
   // [의류]
-  {m:'SG, 세계, 물산, 바쏘, 옴므, 차, 콜체스터, 핸드메이드',w:'차,콜체스터',c:'차콜,체스터',cat:'의류'},
+  {m:'',w:'도,레나',c:'도레나',cat:'의류'},
+  {m:'',w:'로,살바',c:'로살바',cat:'의류'},
   {m:'오일릴리, 시르, 커스, 스커트',w:'시르,커스',c:'시르커스',cat:'의류'},
   {m:'휴고, 보스, 다스, 타시',w:'다스,타시',c:'다스타시',cat:'의류'},
-  {m:'산드로, 데바, 르, 뒤, 르',w:'데바,르,뒤,르',c:'데바르뒤르',cat:'의류'},
-  {m:'버버리, 에쿠, 에, 스트리안',w:'에쿠,에,스트리안',c:'에쿠에스트리안',cat:'의류'},
   {m:'이랜드, 스파오, 담곰, 이',w:'담곰,이',c:'담곰이',cat:'의류'},
-  {m:'LF, 더블, 플래그, 몽스, 터',w:'몽스,터',c:'몽스터',cat:'의류'},
+  {m:'버버리, 에쿠, 에, 스트리안',w:'에쿠,에,스트리안',c:'에쿠에스트리안',cat:'의류'},
+  {m:'',w:'시,아레,이도',c:'시아레이도',cat:'의류'},
+  {m:'',w:'스트,랜,리',c:'스트랜리',cat:'의류'},
+  {m:'',w:'카,체미,로',c:'카체미로',cat:'의류'},
+  {m:'산드로, 데바, 르, 뒤, 르',w:'데바,르,뒤,르',c:'데바르뒤르',cat:'의류'},
+  {m:'',w:'스,콕,살,라트',c:'스콕살라트',cat:'의류'},
+  {m:'SG, 세계, 물산, 바쏘, 옴므, 차, 콜체스터, 핸드메이드',w:'차,콜체스터',c:'차콜,체스터',cat:'의류'},
+  {m:'',w:'더,프랭,키샵',c:'더,프랭키,샵',cat:'의류'},
+  {m:'',w:'데이브,레이커',c:'데이,브레이커',cat:'의류'},
+  {m:'',w:'뉴블라,썸',c:'뉴,블라썸',cat:'의류'},
+  {m:'',w:'바디수,트레깅스',c:'바디,수트,레깅스',cat:'의류'},
+  {m:'',w:'프로메,테오',c:'프로,메테오',cat:'의류'},
+  {m:'',w:'트윈스,마일',c:'트윈,스마일',cat:'의류'},
+  {m:'',w:'후드,안배,색',c:'후드,안,배색',cat:'의류'},
+  {m:'',w:'5,부카,고그,레이진',c:'5부,카고,그레이,진',cat:'의류'},
+  {m:'',w:'브,이브라',c:'브이,브라',cat:'의류'},
+  {m:'',w:'상하세,트잠옷',c:'상하,세트,잠옷',cat:'의류'},
+  {m:'',w:'소,고채,세트',c:'소고,채,세트',cat:'의류'},
+  {m:'',w:'파트리지,아페페',c:'파트리지아,페페',cat:'의류'},
+  {m:'',w:'덕기,모',c:'덕,기모',cat:'의류'},
+  {m:'',w:'마르,코폴라',c:'마르코,폴라',cat:'의류'},
   // [패션잡화]
   {m:'반스, 클램, 버, 미니, 백팩',w:'클램,버',c:'클램버',cat:'패션잡화'},
   {m:'키플링, 나이, 라, NAIRA',w:'나이,라',c:'나이라',cat:'패션잡화'},
@@ -411,13 +430,25 @@ const BUILTIN_CASES = [ // {m:형태소, w:잘못된단어, c:올바른단어, c
   {m:'디즈니, 우루, 포, 차',w:'우루,포,차',c:'우루포차',cat:'유아/완구'},
   {m:'레고, 래비, 저',w:'래비,저',c:'래비저',cat:'유아/완구'},
   {m:'엠에이치앤코, 멍, 솜이',w:'멍,솜이',c:'멍솜이',cat:'유아/완구'},
+  {m:'',w:'핑핑,이',c:'핑핑이',cat:'유아/완구'},
+  {m:'',w:'자작도,미노',c:'자작,도미노',cat:'유아/완구'},
+  {m:'',w:'노,엘베베',c:'노엘,베베',cat:'유아/완구'},
+  {m:'',w:'레,몬베베',c:'레몬,베베',cat:'유아/완구'},
   // [화장품]
   {m:'라메르, 제, 네상스, 더, 아이, 앤',w:'제,네상스',c:'제네상스',cat:'화장품'},
   {m:'하, 블리크, 아포테, 카',w:'아포테,카',c:'아포테카',cat:'화장품'},
   {m:'확인, 중, 이비, 온',w:'이비,온',c:'이비온',cat:'화장품'},
+  {m:'',w:'페,머,넌,트라이트',c:'페머넌트',cat:'화장품'},
+  {m:'',w:'시,어스킨',c:'시어,스킨',cat:'화장품'},
+  {m:'',w:'히,트라이트',c:'히트,라이트',cat:'화장품'},
+  {m:'',w:'뷰,티백',c:'뷰티,백',cat:'화장품'},
   // [식품]
   {m:'장스, 푸드, 푸, 드렐라, 저당, 토스트',w:'푸,드렐라',c:'푸드렐라',cat:'식품'},
   {m:'맥널티, 티브, 루',w:'티브,루',c:'티,브루',cat:'식품'},
+  {m:'',w:'붕,규산염',c:'붕규산염',cat:'식품'},
+  {m:'',w:'마들,레,느',c:'마들레느',cat:'식품'},
+  {m:'',w:'파,게티,니',c:'파게티니',cat:'식품'},
+  {m:'',w:'장,식재료',c:'장식,재료',cat:'식품'},
   // [생활/주방]
   {m:'지엔, 인터내셔널, 어, 슬릭, 주방',w:'어,슬릭',c:'어슬릭',cat:'생활/주방'},
   {m:'신영, 스텐, 롤스보, 일',w:'롤스보,일',c:'롤스,보일',cat:'생활/주방'},
@@ -455,6 +486,56 @@ function loadCasesFromStorage() {
     if (c) customCases = JSON.parse(c);
     if (r) correctedCases = JSON.parse(r);
     if (d) deletedBuiltinIds = JSON.parse(d);
+    const k = sessionStorage.getItem('danawa_apikey');
+    if (k) { const el = document.getElementById('apiKey'); if(el) el.value = k; }
+  } catch(e) {}
+}
+function exportCases() {
+  const data = {
+    version: 1,
+    exportedAt: new Date().toLocaleDateString('ko-KR'),
+    customCases,
+    correctedCases,
+    deletedBuiltinIds,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'morpheme_cases_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  showToast('케이스를 내보냈어요!');
+}
+function importCases(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (data.customCases) customCases = data.customCases;
+      if (data.correctedCases) correctedCases = data.correctedCases;
+      if (data.deletedBuiltinIds) deletedBuiltinIds = data.deletedBuiltinIds;
+      saveCasesToStorage();
+      updateCaseCountBadge();
+      renderCaseList();
+      showToast(`케이스를 불러왔어요! (추가 ${customCases.length}개 · 교정 ${correctedCases.length}개)`);
+    } catch(err) {
+      showToast('파일을 읽을 수 없어요. JSON 파일을 선택해주세요.', 'error');
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+}
+function cancelAnalysis() {
+  cancelRequested = true;
+  document.getElementById('btnCancel').classList.add('hidden');
+  showToast('분석을 중단하고 있어요...', 'error');
+}
+function saveApiKey() {
+  try {
+    const v = document.getElementById('apiKey').value;
+    if (v) sessionStorage.setItem('danawa_apikey', v);
+    else sessionStorage.removeItem('danawa_apikey');
   } catch(e) {}
 }
 
@@ -616,6 +697,8 @@ function renderResults() {
 
   document.getElementById('statTotal').textContent = parsedRows.length.toLocaleString();
   document.getElementById('statY').textContent = yCount.toLocaleString();
+  const pctEl = document.getElementById('statErrorPct');
+  if (pctEl) pctEl.textContent = total > 0 ? ((yCount/total)*100).toFixed(1)+'%' : '0%';
   document.getElementById('statN').textContent = nCount.toLocaleString();
   document.getElementById('statNew').textContent = newCount.toLocaleString();
   document.getElementById('statsGrid').classList.remove('hidden');
@@ -792,14 +875,17 @@ function addNormalCase() {
 // ===================== 케이스 목록 렌더링 =====================
 function renderCaseList() {
   const q = (document.getElementById('caseSearch')?.value || '').toLowerCase();
+  const catF = (document.getElementById('catFilter')?.value || '');
   const all = getAllCases();
-  const filtered = q ? all.filter(c =>
+  let filtered = all;
+  if (catF) filtered = filtered.filter(c => (c.category||'') === catF);
+  if (q) filtered = filtered.filter(c =>
     c.morpheme.toLowerCase().includes(q) ||
     c.wrong.toLowerCase().includes(q) ||
     c.correct.toLowerCase().includes(q) ||
     (c.memo||'').toLowerCase().includes(q) ||
     (c.category||'').toLowerCase().includes(q)
-  ) : all;
+  );
 
   document.getElementById('totalCaseCount').textContent = `전체 ${all.length}건 (기본 ${BUILTIN_CASES.length} + 추가 ${customCases.length} + 교정 ${correctedCases.length})`;
 
@@ -937,10 +1023,10 @@ function toggleHelp(id) {
 
 // ===================== 초기화 =====================
 function populateCategorySelects() {
-  ['newCategory', 'newNormalCategory'].forEach(id => {
+  ['newCategory', 'newNormalCategory', 'catFilter'].forEach(id => {
     const sel = document.getElementById(id);
     if (!sel) return;
-    sel.innerHTML = '<option value="">선택</option>';
+    sel.innerHTML = id === 'catFilter' ? '<option value="">전체 카테고리</option>' : '<option value="">선택</option>';
     CATEGORIES.forEach(c => {
       const opt = document.createElement('option');
       opt.value = c; opt.textContent = c;
