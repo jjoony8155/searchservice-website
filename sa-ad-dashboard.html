@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>다나와 SA광고 모니터링</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #f1f5f9;
+    --surface: #ffffff;
+    --surface2: #f8fafc;
+    --border: #e2e8f0;
+    --accent: #2563eb;
+    --accent2: #0891b2;
+    --danger: #dc2626;
+    --warning: #d97706;
+    --success: #059669;
+    --text: #0f172a;
+    --text2: #475569;
+    --text3: #94a3b8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  header {
+    background: linear-gradient(135deg, #1e40af 0%, #0891b2 100%);
+    padding: 18px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-icon { width: 36px; height: 36px; background: rgba(255,255,255,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .logo-text { font-size: 17px; font-weight: 700; color: #fff; }
+  .logo-sub { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 1px; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .header-badge { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; padding: 6px 14px; font-size: 12px; color: #fff; font-family: 'JetBrains Mono', monospace; }
+  .threshold-wrap { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; padding: 6px 12px; font-size: 12px; color: #fff; }
+  .threshold-wrap input { width: 44px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); border-radius: 4px; color: #fff; padding: 2px 6px; font-size: 12px; font-family: 'JetBrains Mono', monospace; text-align: center; }
+
+  main { padding: 28px 32px; max-width: 1600px; margin: 0 auto; }
+
+  .filter-info { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 10px 18px; margin-bottom: 20px; font-size: 12px; color: #1e40af; display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .filter-info span { display: flex; align-items: center; gap: 4px; }
+
+  .upload-section { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .upload-card { background: var(--surface); border: 2px dashed var(--border); border-radius: 14px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s; }
+  .upload-card:hover { border-color: var(--accent); background: #eff6ff; }
+  .upload-card.loaded { border-style: solid; border-color: var(--success); background: #f0fdf4; }
+  input[type=file] { display: none; }
+  .upload-icon { font-size: 28px; margin-bottom: 8px; }
+  .upload-title { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+  .upload-sub { font-size: 11px; color: var(--text3); }
+  .upload-status { font-size: 12px; margin-top: 8px; font-family: 'JetBrains Mono', monospace; color: var(--text3); }
+
+  .analyze-btn { display: block; width: 100%; padding: 14px; background: linear-gradient(135deg, #1e40af, #0891b2); border: none; border-radius: 10px; color: white; font-size: 14px; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; margin-bottom: 28px; transition: all 0.2s; }
+  .analyze-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .analyze-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 24px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; position: relative; overflow: hidden; }
+  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .stat-card.blue::before { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .stat-card.red::before { background: var(--danger); }
+  .stat-card.orange::before { background: var(--warning); }
+  .stat-card.green::before { background: var(--success); }
+  .stat-card.gray::before { background: var(--text3); }
+  .stat-label { font-size: 11px; color: var(--text2); font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px; }
+  .stat-value { font-size: 26px; font-weight: 900; font-family: 'JetBrains Mono', monospace; letter-spacing: -1px; }
+  .stat-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
+
+  .tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 4px; margin-bottom: 16px; width: fit-content; }
+  .tab { padding: 7px 18px; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--text2); transition: all 0.15s; border: none; background: none; font-family: 'Noto Sans KR', sans-serif; }
+  .tab.active { background: var(--accent); color: white; }
+
+  .action-bar { display: flex; gap: 10px; margin-bottom: 14px; align-items: center; }
+  .btn { display: flex; align-items: center; gap: 7px; padding: 9px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 13px; font-weight: 600; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: all 0.15s; }
+  .btn.email:hover { border-color: var(--accent); color: var(--accent); background: #eff6ff; }
+  .btn.export:hover { border-color: var(--success); color: var(--success); background: #f0fdf4; }
+
+  .filter-bar { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; }
+  .search-input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; color: var(--text); font-size: 13px; font-family: 'Noto Sans KR', sans-serif; }
+  .search-input:focus { outline: none; border-color: var(--accent); }
+  .filter-select { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; color: var(--text); font-size: 12px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
+
+  .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+  .table-header { padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--surface2); }
+  .table-title { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .table-wrap { overflow-x: auto; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: #f8fafc; padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; }
+  th:hover { background: #f1f5f9; }
+  th.sorted { background: #e0e7ff; color: var(--accent); }
+  td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafafa; }
+  .row-critical td { background: #fef2f2 !important; }
+  .row-warning td { background: #fffbeb !important; }
+
+  .num { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+  .num.zero { color: var(--danger); font-weight: 700; }
+  .num.down { color: var(--danger); }
+  .num.up { color: var(--success); }
+
+  .badge { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; border-radius: 11px; font-size: 11px; font-weight: 700; padding: 0 6px; }
+  .badge.red { background: #fee2e2; color: var(--danger); }
+  .badge.orange { background: #fef3c7; color: var(--warning); }
+  .badge.blue { background: #dbeafe; color: var(--accent); }
+  .badge.green { background: #d1fae5; color: var(--success); }
+
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .pill-danger { background: #fee2e2; color: var(--danger); }
+  .pill-warning { background: #fef3c7; color: var(--warning); }
+  .pill-success { background: #d1fae5; color: var(--success); }
+  .pill-neutral { background: #f1f5f9; color: var(--text2); }
+
+  .dev-badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+  .dev-mobile { background: #cffafe; color: #0e7490; }
+  .dev-pc { background: #dbeafe; color: #1d4ed8; }
+
+  .pagination { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text2); }
+  .page-btns { display: flex; gap: 4px; }
+  .page-btn { padding: 4px 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--text2); font-size: 11px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+  .page-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+  .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .loading { display: none; text-align: center; padding: 40px; color: var(--text2); }
+  .spinner { width: 30px; height: 30px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 10px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .empty-state { text-align: center; padding: 40px; color: var(--text3); }
+  .text-muted { color: var(--text3); font-size: 11px; }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; width: 540px; max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+  .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 20px; }
+  .form-group { margin-bottom: 14px; }
+  .form-label { font-size: 12px; color: var(--text2); margin-bottom: 6px; display: block; font-weight: 500; }
+  .form-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text); font-size: 13px; font-family: 'Noto Sans KR', sans-serif; }
+  .form-input:focus { outline: none; border-color: var(--accent); }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+  .btn-cancel { padding: 9px 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text2); font-size: 13px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+  .btn-primary { padding: 9px 20px; background: var(--accent); border: none; border-radius: 8px; color: white; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">📡</div>
+    <div>
+      <div class="logo-text">다나와 SA광고 모니터링 <span style="font-size:11px;opacity:0.6;">v2</span></div>
+      <div class="logo-sub">검색서비스팀 · 장혁준 팀장 · 파워쇼핑 전일비교</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="threshold-wrap">
+      ⚠️ 클릭 감소 기준
+      <input type="number" id="thresholdInput" value="50" min="1" max="99"> %
+    </div>
+    <div class="header-badge" id="dateBadge">날짜 로드 전</div>
+  </div>
+</header>
+
+<main>
+  <div class="filter-info">
+    <span>✅ <b>파워쇼핑</b> 기준 분석</span>
+    <span>🚫 제외: 카테고리 결과 없음 / 쿠팡로켓배송관</span>
+    <span>📌 빈슬롯 채운 상품 수(평균) ≥ 3</span>
+    <span>🔑 키워드 기준 중복 제거</span>
+    <span>📉 이상: 클릭 0 또는 클릭 변화율 ≤ -50%</span>
+  </div>
+
+  <div class="upload-section">
+    <label class="upload-card" id="prevCard">
+      <input type="file" id="prevFile" accept=".xlsx,.xls,.csv">
+      <div class="upload-icon">📅</div>
+      <div class="upload-title">전일 데이터</div>
+      <div class="upload-sub">list-powerShopping-전일.xlsx</div>
+      <div class="upload-status" id="prevStatus">파일을 선택하세요</div>
+    </label>
+    <label class="upload-card" id="todayCard">
+      <input type="file" id="todayFile" accept=".xlsx,.xls,.csv">
+      <div class="upload-icon">📆</div>
+      <div class="upload-title">금일 데이터</div>
+      <div class="upload-sub">list-powerShopping-금일.xlsx</div>
+      <div class="upload-status" id="todayStatus">파일을 선택하세요</div>
+    </label>
+  </div>
+
+  <button class="analyze-btn" id="analyzeBtn" onclick="analyze()" disabled>
+    📊 분석 시작 (전일 + 금일 파일을 모두 업로드해주세요)
+  </button>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    필터링 및 전일 비교 분석 중...
+  </div>
+
+  <div id="dashboard" style="display:none;">
+    <div class="summary-grid" id="summaryGrid"></div>
+
+    <div class="action-bar">
+      <button class="btn email" onclick="openModal()">📧 이메일 보고서</button>
+      <button class="btn export" onclick="exportCSV()">📥 CSV 내보내기</button>
+      <span class="text-muted" id="lastUpdate"></span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('critical', this)">🚨 클릭 0 감지</button>
+      <button class="tab" onclick="switchTab('warning', this)">⚠️ 클릭 50%↓</button>
+      <button class="tab" onclick="switchTab('all', this)">📋 전체 분석 대상</button>
+    </div>
+
+    <div class="filter-bar">
+      <input class="search-input" type="text" id="searchInput" placeholder="🔍 키워드 또는 카테고리 검색..." oninput="applyFilter()">
+      <select class="filter-select" id="deviceFilter" onchange="applyFilter()">
+        <option value="">전체 디바이스</option>
+        <option value="mobile">Mobile</option>
+        <option value="pc">PC</option>
+      </select>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-title" id="tableTitle">데이터</div>
+        <span class="text-muted" id="rowCount"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead id="tableHead"></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+        <div class="empty-state" id="emptyState" style="display:none;">
+          <div style="font-size:32px;margin-bottom:8px;">🎉</div>
+          이상 감지된 키워드가 없습니다
+        </div>
+      </div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="emailModal">
+  <div class="modal">
+    <div class="modal-title">📧 이메일 보고서 발송</div>
+    <div class="form-group">
+      <label class="form-label">수신자</label>
+      <input class="form-input" type="email" id="emailTo" placeholder="example@danawa.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">참조 (CC)</label>
+      <input class="form-input" type="text" id="emailCc" placeholder="cc@danawa.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">제목</label>
+      <input class="form-input" type="text" id="emailSubject">
+    </div>
+    <div class="form-group">
+      <label class="form-label">본문 미리보기</label>
+      <div id="emailPreview" style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:14px;font-size:12px;color:var(--text2);max-height:200px;overflow-y:auto;white-space:pre-line;line-height:1.7;font-family:'JetBrains Mono',monospace;"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">취소</button>
+      <button class="btn-primary" onclick="sendEmail()">📤 메일 클라이언트 열기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const EXCLUDE_CATEGORY = ['카테고리 결과 없음', '쿠팡로켓배송관'];
+
+let prevRaw = null, todayRaw = null;
+let analysisRows = [];
+let filteredRows = [];
+let currentTab = 'critical';
+let sortKey = 'prevClicks';
+let sortDir = 'desc';
+let currentPage = 1;
+const PAGE_SIZE = 50;
+
+document.getElementById('prevFile').addEventListener('change', e => loadFile(e.target.files[0], 'prev'));
+document.getElementById('todayFile').addEventListener('change', e => loadFile(e.target.files[0], 'today'));
+
+function loadFile(file, type) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb = XLSX.read(e.target.result, { type: 'binary' });
+      const data = parsePowerShopping(wb.Sheets[wb.SheetNames[0]]);
+      if (type === 'prev') {
+        prevRaw = data;
+        document.getElementById('prevStatus').textContent = `✅ ${file.name} (${data.length}행)`;
+        document.getElementById('prevStatus').style.color = 'var(--success)';
+        document.getElementById('prevCard').classList.add('loaded');
+      } else {
+        todayRaw = data;
+        document.getElementById('todayStatus').textContent = `✅ ${file.name} (${data.length}행)`;
+        document.getElementById('todayStatus').style.color = 'var(--success)';
+        document.getElementById('todayCard').classList.add('loaded');
+      }
+      checkReady();
+    } catch(err) { alert('파일 오류: ' + err.message); }
+  };
+  reader.readAsBinaryString(file);
+}
+
+function checkReady() {
+  const btn = document.getElementById('analyzeBtn');
+  if (prevRaw && todayRaw) {
+    btn.disabled = false;
+    btn.textContent = '📊 분석 시작하기 (두 파일 로드 완료)';
+  }
+}
+
+// A:날짜 B:디바이스 C:키워드 D:UI카테고리명 E:전체호출수
+// F:호출수봇 G:채워넣은상품호출 H:미노출 I:호출상품수평균
+// J:빈슬롯채운상품수평균 K:광고노출수평균 L:전체클릭수
+function parsePowerShopping(ws) {
+  const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
+  const result = [];
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (!r[0]) continue;
+    result.push({
+      date: r[0], device: (r[1]||'').toLowerCase(),
+      keyword: r[2]||'', category: r[3]||'',
+      callCount: toNum(r[4]),
+      emptySlot: toNum(r[9]),
+      impressions: toNum(r[10]),
+      clicks: toNum(r[11]),
+    });
+  }
+  return result;
+}
+
+function toNum(v) { return v === null || v === undefined || v === '' ? 0 : parseFloat(v)||0; }
+
+function applyFilters(rows) {
+  return rows.filter(r => {
+    if (EXCLUDE_CATEGORY.some(ex => r.category.includes(ex))) return false;
+    if (r.emptySlot < 3) return false;
+    return true;
+  });
+}
+
+function dedupeByKeyword(rows) {
+  const map = new Map();
+  for (const r of rows) {
+    if (!map.has(r.keyword)) {
+      map.set(r.keyword, { ...r });
+    } else {
+      const ex = map.get(r.keyword);
+      ex.callCount += r.callCount;
+      ex.clicks += r.clicks;
+      ex.impressions += r.impressions;
+      ex.emptySlot = Math.max(ex.emptySlot, r.emptySlot);
+    }
+  }
+  return [...map.values()];
+}
+
+function analyze() {
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('analyzeBtn').disabled = true;
+
+  setTimeout(() => {
+    const threshold = parseInt(document.getElementById('thresholdInput').value) || 50;
+
+    const prevFiltered = dedupeByKeyword(applyFilters(prevRaw));
+    const todayFiltered = dedupeByKeyword(applyFilters(todayRaw));
+
+    const dates = [...new Set([...prevRaw.map(r=>r.date), ...todayRaw.map(r=>r.date)])].sort();
+    document.getElementById('dateBadge').textContent = dates.join(' → ');
+    document.getElementById('lastUpdate').textContent = `분석: ${new Date().toLocaleString('ko-KR')}`;
+
+    const prevMap = new Map(prevFiltered.map(r => [r.keyword, r]));
+
+    analysisRows = todayFiltered.map(r => {
+      const prev = prevMap.get(r.keyword);
+      const prevClicks = prev ? prev.clicks : null;
+      let changeRate = null, status = 'normal', statusLabel = '정상';
+
+      if (prevClicks !== null) {
+        if (prevClicks > 0 && r.clicks === 0) {
+          status = 'critical'; statusLabel = '클릭 0'; changeRate = -100;
+        } else if (prevClicks > 0) {
+          changeRate = Math.round((r.clicks - prevClicks) / prevClicks * 100);
+          if (changeRate <= -threshold) { status = 'warning'; statusLabel = `${changeRate}%`; }
+        }
+      } else {
+        status = 'new'; statusLabel = '신규';
+      }
+
+      return { ...r, prevClicks, changeRate, status, statusLabel };
+    });
+
+    renderSummary(threshold);
+
+    // 탭 버튼 50% 업데이트
+    document.querySelectorAll('.tab')[1].textContent = `⚠️ 클릭 ${threshold}%↓`;
+
+    switchTab('critical', document.querySelector('.tab'));
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+
+    const critical = analysisRows.filter(r => r.status === 'critical').length;
+    const warning = analysisRows.filter(r => r.status === 'warning').length;
+    document.getElementById('emailSubject').value =
+      `[다나와 파워쇼핑] 클릭 이상 감지 ${critical+warning}건 - ${dates[dates.length-1]||''}`;
+  }, 300);
+}
+
+function renderSummary(threshold) {
+  const total = analysisRows.length;
+  const critical = analysisRows.filter(r => r.status === 'critical').length;
+  const warning = analysisRows.filter(r => r.status === 'warning').length;
+  const normal = analysisRows.filter(r => r.status === 'normal').length;
+  const newKw = analysisRows.filter(r => r.status === 'new').length;
+  document.getElementById('summaryGrid').innerHTML = `
+    <div class="stat-card blue"><div class="stat-label">분석 대상 키워드</div><div class="stat-value">${total.toLocaleString()}</div><div class="stat-sub">필터·중복제거 후</div></div>
+    <div class="stat-card red"><div class="stat-label">🚨 클릭 0 감지</div><div class="stat-value" style="color:var(--danger)">${critical}</div><div class="stat-sub">전일 클릭 있었으나 금일 0</div></div>
+    <div class="stat-card orange"><div class="stat-label">⚠️ 클릭 ${threshold}%↓</div><div class="stat-value" style="color:var(--warning)">${warning}</div><div class="stat-sub">클릭 변화율 ≤ -${threshold}%</div></div>
+    <div class="stat-card green"><div class="stat-label">✅ 정상</div><div class="stat-value" style="color:var(--success)">${normal}</div><div class="stat-sub">전체의 ${total?Math.round(normal/total*100):0}%</div></div>
+    <div class="stat-card gray"><div class="stat-label">🆕 신규 키워드</div><div class="stat-value" style="color:var(--text2)">${newKw}</div><div class="stat-sub">전일 데이터 없음</div></div>
+  `;
+}
+
+function switchTab(tab, el) {
+  currentTab = tab;
+  currentPage = 1;
+  sortKey = tab === 'warning' ? 'changeRate' : 'prevClicks';
+  sortDir = tab === 'warning' ? 'asc' : 'desc';
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  applyFilter();
+}
+
+function applyFilter() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const device = document.getElementById('deviceFilter').value.toLowerCase();
+
+  let base = [...analysisRows];
+  if (currentTab === 'critical') base = base.filter(r => r.status === 'critical');
+  else if (currentTab === 'warning') base = base.filter(r => r.status === 'warning');
+
+  if (search) base = base.filter(r => r.keyword.toLowerCase().includes(search) || r.category.toLowerCase().includes(search));
+  if (device) base = base.filter(r => r.device === device);
+
+  filteredRows = doSort(base);
+  currentPage = 1;
+  renderTable();
+}
+
+function doSort(rows) {
+  return [...rows].sort((a, b) => {
+    let va = a[sortKey] ?? (sortDir==='asc'?Infinity:-Infinity);
+    let vb = b[sortKey] ?? (sortDir==='asc'?Infinity:-Infinity);
+    if (typeof va==='string') va=va.toLowerCase();
+    if (typeof vb==='string') vb=vb.toLowerCase();
+    if (va<vb) return sortDir==='asc'?-1:1;
+    if (va>vb) return sortDir==='asc'?1:-1;
+    return 0;
+  });
+}
+
+function sortBy(key) {
+  if (sortKey===key) sortDir=sortDir==='desc'?'asc':'desc';
+  else { sortKey=key; sortDir=key==='changeRate'?'asc':'desc'; }
+  filteredRows = doSort(filteredRows);
+  currentPage = 1;
+  renderTable();
+}
+
+function renderTable() {
+  const titles = { critical:'🚨 클릭 0 감지 키워드', warning:'⚠️ 클릭 감소 키워드', all:'📋 전체 분석 대상' };
+  const bc = { critical:'red', warning:'orange', all:'blue' };
+  document.getElementById('tableTitle').innerHTML = `${titles[currentTab]} <span class="badge ${bc[currentTab]}">${filteredRows.length}</span>`;
+  document.getElementById('rowCount').textContent = `총 ${filteredRows.length.toLocaleString()}개`;
+
+  const si = k => sortKey!==k
+    ? `<span style="color:var(--text3);margin-left:3px;">⇅</span>`
+    : sortDir==='desc'
+      ? `<span style="color:var(--accent);margin-left:3px;">↓</span>`
+      : `<span style="color:var(--accent);margin-left:3px;">↑</span>`;
+  const th = (k, label) => `<th class="${sortKey===k?'sorted':''}" onclick="sortBy('${k}')">${label}${si(k)}</th>`;
+
+  document.getElementById('tableHead').innerHTML = `<tr>
+    ${th('device','디바이스')}
+    ${th('keyword','키워드')}
+    <th>카테고리</th>
+    ${th('emptySlot','빈슬롯(평균)')}
+    ${th('prevClicks','전일 클릭')}
+    ${th('clicks','금일 클릭')}
+    ${th('changeRate','변화율')}
+    ${th('callCount','호출수')}
+    <th>상태</th>
+  </tr>`;
+
+  const start = (currentPage-1)*PAGE_SIZE;
+  const pageRows = filteredRows.slice(start, start+PAGE_SIZE);
+
+  if (pageRows.length===0) {
+    document.getElementById('tableBody').innerHTML='';
+    document.getElementById('emptyState').style.display='block';
+  } else {
+    document.getElementById('emptyState').style.display='none';
+    document.getElementById('tableBody').innerHTML = pageRows.map(r => {
+      const rowCls = r.status==='critical'?'row-critical':r.status==='warning'?'row-warning':'';
+      const devB = r.device==='mobile'?`<span class="dev-badge dev-mobile">mobile</span>`:`<span class="dev-badge dev-pc">pc</span>`;
+      const statusP = r.status==='critical'?`<span class="pill pill-danger">🚨 클릭 0</span>`
+        :r.status==='warning'?`<span class="pill pill-warning">⚠️ ${r.statusLabel}</span>`
+        :r.status==='new'?`<span class="pill pill-neutral">🆕 신규</span>`
+        :`<span class="pill pill-success">✅ 정상</span>`;
+      const changeH = r.changeRate===null?`<span class="num" style="color:var(--text3)">-</span>`
+        :r.changeRate<=-50?`<span class="num down">${r.changeRate}%</span>`
+        :r.changeRate>0?`<span class="num up">+${r.changeRate}%</span>`
+        :`<span class="num">${r.changeRate}%</span>`;
+      const prevH = r.prevClicks===null?`<span class="num" style="color:var(--text3)">-</span>`:`<span class="num">${r.prevClicks.toLocaleString()}</span>`;
+      const todayCls = r.clicks===0&&r.status==='critical'?'num zero':'num';
+
+      return `<tr class="${rowCls}">
+        <td>${devB}</td>
+        <td style="font-weight:600;">${r.keyword}</td>
+        <td style="color:var(--text2);font-size:12px;max-width:260px;overflow:hidden;text-overflow:ellipsis;">${r.category}</td>
+        <td><span class="num">${r.emptySlot.toFixed(2)}</span></td>
+        <td>${prevH}</td>
+        <td><span class="${todayCls}">${r.clicks.toLocaleString()}</span></td>
+        <td>${changeH}</td>
+        <td><span class="num">${r.callCount.toLocaleString()}</span></td>
+        <td>${statusP}</td>
+      </tr>`;
+    }).join('');
+  }
+  renderPagination();
+}
+
+function renderPagination() {
+  const total = filteredRows.length;
+  const totalPages = Math.ceil(total/PAGE_SIZE);
+  const start = (currentPage-1)*PAGE_SIZE+1;
+  const end = Math.min(currentPage*PAGE_SIZE, total);
+
+  let html = `<span>${total>0?`${start}–${end} / ${total.toLocaleString()}개`:''}</span><div class="page-btns">`;
+  html += `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage<=1?'disabled':''}>‹</button>`;
+  let sp=Math.max(1,currentPage-2), ep=Math.min(totalPages,sp+4);
+  if(ep-sp<4) sp=Math.max(1,ep-4);
+  for(let p=sp;p<=ep;p++) html+=`<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+  html+=`<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage>=totalPages?'disabled':''}>›</button></div>`;
+  document.getElementById('pagination').innerHTML = html;
+}
+
+function goPage(p) {
+  const tp = Math.ceil(filteredRows.length/PAGE_SIZE);
+  if(p<1||p>tp) return;
+  currentPage=p; renderTable();
+}
+
+function openModal() {
+  const threshold = parseInt(document.getElementById('thresholdInput').value)||50;
+  const critical = analysisRows.filter(r=>r.status==='critical');
+  const warning = analysisRows.filter(r=>r.status==='warning');
+  const dateStr = document.getElementById('dateBadge').textContent;
+
+  let body = `안녕하세요, 검색서비스팀 장혁준 팀장입니다.\n\n`;
+  body += `[다나와 파워쇼핑 SA광고 클릭 이상 감지 보고서]\n분석 기간: ${dateStr}\n`;
+  body += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+  body += `■ 요약\n- 분석 대상: ${analysisRows.length.toLocaleString()}개 키워드 (필터·중복제거 후)\n`;
+  body += `- 🚨 클릭 0 감지: ${critical.length}건\n- ⚠️ 클릭 ${threshold}%↓ 감지: ${warning.length}건\n\n`;
+
+  if(critical.length>0) {
+    body+=`■ 🚨 클릭 0 감지 (전일 클릭 있었으나 금일 0)\n`;
+    critical.slice(0,15).forEach(r=>{ body+=`  · ${r.keyword} | 전일 ${r.prevClicks}클릭 → 금일 0\n    ${r.category}\n`; });
+    if(critical.length>15) body+=`  ... 외 ${critical.length-15}건\n`;
+    body+='\n';
+  }
+  if(warning.length>0) {
+    body+=`■ ⚠️ 클릭 ${threshold}%↓ 감지\n`;
+    warning.slice(0,15).forEach(r=>{ body+=`  · ${r.keyword} | ${r.prevClicks} → ${r.clicks}클릭 (${r.changeRate}%)\n    ${r.category}\n`; });
+    if(warning.length>15) body+=`  ... 외 ${warning.length-15}건\n`;
+  }
+
+  body+=`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n본 보고서는 자동 생성되었습니다.\n검색서비스팀 SA광고 모니터링 시스템`;
+  document.getElementById('emailPreview').textContent = body;
+  document.getElementById('emailModal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('emailModal').classList.remove('open'); }
+
+function sendEmail() {
+  const to = document.getElementById('emailTo').value;
+  if(!to) { alert('수신자 이메일을 입력해주세요.'); return; }
+  const subject = encodeURIComponent(document.getElementById('emailSubject').value);
+  const body = encodeURIComponent(document.getElementById('emailPreview').textContent);
+  const cc = document.getElementById('emailCc').value;
+  let mailto = `mailto:${to}?subject=${subject}&body=${body}`;
+  if(cc) mailto+=`&cc=${encodeURIComponent(cc)}`;
+  window.location.href = mailto;
+  closeModal();
+}
+
+function exportCSV() {
+  const rows = filteredRows.length>0?filteredRows:analysisRows;
+  const header = '날짜,디바이스,키워드,카테고리,빈슬롯평균,전일클릭,금일클릭,변화율(%),호출수,상태\n';
+  const csv = header + rows.map(r=>
+    `${r.date},${r.device},"${r.keyword}","${r.category}",${r.emptySlot},${r.prevClicks??''},${r.clicks},${r.changeRate??''},${r.callCount},${r.statusLabel}`
+  ).join('\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `powershopping_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+document.getElementById('thresholdInput').addEventListener('change', () => {
+  if(analysisRows.length>0) analyze();
+});
+</script>
+</body>
+</html>
