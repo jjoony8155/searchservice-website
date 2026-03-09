@@ -156,6 +156,7 @@
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('analyze')">🔍 검수 분석</button>
     <button class="tab-btn" onclick="switchTab('cases')">📚 오분석 케이스 관리 <span class="case-count-badge" id="caseCountBadge">0</span></button>
+    <button class="tab-btn" onclick="switchTab('rules')">⚙️ 규칙 필터</button>
   </div>
 
   <!-- ===== TAB 1: 분석 ===== -->
@@ -346,6 +347,67 @@
     </div>
 
   </div>
+  <!-- ===== 규칙 필터 탭 ===== -->
+  <div class="tab-pane" id="tab-rules">
+    <div class="section">
+      <div class="section-title">⚙️ 규칙 기반 필터 안내</div>
+      <p style="font-size:13px;color:#666;margin-bottom:16px;">분석 시작 전 아래 규칙에 해당하는 형태소는 AI 호출 없이 <b>정상(N)</b>으로 자동 처리됩니다. API 비용 절감 효과가 있습니다.</p>
+
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead>
+          <tr style="background:#f3f4f6;">
+            <th style="padding:10px 14px;text-align:left;font-weight:600;color:#555;border-bottom:2px solid #e5e7eb;">규칙</th>
+            <th style="padding:10px 14px;text-align:left;font-weight:600;color:#555;border-bottom:2px solid #e5e7eb;">예시</th>
+            <th style="padding:10px 14px;text-align:center;font-weight:600;color:#555;border-bottom:2px solid #e5e7eb;">처리</th>
+            <th style="padding:10px 14px;text-align:left;font-weight:600;color:#555;border-bottom:2px solid #e5e7eb;">설명</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #f3f4f6;">
+            <td style="padding:10px 14px;font-weight:600;">형태소 1개</td>
+            <td style="padding:10px 14px;color:#6366f1;font-family:monospace;">NIKE &nbsp;/&nbsp; 32GB</td>
+            <td style="padding:10px 14px;text-align:center;"><span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600;">정상 스킵</span></td>
+            <td style="padding:10px 14px;color:#666;">분리 자체가 없으므로 오분석 여부 판단 불필요</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f3f4f6;background:#fafafa;">
+            <td style="padding:10px 14px;font-weight:600;">숫자끼리</td>
+            <td style="padding:10px 14px;color:#6366f1;font-family:monospace;">3,2 &nbsp;/&nbsp; 2,5,6</td>
+            <td style="padding:10px 14px;text-align:center;"><span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600;">정상 스킵</span></td>
+            <td style="padding:10px 14px;color:#666;">숫자는 숫자끼리 붙는 것이 정상</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f3f4f6;">
+            <td style="padding:10px 14px;font-weight:600;">숫자 + 영문 조합</td>
+            <td style="padding:10px 14px;color:#6366f1;font-family:monospace;">32,GB &nbsp;/&nbsp; s,25 &nbsp;/&nbsp; 4,TB</td>
+            <td style="padding:10px 14px;text-align:center;"><span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600;">정상 스킵</span></td>
+            <td style="padding:10px 14px;color:#666;">숫자+영문 분리는 정상 패턴</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f3f4f6;background:#fafafa;">
+            <td style="padding:10px 14px;font-weight:600;">의미있는 영단어 분리</td>
+            <td style="padding:10px 14px;color:#6366f1;font-family:monospace;">nike,air &nbsp;/&nbsp; black,set &nbsp;/&nbsp; sport,max</td>
+            <td style="padding:10px 14px;text-align:center;"><span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600;">정상 스킵</span></td>
+            <td style="padding:10px 14px;color:#666;">각 파트가 3글자 이상 영단어면 의미있는 분리로 판단</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f3f4f6;">
+            <td style="padding:10px 14px;font-weight:600;">브랜드명 영문 분리</td>
+            <td style="padding:10px 14px;color:#6366f1;font-family:monospace;">L,G &nbsp;/&nbsp; 푸,드렐라 &nbsp;/&nbsp; 차,콜체스터</td>
+            <td style="padding:10px 14px;text-align:center;"><span style="background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600;">AI 분석</span></td>
+            <td style="padding:10px 14px;color:#666;">2글자 이하 영문 분리 또는 한글 포함 시 AI 판단</td>
+          </tr>
+          <tr style="background:#fafafa;">
+            <td style="padding:10px 14px;font-weight:600;">약어 글자 분리</td>
+            <td style="padding:10px 14px;color:#6366f1;font-family:monospace;">U,S,B &nbsp;/&nbsp; L,E,D</td>
+            <td style="padding:10px 14px;text-align:center;"><span style="background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600;">AI 분석</span></td>
+            <td style="padding:10px 14px;color:#666;">하나의 단어를 글자로 쪼개는 것은 오분석</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="margin-top:20px;padding:14px 16px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;font-size:13px;color:#92400e;">
+        💡 <b>참고:</b> 분석 시작 시 규칙 필터로 걸러진 건수가 토스트 알림으로 표시됩니다. 필터 효과가 낮으면 규칙을 추가·조정하여 비용을 더 절감할 수 있습니다.
+      </div>
+    </div>
+  </div>
+
 
 </div>
 
@@ -586,10 +648,11 @@ let corrTargetNo = null;
 // ===================== 탭 =====================
 function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach((b, i) => {
-    b.classList.toggle('active', ['analyze','cases'][i] === name);
+    b.classList.toggle('active', ['analyze','cases','rules'][i] === name);
   });
   document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
+  var tabEl = document.getElementById('tab-' + name);
+  if (tabEl) tabEl.classList.add('active');
   if (name === 'cases') renderCaseList();
 }
 
@@ -648,6 +711,18 @@ function startAnalyze() {
   analysisResults = [];
   var sysPrompt = buildSystemPrompt();
 
+  // 규칙 기반 필터 적용
+  var filterResult = applyRuleFilter(parsedRows);
+  var skippedResults = filterResult.skipped;
+  var rowsToAnalyze = filterResult.toAnalyze;
+  analysisResults = skippedResults.slice(); // 필터 통과한 것 먼저 담기
+
+  var skippedCount = skippedResults.length;
+  var analyzeTotal = rowsToAnalyze.length;
+  showToast('규칙 필터: ' + skippedCount.toLocaleString() + '건 정상 처리 · ' + analyzeTotal.toLocaleString() + '건 AI 분석 예정');
+
+  var total = parsedRows.length;
+
   function processBatch(i) {
     if (cancelRequested) {
       showToast('분석이 중단됐어요.', 'error');
@@ -656,14 +731,14 @@ function startAnalyze() {
       document.getElementById('btnAnalyze').disabled = false;
       return;
     }
-    if (i >= parsedRows.length) {
+    if (i >= rowsToAnalyze.length) {
       document.getElementById('progressBox').style.display = 'none';
       document.getElementById('btnCancel').classList.add('hidden');
       document.getElementById('btnAnalyze').disabled = false;
       renderResults();
       return;
     }
-    var batch = parsedRows.slice(i, i + BATCH);
+    var batch = rowsToAnalyze.slice(i, i + BATCH);
     var items = batch.map(function(r) {
       return 'no: ' + r.no + '\n제조사: ' + r.제조사명 + ' | 브랜드: ' + r.브랜드명 + ' | 상품명: ' + r.기준상품명 + '\n형태소분석: ' + r.형태소분석;
     }).join('\n\n---\n\n');
@@ -709,11 +784,11 @@ function startAnalyze() {
       });
     })
     .then(function() {
-      var done = Math.min(i + BATCH, total);
+      var done = Math.min(i + BATCH, analyzeTotal);
       var batchNum = Math.ceil((i + BATCH) / BATCH);
-      var totalBatch = Math.ceil(total / BATCH);
-      document.getElementById('progressCount').textContent = done.toLocaleString() + ' / ' + total.toLocaleString() + '건 (' + batchNum + '/' + totalBatch + ' 배치)';
-      document.getElementById('progressBar').style.width = ((done / total) * 100) + '%';
+      var totalBatch = Math.ceil(analyzeTotal / BATCH);
+      document.getElementById('progressCount').textContent = 'AI분석 ' + done.toLocaleString() + ' / ' + analyzeTotal.toLocaleString() + '건 (필터제외 ' + skippedCount.toLocaleString() + '건)';
+      document.getElementById('progressBar').style.width = ((done / analyzeTotal) * 100) + '%';
       var lbl = document.querySelector('.progress-label');
       if (lbl) lbl.textContent = '🔄 AI 분석 중... ' + Math.round((done / total) * 100) + '%';
       processBatch(i + BATCH);
@@ -722,6 +797,70 @@ function startAnalyze() {
 
   processBatch(0);
 }
+
+// ===================== 규칙 기반 필터 =====================
+function applyRuleFilter(rows) {
+  var skipped = [];
+  var toAnalyze = [];
+
+  rows.forEach(function(r) {
+    if (isNormalByRule(r.형태소분석)) {
+      skipped.push({ no: r.no, 오분석유무: 'N', 내용: '', 코멘트: '규칙필터: 정상패턴', 신규단어여부: 'N', 신규단어후보: '' });
+    } else {
+      toAnalyze.push(r);
+    }
+  });
+
+  return { skipped: skipped, toAnalyze: toAnalyze };
+}
+
+function isNormalByRule(morpheme) {
+  if (!morpheme || !morpheme.trim()) return false;
+
+  var parts = morpheme.split(',').map(function(p) { return p.trim(); }).filter(function(p) { return p.length > 0; });
+
+  // 형태소 1개 (분리 없음) → 정상
+  if (parts.length === 1) return true;
+
+  var numRe = /^[0-9]+$/;
+  var engRe = /^[A-Za-z]+$/;
+  var engNumRe = /^[A-Za-z0-9]+$/;
+
+  // 약어/단위 사전 (글자 단위로 분리돼도 정상)
+  var abbrevList = [
+    'USB','LED','LCD','CPU','GPU','RAM','ROM','SSD','HDD','UHD','HDR',
+    'UV','IR','AI','VR','AR','PC','TV','AC','DC','XL','XXL','ML','MM',
+    'CM','KG','KM','MB','GB','TB','PB','AM','PM','FM','DVD','CD','SD',
+    'TF','NFC','BT','HD','FHD','QHD','OTG','LTE','UX','UI','MSD'
+  ];
+
+  // 순수 숫자끼리만 → 정상
+  var allNum = parts.every(function(p) { return numRe.test(p); });
+  if (allNum) return true;
+
+  // 숫자+영문 혼합 조합 → 정상 (32,GB / s,25 / 256,MB)
+  var hasNum = parts.some(function(p) { return numRe.test(p); });
+  var hasEng = parts.some(function(p) { return engRe.test(p); });
+  var allEngNum = parts.every(function(p) { return engNumRe.test(p); });
+  if (hasNum && allEngNum) return true;
+
+  // 모든 파트가 영문인 경우
+  var allEng = parts.every(function(p) { return engRe.test(p); });
+  if (allEng) {
+    var joined = parts.join('').toUpperCase();
+
+    // 각 파트가 모두 의미있는 영단어 (3글자 이상)
+    // nike,air / black,set / sport,max 등 → 정상
+    // U,S,B / L,E,D 등 글자단위 분리는 오분석 → AI 분석
+    var allMeaningful = parts.every(function(p) {
+      return p.length >= 3;
+    });
+    if (allMeaningful) return true;
+  }
+
+  return false;
+}
+
 
 function renderResults() {
   const rm = {};
