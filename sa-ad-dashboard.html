@@ -68,6 +68,9 @@
   .stat-card.orange::before { background: var(--warning); }
   .stat-card.green::before { background: var(--success); }
   .stat-card.gray::before { background: var(--text3); }
+  .stat-card.purple::before { background: #7c3aed; }
+  .stat-card.teal::before { background: #0891b2; }
+  .stat-card.pink::before { background: #db2777; }
   .stat-label { font-size: 11px; color: var(--text2); font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px; }
   .stat-value { font-size: 26px; font-weight: 900; font-family: 'JetBrains Mono', monospace; letter-spacing: -1px; }
   .stat-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
@@ -80,6 +83,7 @@
   .btn { display: flex; align-items: center; gap: 7px; padding: 9px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 13px; font-weight: 600; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: all 0.15s; }
   .btn.email:hover { border-color: var(--accent); color: var(--accent); background: #eff6ff; }
   .btn.export:hover { border-color: var(--success); color: var(--success); background: #f0fdf4; }
+  .btn.excel:hover { border-color: #16a34a; color: #16a34a; background: #f0fdf4; }
 
   .filter-bar { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; }
   .search-input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; color: var(--text); font-size: 13px; font-family: 'Noto Sans KR', sans-serif; }
@@ -111,6 +115,9 @@
   .badge.orange { background: #fef3c7; color: var(--warning); }
   .badge.blue { background: #dbeafe; color: var(--accent); }
   .badge.green { background: #d1fae5; color: var(--success); }
+  .badge.purple { background: #ede9fe; color: #7c3aed; }
+  .badge.teal { background: #cffafe; color: #0891b2; }
+  .badge.pink { background: #fce7f3; color: #db2777; }
 
   .pill { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
   .pill-danger { background: #fee2e2; color: var(--danger); }
@@ -144,8 +151,29 @@
   .form-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text); font-size: 13px; font-family: 'Noto Sans KR', sans-serif; }
   .form-input:focus { outline: none; border-color: var(--accent); }
   .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
-  .btn-cancel { padding: 9px 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text2); font-size: 13px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
-  .btn-primary { padding: 9px 20px; background: var(--accent); border: none; border-radius: 8px; color: white; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+  /* 도움말 모달 */
+  .help-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 2000; align-items: center; justify-content: center; }
+  .help-modal-overlay.open { display: flex; }
+  .help-modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px 36px; width: 560px; max-width: 92vw; max-height: 80vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,0.18); }
+  .help-modal-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; }
+  .help-modal-title { font-size: 17px; font-weight: 800; color: var(--text); line-height: 1.3; }
+  .help-modal-subtitle { font-size: 12px; color: var(--text3); margin-top: 3px; }
+  .help-close { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text2); font-size: 14px; width: 30px; height: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-left: 12px; }
+  .help-close:hover { background: var(--border); }
+  .help-section { margin-bottom: 18px; }
+  .help-section-title { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .help-condition { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; font-size: 13px; font-family: 'JetBrains Mono', monospace; color: var(--text); margin-bottom: 8px; line-height: 1.6; }
+  .help-condition span { color: var(--accent); font-weight: 700; }
+  .help-condition .op { color: var(--warning); }
+  .help-why { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: #92400e; line-height: 1.7; }
+  .help-why strong { color: #78350f; }
+  .help-example { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: #166534; line-height: 1.7; }
+  .help-note { background: #f8fafc; border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 12px; color: var(--text2); line-height: 1.6; margin-top: 8px; }
+  /* 탭 도움말 버튼 */
+  .tab-help-btn { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; background: rgba(0,0,0,0.08); border-radius: 50%; font-size: 10px; color: var(--text3); cursor: pointer; margin-left: 5px; line-height: 1; flex-shrink: 0; border: none; font-family: sans-serif; font-weight: 700; vertical-align: middle; }
+  .tab-help-btn:hover { background: var(--accent); color: white; }
+  .tab.active .tab-help-btn { background: rgba(255,255,255,0.3); color: white; }
+  .tab.active .tab-help-btn:hover { background: rgba(255,255,255,0.6); color: var(--accent); }
 </style>
 </head>
 <body>
@@ -170,7 +198,7 @@
 <main>
   <div class="filter-info">
     <span>✅ <b>파워쇼핑</b> 기준 분석</span>
-    <span>🚫 제외: 카테고리 결과 없음 / 쿠팡로켓배송관</span>
+    <span>🚫 제외: "결과 없음" / 쿠팡 로켓배송관 / 로켓 반품 포함 카테고리</span>
     <span>📌 빈슬롯 채운 상품 수(평균) ≥ 3</span>
     <span>🔑 키워드 기준 중복 제거</span>
     <span>📉 이상: 클릭 0 또는 클릭 변화율 ≤ -50%</span>
@@ -207,21 +235,25 @@
 
     <div class="action-bar">
       <button class="btn email" onclick="openModal()">📧 이메일 보고서</button>
-      <button class="btn export" onclick="exportCSV()">📥 CSV 내보내기</button>
+      <button class="btn export" onclick="exportCSV()">📥 CSV 다운로드</button>
+      <button class="btn excel" onclick="exportExcel()">📊 엑셀 다운로드</button>
       <span class="text-muted" id="lastUpdate"></span>
     </div>
 
-    <div class="tabs">
+    <div class="tabs" id="tabsContainer">
       <button class="tab active" onclick="switchTab('critical', this)">🚨 클릭 0 감지</button>
       <button class="tab" onclick="switchTab('warning', this)">⚠️ 클릭 50%↓</button>
+      <button class="tab" onclick="switchTab('highcall_zero', this)">🔍 고호출 클릭0</button>
+      <button class="tab" onclick="switchTab('full_replace', this)">📭 광고 공급부족</button>
+      <button class="tab" onclick="switchTab('call_drop', this)">📉 호출수 급감</button>
       <button class="tab" onclick="switchTab('all', this)">📋 전체 분석 대상</button>
     </div>
 
     <div class="filter-bar">
       <input class="search-input" type="text" id="searchInput" placeholder="🔍 키워드 또는 카테고리 검색..." oninput="applyFilter()">
       <select class="filter-select" id="deviceFilter" onchange="applyFilter()">
-        <option value="">전체 디바이스</option>
-        <option value="mobile">Mobile</option>
+        <option value="">모두 보기</option>
+        <option value="mobile">MO (모바일)</option>
         <option value="pc">PC</option>
       </select>
     </div>
@@ -272,8 +304,23 @@
   </div>
 </div>
 
+<!-- 도움말 모달 -->
+<div class="help-modal-overlay" id="helpModal" onclick="closeHelp(event)">
+  <div class="help-modal">
+    <div class="help-modal-header">
+      <div>
+        <div class="help-modal-title" id="helpTitle"></div>
+        <div class="help-modal-subtitle" id="helpSubtitle"></div>
+      </div>
+      <button class="help-close" onclick="closeHelpModal()">✕</button>
+    </div>
+    <div id="helpBody"></div>
+  </div>
+</div>
+
 <script>
-const EXCLUDE_CATEGORY = ['카테고리 결과 없음', '쿠팡로켓배송관'];
+// 카테고리 제외: 해당 문자열이 포함된 카테고리는 모두 제외
+const EXCLUDE_CATEGORY = ['결과 없음', '쿠팡 로켓배송관', '쿠팡로켓배송관', '로켓 반품'];
 
 let prevRaw = null, todayRaw = null;
 let analysisRows = [];
@@ -332,6 +379,7 @@ function parsePowerShopping(ws) {
       date: r[0], device: (r[1]||'').toLowerCase(),
       keyword: r[2]||'', category: r[3]||'',
       callCount: toNum(r[4]),
+      filledCalls: toNum(r[6]),
       emptySlot: toNum(r[9]),
       impressions: toNum(r[10]),
       clicks: toNum(r[11]),
@@ -344,7 +392,9 @@ function toNum(v) { return v === null || v === undefined || v === '' ? 0 : parse
 
 function applyFilters(rows) {
   return rows.filter(r => {
-    if (EXCLUDE_CATEGORY.some(ex => r.category.includes(ex))) return false;
+    // 공백 정규화 후 비교 (연속 공백 → 단일 공백, 앞뒤 공백 제거)
+    const cat = (r.category || '').replace(/\s+/g, ' ').trim();
+    if (EXCLUDE_CATEGORY.some(ex => cat.includes(ex.replace(/\s+/g, ' ').trim()))) return false;
     if (r.emptySlot < 3) return false;
     return true;
   });
@@ -385,7 +435,14 @@ function analyze() {
     analysisRows = todayFiltered.map(r => {
       const prev = prevMap.get(r.keyword);
       const prevClicks = prev ? prev.clicks : null;
+      const prevCallCount = prev ? prev.callCount : null;
       let changeRate = null, status = 'normal', statusLabel = '정상';
+      let callChangeRate = null;
+
+      // 호출수 변화율 계산
+      if (prevCallCount !== null && prevCallCount > 0) {
+        callChangeRate = Math.round((r.callCount - prevCallCount) / prevCallCount * 100);
+      }
 
       if (prevClicks !== null) {
         if (prevClicks > 0 && r.clicks === 0) {
@@ -398,13 +455,18 @@ function analyze() {
         status = 'new'; statusLabel = '신규';
       }
 
-      return { ...r, prevClicks, changeRate, status, statusLabel };
+      // 고호출 클릭0: 호출수 50이상인데 클릭 0
+      const isHighCallZero = r.callCount >= 50 && r.clicks === 0;
+      // 광고 공급부족: 빈슬롯=6 (완전 대체) & 호출수 50이상
+      const isFullReplace = r.emptySlot >= 6 && r.callCount >= 50;
+      // 호출수 급감: 전일 대비 호출수 -50% 이상 감소 & 전일 호출수 50이상
+      const isCallDrop = callChangeRate !== null && callChangeRate <= -50 && prevCallCount >= 50;
+
+      return { ...r, prevClicks, prevCallCount, changeRate, callChangeRate, status, statusLabel, isHighCallZero, isFullReplace, isCallDrop };
     });
 
     renderSummary(threshold);
-
-    // 탭 버튼 50% 업데이트
-    document.querySelectorAll('.tab')[1].textContent = `⚠️ 클릭 ${threshold}%↓`;
+    updateTabCounts();
 
     switchTab('critical', document.querySelector('.tab'));
     document.getElementById('loading').style.display = 'none';
@@ -423,10 +485,16 @@ function renderSummary(threshold) {
   const warning = analysisRows.filter(r => r.status === 'warning').length;
   const normal = analysisRows.filter(r => r.status === 'normal').length;
   const newKw = analysisRows.filter(r => r.status === 'new').length;
+  const highCallZero = analysisRows.filter(r => r.isHighCallZero).length;
+  const fullReplace = analysisRows.filter(r => r.isFullReplace).length;
+  const callDrop = analysisRows.filter(r => r.isCallDrop).length;
   document.getElementById('summaryGrid').innerHTML = `
     <div class="stat-card blue"><div class="stat-label">분석 대상 키워드</div><div class="stat-value">${total.toLocaleString()}</div><div class="stat-sub">필터·중복제거 후</div></div>
     <div class="stat-card red"><div class="stat-label">🚨 클릭 0 감지</div><div class="stat-value" style="color:var(--danger)">${critical}</div><div class="stat-sub">전일 클릭 있었으나 금일 0</div></div>
     <div class="stat-card orange"><div class="stat-label">⚠️ 클릭 ${threshold}%↓</div><div class="stat-value" style="color:var(--warning)">${warning}</div><div class="stat-sub">클릭 변화율 ≤ -${threshold}%</div></div>
+    <div class="stat-card purple"><div class="stat-label">🔍 고호출 클릭0</div><div class="stat-value" style="color:#7c3aed">${highCallZero}</div><div class="stat-sub">호출수 50이상 & 클릭 0</div></div>
+    <div class="stat-card teal"><div class="stat-label">📭 광고 공급부족</div><div class="stat-value" style="color:#0891b2">${fullReplace}</div><div class="stat-sub">빈슬롯=6 & 호출수 50이상</div></div>
+    <div class="stat-card pink"><div class="stat-label">📉 호출수 급감</div><div class="stat-value" style="color:#db2777">${callDrop}</div><div class="stat-sub">전일 대비 호출수 -50%↓</div></div>
     <div class="stat-card green"><div class="stat-label">✅ 정상</div><div class="stat-value" style="color:var(--success)">${normal}</div><div class="stat-sub">전체의 ${total?Math.round(normal/total*100):0}%</div></div>
     <div class="stat-card gray"><div class="stat-label">🆕 신규 키워드</div><div class="stat-value" style="color:var(--text2)">${newKw}</div><div class="stat-sub">전일 데이터 없음</div></div>
   `;
@@ -435,8 +503,10 @@ function renderSummary(threshold) {
 function switchTab(tab, el) {
   currentTab = tab;
   currentPage = 1;
-  sortKey = tab === 'warning' ? 'changeRate' : 'prevClicks';
-  sortDir = tab === 'warning' ? 'asc' : 'desc';
+  if (tab === 'warning') { sortKey = 'changeRate'; sortDir = 'asc'; }
+  else if (tab === 'call_drop') { sortKey = 'callChangeRate'; sortDir = 'asc'; }
+  else if (tab === 'highcall_zero' || tab === 'full_replace') { sortKey = 'callCount'; sortDir = 'desc'; }
+  else { sortKey = 'prevClicks'; sortDir = 'desc'; }
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   if (el) el.classList.add('active');
   applyFilter();
@@ -449,6 +519,9 @@ function applyFilter() {
   let base = [...analysisRows];
   if (currentTab === 'critical') base = base.filter(r => r.status === 'critical');
   else if (currentTab === 'warning') base = base.filter(r => r.status === 'warning');
+  else if (currentTab === 'highcall_zero') base = base.filter(r => r.isHighCallZero);
+  else if (currentTab === 'full_replace') base = base.filter(r => r.isFullReplace);
+  else if (currentTab === 'call_drop') base = base.filter(r => r.isCallDrop);
 
   if (search) base = base.filter(r => r.keyword.toLowerCase().includes(search) || r.category.toLowerCase().includes(search));
   if (device) base = base.filter(r => r.device === device);
@@ -479,8 +552,15 @@ function sortBy(key) {
 }
 
 function renderTable() {
-  const titles = { critical:'🚨 클릭 0 감지 키워드', warning:'⚠️ 클릭 감소 키워드', all:'📋 전체 분석 대상' };
-  const bc = { critical:'red', warning:'orange', all:'blue' };
+  const titles = {
+    critical:'🚨 클릭 0 감지 키워드',
+    warning:'⚠️ 클릭 감소 키워드',
+    highcall_zero:'🔍 고호출 클릭0 (호출수 50이상 & 클릭 0)',
+    full_replace:'📭 광고 공급부족 (빈슬롯=6 & 호출수 50이상)',
+    call_drop:'📉 호출수 급감 (전일 대비 -50%↓)',
+    all:'📋 전체 분석 대상'
+  };
+  const bc = { critical:'red', warning:'orange', highcall_zero:'purple', full_replace:'teal', call_drop:'pink', all:'blue' };
   document.getElementById('tableTitle').innerHTML = `${titles[currentTab]} <span class="badge ${bc[currentTab]}">${filteredRows.length}</span>`;
   document.getElementById('rowCount').textContent = `총 ${filteredRows.length.toLocaleString()}개`;
 
@@ -491,15 +571,20 @@ function renderTable() {
       : `<span style="color:var(--accent);margin-left:3px;">↑</span>`;
   const th = (k, label) => `<th class="${sortKey===k?'sorted':''}" onclick="sortBy('${k}')">${label}${si(k)}</th>`;
 
+  // 호출수급감 탭은 호출수변화율 컬럼 강조
+  const showCallChange = (currentTab === 'call_drop' || currentTab === 'all');
+
   document.getElementById('tableHead').innerHTML = `<tr>
     ${th('device','디바이스')}
     ${th('keyword','키워드')}
     <th>카테고리</th>
     ${th('emptySlot','빈슬롯(평균)')}
+    ${th('prevCallCount','전일 호출수')}
+    ${th('callCount','금일 호출수')}
+    ${showCallChange ? th('callChangeRate','호출수 변화율') : ''}
     ${th('prevClicks','전일 클릭')}
     ${th('clicks','금일 클릭')}
-    ${th('changeRate','변화율')}
-    ${th('callCount','호출수')}
+    ${th('changeRate','클릭 변화율')}
     <th>상태</th>
   </tr>`;
 
@@ -525,15 +610,27 @@ function renderTable() {
       const prevH = r.prevClicks===null?`<span class="num" style="color:var(--text3)">-</span>`:`<span class="num">${r.prevClicks.toLocaleString()}</span>`;
       const todayCls = r.clicks===0&&r.status==='critical'?'num zero':'num';
 
+      const prevCallH = r.prevCallCount===null?`<span class="num" style="color:var(--text3)">-</span>`:`<span class="num">${r.prevCallCount.toLocaleString()}</span>`;
+      const callChangeH = r.callChangeRate===null
+        ? `<span class="num" style="color:var(--text3)">-</span>`
+        : r.callChangeRate <= -50
+          ? `<span class="num down" style="color:#db2777">${r.callChangeRate}%</span>`
+          : r.callChangeRate > 0
+            ? `<span class="num up">+${r.callChangeRate}%</span>`
+            : `<span class="num">${r.callChangeRate}%</span>`;
+      const showCallChange = (currentTab === 'call_drop' || currentTab === 'all');
+
       return `<tr class="${rowCls}">
         <td>${devB}</td>
         <td style="font-weight:600;">${r.keyword}</td>
         <td style="color:var(--text2);font-size:12px;max-width:260px;overflow:hidden;text-overflow:ellipsis;">${r.category}</td>
         <td><span class="num">${r.emptySlot.toFixed(2)}</span></td>
+        <td>${prevCallH}</td>
+        <td><span class="num">${r.callCount.toLocaleString()}</span></td>
+        ${showCallChange ? `<td>${callChangeH}</td>` : ''}
         <td>${prevH}</td>
         <td><span class="${todayCls}">${r.clicks.toLocaleString()}</span></td>
         <td>${changeH}</td>
-        <td><span class="num">${r.callCount.toLocaleString()}</span></td>
         <td>${statusP}</td>
       </tr>`;
     }).join('');
@@ -607,9 +704,9 @@ function sendEmail() {
 
 function exportCSV() {
   const rows = filteredRows.length>0?filteredRows:analysisRows;
-  const header = '날짜,디바이스,키워드,카테고리,빈슬롯평균,전일클릭,금일클릭,변화율(%),호출수,상태\n';
+  const header = '날짜,디바이스,키워드,카테고리,빈슬롯평균,전일호출수,금일호출수,호출수변화율(%),전일클릭,금일클릭,클릭변화율(%),상태\n';
   const csv = header + rows.map(r=>
-    `${r.date},${r.device},"${r.keyword}","${r.category}",${r.emptySlot},${r.prevClicks??''},${r.clicks},${r.changeRate??''},${r.callCount},${r.statusLabel}`
+    `${r.date},${r.device},"${r.keyword}","${r.category}",${r.emptySlot},${r.prevCallCount??''},${r.callCount},${r.callChangeRate??''},${r.prevClicks??''},${r.clicks},${r.changeRate??''},${r.statusLabel}`
   ).join('\n');
   const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
   const a = document.createElement('a');
@@ -618,9 +715,169 @@ function exportCSV() {
   a.click();
 }
 
+function exportExcel() {
+  const rows = filteredRows.length>0?filteredRows:analysisRows;
+  const headers = ['날짜','디바이스','키워드','카테고리','빈슬롯평균','전일호출수','금일호출수','호출수변화율(%)','전일클릭','금일클릭','클릭변화율(%)','상태'];
+  const data = [headers, ...rows.map(r=>[
+    r.date, r.device, r.keyword, r.category,
+    r.emptySlot, r.prevCallCount??'', r.callCount, r.callChangeRate??'',
+    r.prevClicks??'', r.clicks, r.changeRate??'', r.statusLabel
+  ])];
+
+  // 간단한 CSV → TSV 방식으로 엑셀 호환 파일 생성
+  const tsv = data.map(row => row.map(v => `"${String(v??'').replace(/"/g,'""')}"`).join('\t')).join('\n');
+  const blob = new Blob(['\uFEFF'+tsv], {type:'application/vnd.ms-excel;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `powershopping_${new Date().toISOString().slice(0,10)}.xls`;
+  a.click();
+}
+
+function updateTabCounts() {
+  const threshold = parseInt(document.getElementById('thresholdInput').value)||50;
+  const counts = {
+    critical: analysisRows.filter(r=>r.status==='critical').length,
+    warning: analysisRows.filter(r=>r.status==='warning').length,
+    highcall_zero: analysisRows.filter(r=>r.isHighCallZero).length,
+    full_replace: analysisRows.filter(r=>r.isFullReplace).length,
+    call_drop: analysisRows.filter(r=>r.isCallDrop).length,
+    all: analysisRows.length,
+  };
+  const badge = (n, bg, color) => `<span style="background:${bg};color:${color};border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:4px;">${n}</span>`;
+  const hbtn = (key) => `<button class="tab-help-btn" onclick="event.stopPropagation();showHelp('${key}')" title="도움말">?</button>`;
+
+  // ⚠️ 탭 버튼의 onclick="switchTab(...)" 을 유지하기 위해
+  // 버튼 전체 innerHTML 교체가 아닌, 탭 컨테이너를 통째로 재생성
+  const tabsContainer = document.getElementById('tabsContainer');
+  const tabDefs = [
+    { key:'critical',     label:`🚨 클릭 0 감지`,    cnt: counts.critical,    bg:'#fee2e2', color:'var(--danger)' },
+    { key:'warning',      label:`⚠️ 클릭 ${threshold}%↓`, cnt: counts.warning, bg:'#fef3c7', color:'var(--warning)' },
+    { key:'highcall_zero',label:`🔍 고호출 클릭0`,   cnt: counts.highcall_zero, bg:'#ede9fe', color:'#7c3aed' },
+    { key:'full_replace', label:`📭 광고 공급부족`,  cnt: counts.full_replace,  bg:'#cffafe', color:'#0891b2' },
+    { key:'call_drop',    label:`📉 호출수 급감`,    cnt: counts.call_drop,     bg:'#fce7f3', color:'#db2777' },
+    { key:'all',          label:`📋 전체 분석 대상`, cnt: counts.all,           bg:'#dbeafe', color:'var(--accent)' },
+  ];
+
+  tabsContainer.innerHTML = tabDefs.map(t =>
+    `<button class="tab ${currentTab===t.key?'active':''}" onclick="switchTab('${t.key}', this)">
+      ${t.label} ${badge(t.cnt, t.bg, t.color)} ${hbtn(t.key)}
+    </button>`
+  ).join('');
+}
+
 document.getElementById('thresholdInput').addEventListener('change', () => {
   if(analysisRows.length>0) analyze();
 });
+
+// ── 도움말 콘텐츠 정의 ──────────────────────────────────────
+const HELP_CONTENT = {
+  critical: {
+    icon: '🚨',
+    title: '클릭 0 감지',
+    subtitle: '전일에는 클릭이 있었는데, 금일 클릭이 완전히 사라진 키워드',
+    condition: `전일 클릭수 > 0\n<span class="op">AND</span> 금일 클릭수 <span>= 0</span>`,
+    why: `<strong>왜 봐야 하나요?</strong><br>
+          전날까지 정상적으로 클릭이 발생했다는 건 광고가 노출되고 있었다는 뜻이에요.
+          그런데 갑자기 클릭이 0이 되었다면 광고 소재 문제, 입찰 변경, 또는 시스템 이슈일 가능성이 높아요.
+          가장 확실한 이상 신호이기 때문에 <strong>최우선으로 확인</strong>해야 하는 탭이에요.`,
+    example: `💡 예시: 전일 "노트북" 키워드 클릭 5회 → 금일 0회<br>→ 해당 카테고리 광고 노출 여부 즉시 확인 필요`,
+    note: `클릭수가 원래 적은 키워드(호출수 소량)도 포함될 수 있어요. 더 정확한 분석은 🔍 고호출 클릭0 탭을 함께 참고하세요.`
+  },
+  warning: {
+    icon: '⚠️',
+    title: '클릭 N%↓ 감지',
+    subtitle: '전일 대비 클릭수가 설정한 기준(기본 50%) 이상 감소한 키워드',
+    condition: `전일 클릭수 > 0\n<span class="op">AND</span> (금일 클릭 - 전일 클릭) / 전일 클릭 <span>≤ -N%</span>`,
+    why: `<strong>왜 봐야 하나요?</strong><br>
+          클릭이 완전히 사라진 건 아니지만 절반 이하로 떨어진 경우예요.
+          경쟁사 입찰 변화, 광고 순위 하락, 또는 계절적 수요 변화가 원인일 수 있어요.
+          클릭 0처럼 즉각적이진 않지만 <strong>추세적인 문제를 조기 발견</strong>하는 데 유용해요.`,
+    example: `💡 예시: 전일 "CPU" 클릭 10회 → 금일 4회 (-60%)<br>→ 기준이 50%이면 감지됨. 광고 순위·경쟁사 상황 점검`,
+    note: `우측 상단의 "클릭 감소 기준 %" 값을 바꾸면 감지 민감도를 조절할 수 있어요.`
+  },
+  highcall_zero: {
+    icon: '🔍',
+    title: '고호출 클릭0',
+    subtitle: '호출수가 충분히 많은데도 클릭이 하나도 없는 키워드',
+    condition: `금일 호출수 <span>≥ 50</span>\n<span class="op">AND</span> 금일 클릭수 <span>= 0</span>`,
+    why: `<strong>왜 봐야 하나요?</strong><br>
+          파워쇼핑 데이터는 클릭 자체가 워낙 드물어서 (전체의 약 95%가 클릭 0),
+          단순히 "클릭 0"이라고 해서 모두 이상인 건 아니에요.
+          하지만 호출이 50번 이상 있었다면 그 중 최소 1~2번은 클릭이 생겨야 자연스러워요.
+          호출이 많은데도 클릭이 없다면 <strong>광고 상품의 매력도나 노출 품질에 문제</strong>가 있을 수 있어요.`,
+    example: `💡 예시: "아이패드" 호출 402회 · 클릭 0<br>→ 광고 상품이 실제로 노출되고 있는지, 가격·이미지가 적절한지 확인`,
+    note: `🚨 클릭 0 감지 탭과의 차이: 클릭 0 감지는 "전일 클릭이 있었던 것"만 보지만, 이 탭은 전일 비교 없이 오늘 하루 기준으로 판단해요.`
+  },
+  full_replace: {
+    icon: '📭',
+    title: '광고 공급부족',
+    subtitle: '빈슬롯이 6으로 가득 차, 광고 상품이 단 하나도 없이 대체 상품만 노출된 키워드',
+    condition: `금일 빈슬롯(평균) <span>= 6.0</span>\n<span class="op">AND</span> 금일 호출수 <span>≥ 50</span>`,
+    why: `<strong>왜 봐야 하나요?</strong><br>
+          파워쇼핑 슬롯은 최대 6개예요. 빈슬롯이 6이라는 건 광고 상품이 하나도 채워지지 않고
+          전부 애드스마트(대체 상품)로 채워진 상태라는 뜻이에요.
+          이렇게 되면 <strong>파워쇼핑 광고 자체가 실질적으로 노출되지 않는 것</strong>과 같아요.
+          클릭 여부와 무관하게 광고 공급·예산·입찰 문제를 의심해볼 수 있어요.`,
+    example: `💡 예시: "스마트폰필름" 호출 302회 · 빈슬롯 6.0<br>→ 해당 키워드에 파워쇼핑 광고 상품이 전혀 없는 상태. 광고 소재·입찰가 점검`,
+    note: `빈슬롯이 6.0이지만 호출수가 낮은 경우(< 50)는 데이터가 불충분해 노이즈일 수 있어 제외했어요.`
+  },
+  call_drop: {
+    icon: '📉',
+    title: '호출수 급감',
+    subtitle: '전일 대비 호출수 자체가 50% 이상 줄어든 키워드',
+    condition: `전일 호출수 <span>≥ 50</span>\n<span class="op">AND</span> (금일 호출수 - 전일 호출수) / 전일 호출수 <span>≤ -50%</span>`,
+    why: `<strong>왜 봐야 하나요?</strong><br>
+          클릭보다 호출수가 먼저 떨어지는 경우가 많아요. 즉 호출수 급감은 클릭 감소의 <strong>선행 신호</strong>예요.
+          호출수가 줄었다는 건 카테고리 페이지 유입 자체가 감소했거나, 광고 API 요청이 줄어든 것으로
+          페이지 트래픽 문제나 시스템 이슈의 징후일 수 있어요.
+          클릭 감소보다 하루 이틀 빠르게 포착할 수 있어요.`,
+    example: `💡 예시: 전일 "노트북" 호출 200회 → 금일 80회 (-60%)<br>→ 카테고리 페이지 트래픽 급감 또는 광고 시스템 이슈 가능성`,
+    note: `주말/공휴일 전후나 계절 이슈로 인한 자연스러운 트래픽 변동도 포함될 수 있어요. 날짜 맥락을 함께 고려하세요.`
+  },
+  all: {
+    icon: '📋',
+    title: '전체 분석 대상',
+    subtitle: '필터 및 중복 제거 후 분석된 모든 키워드 목록',
+    condition: `아래 필터 조건을 통과한 전체 키워드:\n① 제외 카테고리 없음 (결과 없음 / 쿠팡 로켓배송관 / 로켓 반품)\n② 빈슬롯(평균) <span>≥ 3</span>\n③ 키워드 기준 중복 제거 (클릭수·호출수 합산)`,
+    why: `<strong>왜 봐야 하나요?</strong><br>
+          이상 감지 탭들이 "문제가 있는 것"을 추려낸다면, 이 탭은 <strong>모든 분석 모수를 한눈에 보는 곳</strong>이에요.
+          전체 현황을 파악하거나 특정 키워드·카테고리를 검색할 때 사용하세요.
+          상태 컬럼을 통해 각 키워드가 어떤 상태인지 한눈에 확인할 수 있어요.`,
+    example: `💡 활용법: 상단 검색창에 키워드 입력 → 해당 키워드의 전일/금일 호출수·클릭수 즉시 조회 가능`,
+    note: `빈슬롯 ≥ 3 조건은 광고 슬롯이 일정 이상 채워진 경우만 분석하기 위한 기준이에요. 슬롯이 너무 적으면 광고 자체의 의미가 없어요.`
+  }
+};
+
+function showHelp(key) {
+  const d = HELP_CONTENT[key];
+  if (!d) return;
+  document.getElementById('helpTitle').textContent = `${d.icon} ${d.title}`;
+  document.getElementById('helpSubtitle').textContent = d.subtitle;
+  document.getElementById('helpBody').innerHTML = `
+    <div class="help-section">
+      <div class="help-section-title">📐 감지 조건</div>
+      <div class="help-condition">${d.condition.replace(/\n/g,'<br>')}</div>
+    </div>
+    <div class="help-section">
+      <div class="help-section-title">💡 왜 이걸 봐야 하나요?</div>
+      <div class="help-why">${d.why}</div>
+    </div>
+    <div class="help-section">
+      <div class="help-section-title">🧪 예시</div>
+      <div class="help-example">${d.example}</div>
+    </div>
+    <div class="help-note">ℹ️ ${d.note}</div>
+  `;
+  document.getElementById('helpModal').classList.add('open');
+}
+
+function closeHelpModal() {
+  document.getElementById('helpModal').classList.remove('open');
+}
+
+function closeHelp(e) {
+  if (e.target === document.getElementById('helpModal')) closeHelpModal();
+}
 </script>
 </body>
 </html>
