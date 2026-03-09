@@ -283,11 +283,11 @@
     <div class="modal-title">📧 이메일 보고서 발송</div>
     <div class="form-group">
       <label class="form-label">수신자</label>
-      <input class="form-input" type="email" id="emailTo" placeholder="example@danawa.com">
+      <input class="form-input" type="email" id="emailTo" placeholder="수신자@cowave.kr">
     </div>
     <div class="form-group">
       <label class="form-label">참조 (CC)</label>
-      <input class="form-input" type="text" id="emailCc" placeholder="cc@danawa.com">
+      <input class="form-input" type="text" id="emailCc" placeholder="참조@cowave.kr">
     </div>
     <div class="form-group">
       <label class="form-label">제목</label>
@@ -665,7 +665,7 @@ function openModal() {
   const warning = analysisRows.filter(r=>r.status==='warning');
   const dateStr = document.getElementById('dateBadge').textContent;
 
-  let body = `안녕하세요, 검색서비스팀 장혁준 팀장입니다.\n\n`;
+  let body = `안녕하세요, 검색서비스팀입니다.\n\n`;
   body += `[다나와 파워쇼핑 SA광고 클릭 이상 감지 보고서]\n분석 기간: ${dateStr}\n`;
   body += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
   body += `■ 요약\n- 분석 대상: ${analysisRows.length.toLocaleString()}개 키워드 (필터·중복제거 후)\n`;
