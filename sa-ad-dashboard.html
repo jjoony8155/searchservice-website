@@ -174,6 +174,8 @@
   .tab-help-btn:hover { background: #4f46e5; color: white; border-color: #4f46e5; transform: scale(1.15); }
   .tab.active .tab-help-btn { background: rgba(255,255,255,0.25); color: white; border-color: rgba(255,255,255,0.6); }
   .tab.active .tab-help-btn:hover { background: white; color: #4f46e5; border-color: white; transform: scale(1.15); }
+  .status-help-btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 12px; background: #e0e7ff; border: 1.5px solid #a5b4fc; border-radius: 8px; color: #4f46e5; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; white-space: nowrap; }
+  .status-help-btn:hover { background: #4f46e5; color: white; border-color: #4f46e5; }
 </style>
 </head>
 <body>
@@ -256,6 +258,14 @@
         <option value="mobile">MO (모바일)</option>
         <option value="pc">PC</option>
       </select>
+      <select class="filter-select" id="statusFilter" onchange="applyFilter()">
+        <option value="">전체 상태</option>
+        <option value="critical">🚨 클릭 0</option>
+        <option value="warning">⚠️ 클릭 감소</option>
+        <option value="normal">✅ 정상</option>
+        <option value="new">🆕 신규</option>
+      </select>
+      <button class="status-help-btn" onclick="showHelp('status')" title="상태값 설명 보기">? 상태값 안내</button>
     </div>
 
     <div class="table-card">
@@ -457,8 +467,8 @@ function analyze() {
 
       // 고호출 클릭0: 호출수 50이상인데 클릭 0
       const isHighCallZero = r.callCount >= 50 && r.clicks === 0;
-      // 광고 공급부족: 빈슬롯=6 (완전 대체) & 호출수 50이상
-      const isFullReplace = r.emptySlot >= 6 && r.callCount >= 50;
+      // 광고 공급부족: 빈슬롯=6 (완전 대체)
+      const isFullReplace = r.emptySlot >= 6;
       // 호출수 급감: 전일 대비 호출수 -50% 이상 감소 & 전일 호출수 50이상
       const isCallDrop = callChangeRate !== null && callChangeRate <= -50 && prevCallCount >= 50;
 
@@ -493,7 +503,7 @@ function renderSummary(threshold) {
     <div class="stat-card red"><div class="stat-label">🚨 클릭 0 감지</div><div class="stat-value" style="color:var(--danger)">${critical}</div><div class="stat-sub">전일 클릭 있었으나 금일 0</div></div>
     <div class="stat-card orange"><div class="stat-label">⚠️ 클릭 ${threshold}%↓</div><div class="stat-value" style="color:var(--warning)">${warning}</div><div class="stat-sub">클릭 변화율 ≤ -${threshold}%</div></div>
     <div class="stat-card purple"><div class="stat-label">🔍 고호출 클릭0</div><div class="stat-value" style="color:#7c3aed">${highCallZero}</div><div class="stat-sub">호출수 50이상 & 클릭 0</div></div>
-    <div class="stat-card teal"><div class="stat-label">📭 광고 공급부족</div><div class="stat-value" style="color:#0891b2">${fullReplace}</div><div class="stat-sub">빈슬롯=6 & 호출수 50이상</div></div>
+    <div class="stat-card teal"><div class="stat-label">📭 광고 공급부족</div><div class="stat-value" style="color:#0891b2">${fullReplace}</div><div class="stat-sub">빈슬롯=6 (광고 슬롯 전체 대체)</div></div>
     <div class="stat-card pink"><div class="stat-label">📉 호출수 급감</div><div class="stat-value" style="color:#db2777">${callDrop}</div><div class="stat-sub">전일 대비 호출수 -50%↓</div></div>
     <div class="stat-card green"><div class="stat-label">✅ 정상</div><div class="stat-value" style="color:var(--success)">${normal}</div><div class="stat-sub">전체의 ${total?Math.round(normal/total*100):0}%</div></div>
     <div class="stat-card gray"><div class="stat-label">🆕 신규 키워드</div><div class="stat-value" style="color:var(--text2)">${newKw}</div><div class="stat-sub">전일 데이터 없음</div></div>
@@ -509,12 +519,14 @@ function switchTab(tab, el) {
   else { sortKey = 'prevClicks'; sortDir = 'desc'; }
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   if (el) el.classList.add('active');
+  document.getElementById('statusFilter').value = '';
   applyFilter();
 }
 
 function applyFilter() {
   const search = document.getElementById('searchInput').value.toLowerCase();
   const device = document.getElementById('deviceFilter').value.toLowerCase();
+  const statusVal = document.getElementById('statusFilter').value;
 
   let base = [...analysisRows];
   if (currentTab === 'critical') base = base.filter(r => r.status === 'critical');
@@ -525,6 +537,7 @@ function applyFilter() {
 
   if (search) base = base.filter(r => r.keyword.toLowerCase().includes(search) || r.category.toLowerCase().includes(search));
   if (device) base = base.filter(r => r.device === device);
+  if (statusVal) base = base.filter(r => r.status === statusVal);
 
   filteredRows = doSort(base);
   currentPage = 1;
@@ -556,7 +569,7 @@ function renderTable() {
     critical:'🚨 클릭 0 감지 키워드',
     warning:'⚠️ 클릭 감소 키워드',
     highcall_zero:'🔍 고호출 클릭0 (호출수 50이상 & 클릭 0)',
-    full_replace:'📭 광고 공급부족 (빈슬롯=6 & 호출수 50이상)',
+    full_replace:'📭 광고 공급부족 (빈슬롯=6)',
     call_drop:'📉 호출수 급감 (전일 대비 -50%↓)',
     all:'📋 전체 분석 대상'
   };
@@ -812,14 +825,14 @@ const HELP_CONTENT = {
     icon: '📭',
     title: '광고 공급부족',
     subtitle: '빈슬롯이 6으로 가득 차, 광고 상품이 단 하나도 없이 대체 상품만 노출된 키워드',
-    condition: `금일 빈슬롯(평균) <span>= 6.0</span>\n<span class="op">AND</span> 금일 호출수 <span>≥ 50</span>`,
+    condition: `금일 빈슬롯(평균) <span>= 6.0</span>`,
     why: `<strong>왜 봐야 하나요?</strong><br>
           파워쇼핑 슬롯은 최대 6개예요. 빈슬롯이 6이라는 건 광고 상품이 하나도 채워지지 않고
           전부 애드스마트(대체 상품)로 채워진 상태라는 뜻이에요.
           이렇게 되면 <strong>파워쇼핑 광고 자체가 실질적으로 노출되지 않는 것</strong>과 같아요.
           클릭 여부와 무관하게 광고 공급·예산·입찰 문제를 의심해볼 수 있어요.`,
     example: `💡 예시: "스마트폰필름" 호출 302회 · 빈슬롯 6.0<br>→ 해당 키워드에 파워쇼핑 광고 상품이 전혀 없는 상태. 광고 소재·입찰가 점검`,
-    note: `빈슬롯이 6.0이지만 호출수가 낮은 경우(< 50)는 데이터가 불충분해 노이즈일 수 있어 제외했어요.`
+    note: `빈슬롯이 6.0이면 파워쇼핑 광고 상품이 하나도 없는 상태예요. 호출수가 적더라도 구조적 문제 신호일 수 있어요.`
   },
   call_drop: {
     icon: '📉',
@@ -845,6 +858,33 @@ const HELP_CONTENT = {
           상태 컬럼을 통해 각 키워드가 어떤 상태인지 한눈에 확인할 수 있어요.`,
     example: `💡 활용법: 상단 검색창에 키워드 입력 → 해당 키워드의 전일/금일 호출수·클릭수 즉시 조회 가능`,
     note: `빈슬롯 ≥ 3 조건은 광고 슬롯이 일정 이상 채워진 경우만 분석하기 위한 기준이에요. 슬롯이 너무 적으면 광고 자체의 의미가 없어요.`
+  },
+  status: {
+    icon: '🏷️',
+    title: '상태값 안내',
+    subtitle: '각 키워드에 표시되는 상태값의 의미와 판단 기준',
+    items: [
+      {
+        badge: '🚨 클릭 0',
+        color: '#dc2626', bg: '#fee2e2',
+        desc: '전일에 클릭이 1회 이상 있었는데 금일 클릭이 0이 된 경우예요. 가장 직접적인 이상 신호로 <strong>즉시 확인</strong>이 필요해요.'
+      },
+      {
+        badge: '⚠️ 클릭 감소',
+        color: '#d97706', bg: '#fef3c7',
+        desc: '전일 대비 클릭 변화율이 설정한 기준(기본 -50%) 이하로 떨어진 경우예요. 클릭이 완전히 사라진 건 아니지만 눈에 띄게 줄었어요.'
+      },
+      {
+        badge: '✅ 정상',
+        color: '#16a34a', bg: '#dcfce7',
+        desc: '전일 대비 클릭 변화가 기준치 이내인 경우예요. <strong>단, 전일/금일 모두 클릭 0이어도 변화가 없으므로 정상으로 분류</strong>돼요. 클릭이 발생했다는 의미가 아니에요.'
+      },
+      {
+        badge: '🆕 신규',
+        color: '#6b7280', bg: '#f1f5f9',
+        desc: '전일 데이터에 없는 키워드예요. 전일 비교가 불가능해 이상 여부 판단 없이 신규로 표시해요.'
+      }
+    ]
   }
 };
 
@@ -853,21 +893,38 @@ function showHelp(key) {
   if (!d) return;
   document.getElementById('helpTitle').textContent = `${d.icon} ${d.title}`;
   document.getElementById('helpSubtitle').textContent = d.subtitle;
-  document.getElementById('helpBody').innerHTML = `
-    <div class="help-section">
-      <div class="help-section-title">📐 감지 조건</div>
-      <div class="help-condition">${d.condition.replace(/\n/g,'<br>')}</div>
-    </div>
-    <div class="help-section">
-      <div class="help-section-title">💡 왜 이걸 봐야 하나요?</div>
-      <div class="help-why">${d.why}</div>
-    </div>
-    <div class="help-section">
-      <div class="help-section-title">🧪 예시</div>
-      <div class="help-example">${d.example}</div>
-    </div>
-    <div class="help-note">ℹ️ ${d.note}</div>
-  `;
+
+  // 상태값 안내는 별도 레이아웃
+  if (key === 'status') {
+    document.getElementById('helpBody').innerHTML = `
+      <div class="help-section">
+        <div class="help-section-title">🏷️ 상태값 종류 및 의미</div>
+        ${d.items.map(item => `
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;">
+            <span style="display:inline-block;background:${item.bg};color:${item.color};border-radius:6px;padding:3px 10px;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;">${item.badge}</span>
+            <span style="font-size:13px;color:var(--text);line-height:1.6;">${item.desc}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="help-note">ℹ️ 상태값은 <strong>전일 대비 클릭 변화</strong>만 반영해요. 고호출 클릭0·광고 공급부족·호출수 급감은 별도 탭에서 확인하세요.</div>
+    `;
+  } else {
+    document.getElementById('helpBody').innerHTML = `
+      <div class="help-section">
+        <div class="help-section-title">📐 감지 조건</div>
+        <div class="help-condition">${d.condition.replace(/\n/g,'<br>')}</div>
+      </div>
+      <div class="help-section">
+        <div class="help-section-title">💡 왜 이걸 봐야 하나요?</div>
+        <div class="help-why">${d.why}</div>
+      </div>
+      <div class="help-section">
+        <div class="help-section-title">🧪 예시</div>
+        <div class="help-example">${d.example}</div>
+      </div>
+      <div class="help-note">ℹ️ ${d.note}</div>
+    `;
+  }
   document.getElementById('helpModal').classList.add('open');
 }
 
