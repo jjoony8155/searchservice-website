@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>new_prod_morphboard | 다나와 검색서비스팀</title>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <style>
     :root {
       --primary: #FF6600;
@@ -223,6 +224,17 @@
       transition: all 0.2s;
     }
     .btn-add-op:hover { background: #FFEDE0; }
+    .operator-select {
+      border: 1.5px solid var(--border); border-radius: 8px;
+      padding: 8px 12px; font-size: 13px; background: #fff;
+      outline: none; cursor: pointer; color: var(--text);
+      transition: border-color 0.2s; min-width: 150px;
+    }
+    .operator-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,102,0,0.1); }
+    .operator-name-display {
+      flex: 1; font-size: 14px; font-weight: 600;
+      color: var(--text); padding: 0 4px;
+    }
     .total-info {
       font-size: 12px; color: var(--text-muted);
       background: var(--bg); padding: 6px 12px; border-radius: 6px;
@@ -457,9 +469,14 @@
     <div class="card-body">
       <div class="operator-list" id="operatorList"></div>
       <div class="operators-footer">
-        <button class="btn-add-op" onclick="addOperator()">
-          <span>＋</span> 운영자 추가
-        </button>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <select id="addOpSelect" class="operator-select">
+            <option value="">-- 운영자 선택 --</option>
+          </select>
+          <button class="btn-add-op" onclick="addOperatorFromSelect()">
+            <span>＋</span> 추가
+          </button>
+        </div>
         <div class="total-info" id="totalInfo">데이터 업로드 후 확인 가능</div>
       </div>
       <hr class="section-divider" style="margin-top:20px;">
@@ -560,9 +577,9 @@ window.onload = function() {
   const ymd = today.toLocaleDateString('ko-KR', { year:'numeric', month:'2-digit', day:'2-digit' }).replace(/\. /g,'-').replace('.','-').replace('.','-').replace(' ','');
   document.getElementById('todayBadge').textContent = `📅 ${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')} (${days[today.getDay()]})`;
 
-  // 기본 운영자 2명
-  addOperator('이름 입력');
-  addOperator('이름 입력');
+  // 기본 운영자 4명 초기화
+  DEFAULT_OPERATORS.forEach(name => operators.push({ id: Date.now() + Math.random(), name }));
+  renderOperators();
 
   // Drag & Drop
   const zone = document.getElementById('uploadZone');
@@ -651,41 +668,63 @@ function resetFile() {
   setStepActive(1);
 }
 
-// ── Operators ──
-function addOperator(name = '') {
-  operators.push({ id: Date.now() + Math.random(), name: name });
-  renderOperators();
+// ── 전체 운영자 목록 (선택지) ──
+const ALL_OPERATORS = ['이승연','김태현','김다안','김종현','신대환','하장훈','박미현','장혁준'];
+const DEFAULT_OPERATORS = ['이승연','김태현','김다안','김종현'];
+
+// ── 선택 드롭다운 초기화 ──
+function initSelectOptions() {
+  const sel = document.getElementById('addOpSelect');
+  sel.innerHTML = '<option value="">-- 운영자 선택 --</option>';
+  ALL_OPERATORS.forEach(name => {
+    const already = operators.some(o => o.name === name);
+    const opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = name;
+    if (already) opt.disabled = true;
+    sel.appendChild(opt);
+  });
 }
 
+// ── 선택으로 운영자 추가 ──
+function addOperatorFromSelect() {
+  const sel = document.getElementById('addOpSelect');
+  const name = sel.value;
+  if (!name) { showToast('추가할 운영자를 선택해주세요.', 'error'); return; }
+  if (operators.some(o => o.name === name)) { showToast('이미 추가된 운영자입니다.', 'error'); return; }
+  operators.push({ id: Date.now() + Math.random(), name });
+  renderOperators();
+  sel.value = '';
+}
+
+// ── 운영자 제거 ──
 function removeOperator(id) {
   if (operators.length <= 1) { showToast('운영자는 최소 1명 이상이어야 합니다.', 'error'); return; }
-  operators = operators.filter(o => o.id !== id);
+  operators = operators.filter(o => String(o.id) !== String(id));
   renderOperators();
   updateTotalInfo();
   checkPreviewBtn();
 }
 
+// ── 운영자 목록 렌더링 ──
 function renderOperators() {
   const list = document.getElementById('operatorList');
   list.innerHTML = '';
   operators.forEach((op, idx) => {
-    const perCount = totalRows > 0 ? Math.ceil(totalRows / operators.length) : '-';
     const myCount = totalRows > 0 ? getOpCount(idx, totalRows, operators.length) : '-';
     const div = document.createElement('div');
     div.className = 'operator-row';
     div.innerHTML = `
       <div class="operator-num" style="background:${OP_COLORS[idx % OP_COLORS.length]}">${idx+1}</div>
-      <input class="operator-input" type="text" placeholder="운영자 이름 (예: 김철수)"
-        value="${op.name === '이름 입력' ? '' : op.name}"
-        data-id="${op.id}"
-        oninput="updateOpName('${op.id}', this.value)"
-      />
+      <div class="operator-name-display">${op.name}</div>
       <div class="operator-count-badge">${typeof myCount === 'number' ? myCount.toLocaleString()+'개' : myCount}</div>
       <button class="btn-del-op" onclick="removeOperator('${op.id}')" title="삭제">✕</button>
     `;
     list.appendChild(div);
   });
+  initSelectOptions();
   updateTotalInfo();
+  checkPreviewBtn();
 }
 
 function getOpCount(idx, total, opCount) {
@@ -694,30 +733,21 @@ function getOpCount(idx, total, opCount) {
   return base + (idx < extra ? 1 : 0);
 }
 
-function updateOpName(id, value) {
-  const op = operators.find(o => String(o.id) === String(id));
-  if (op) { op.name = value; }
-  checkPreviewBtn();
-}
-
 function updateTotalInfo() {
   const el = document.getElementById('totalInfo');
   if (totalRows === 0) { el.textContent = '데이터 업로드 후 확인 가능'; return; }
-  const validOps = operators.filter(o => o.name.trim() !== '' && o.name !== '이름 입력').length;
   el.innerHTML = `총 <strong style="color:var(--primary)">${totalRows.toLocaleString()}</strong>개 ÷ ${operators.length}명 운영자`;
 }
 
 function checkPreviewBtn() {
   const btn = document.getElementById('previewBtn');
-  const hasData = sourceData.length > 0;
-  const validOps = operators.filter(o => o.name.trim() !== '' && o.name !== '이름 입력');
-  btn.disabled = !(hasData && validOps.length > 0);
+  btn.disabled = !(sourceData.length > 0 && operators.length > 0);
 }
 
 // ── Preview & Distribution ──
 function generatePreview() {
-  const validOps = operators.filter(o => o.name.trim() !== '' && o.name !== '이름 입력');
-  if (validOps.length === 0) { showToast('운영자 이름을 입력해주세요.', 'error'); return; }
+  const validOps = operators.filter(o => o.name.trim() !== '');
+  if (validOps.length === 0) { showToast('운영자를 1명 이상 선택해주세요.', 'error'); return; }
   if (sourceData.length === 0) { showToast('파일을 먼저 업로드해주세요.', 'error'); return; }
 
   document.getElementById('previewLoader').classList.add('show');
@@ -826,7 +856,77 @@ function makeFileName(suffix = '') {
   return `${yy}${mm}${dd}_신규 기준상품명 형태소 분석 검수.xlsx`;
 }
 
+// ── ExcelJS 기반 서식 완전 재현 엑셀 생성 ──
+async function buildWorkbookExcelJS(rows) {
+  const wb = new ExcelJS.Workbook();
+  wb.creator = 'new_prod_morphboard';
+  const ws = wb.addWorksheet('Sheet1');
+
+  // 컬럼 정의 (원본 서식 완전 동일)
+  ws.columns = [
+    { key: 'no',      width: 5.0   },   // A
+    { key: 'op',      width: 7.625 },   // B
+    { key: 'date',    width: 10.0  },   // C
+    { key: 'mfg',     width: 15.625},   // D
+    { key: 'brand',   width: 8.43  },   // E (기본값)
+    { key: 'prod',    width: 50.625},   // F
+    { key: 'morph',   width: 8.43  },   // G (기본값)
+    { key: 'report',  width: 11.5  },   // H
+    { key: 'content', width: 35.625},   // I
+    { key: 'comment', width: 8.43  },   // J (기본값)
+  ];
+
+  // ── 헤더 행 (1행) ──
+  const headers = ['no','운영자','날짜','제조사명','브랜드명','기준상품명','형태소 분석','리포트 유형','내용','코멘트'];
+  const headerRow = ws.addRow(headers);
+  headerRow.height = 15; // 기본 행 높이
+
+  // 헤더 셀 스타일: 맑은 고딕 10pt, center/center, 테마색 폰트
+  headerRow.eachCell({ includeEmpty: true }, (cell, colNum) => {
+    if (colNum > 10) return;
+    cell.font = { name: '맑은 고딕', size: 10, bold: false };
+    cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: false };
+  });
+
+  // ── 데이터 행 ──
+  rows.forEach(r => {
+    const dateObj = new Date(r.날짜);
+    const row = ws.addRow([
+      r.no,
+      r.운영자,
+      dateObj,          // 날짜 타입으로 삽입
+      r.제조사명,
+      r.브랜드명,
+      r.기준상품명,
+      r.형태소분석,
+      r.리포트유형 || '',
+      r.내용 || '',
+      r.코멘트 || ''
+    ]);
+    row.height = 15;
+
+    row.eachCell({ includeEmpty: true }, (cell, colNum) => {
+      if (colNum > 10) return;
+      cell.font = { name: '맑은 고딕', size: 10, bold: false };
+      cell.alignment = { vertical: 'middle' };
+
+      // A(no), B(운영자), C(날짜), H(리포트유형) → center
+      if ([1, 2, 3, 8].includes(colNum)) {
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+      }
+
+      // C열(날짜) 포맷: 원본과 동일하게 yyyy-mm-dd
+      if (colNum === 3) {
+        cell.numFmt = 'yyyy-mm-dd';
+      }
+    });
+  });
+
+  return wb;
+}
+
 function buildWorkbook(rows) {
+  // fallback: SheetJS (미사용)
   const wsData = [
     ['no','운영자','날짜','제조사명','브랜드명','기준상품명','형태소 분석','리포트 유형','내용','코멘트']
   ];
@@ -838,37 +938,48 @@ function buildWorkbook(rows) {
   });
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet(wsData);
-
-  // 컬럼 너비
   ws['!cols'] = [
-    {wch:6},{wch:10},{wch:14},{wch:14},{wch:14},
-    {wch:45},{wch:60},{wch:12},{wch:20},{wch:20}
+    {wch:5},{wch:7.6},{wch:10},{wch:15.6},{wch:8.4},
+    {wch:50.6},{wch:8.4},{wch:11.5},{wch:35.6},{wch:8.4}
   ];
   XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
   return wb;
 }
 
-function downloadAll() {
+async function downloadAll() {
   if (distributedData.length === 0) { showToast('먼저 배분을 실행해주세요.', 'error'); return; }
-  const wb = buildWorkbook(distributedData);
-  XLSX.writeFile(wb, makeFileName());
-  showToast('📥 전체 통합 파일 다운로드 시작!', 'success');
+  showToast('⏳ 엑셀 파일 생성 중...', '');
+  try {
+    const wb = await buildWorkbookExcelJS(distributedData);
+    const buf = await wb.xlsx.writeBuffer();
+    const blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = makeFileName(); a.click(); URL.revokeObjectURL(a.href);
+    showToast('📥 전체 통합 파일 다운로드 완료!', 'success');
+  } catch(e) { showToast('오류: ' + e.message, 'error'); }
 }
 
-function downloadSingle(opName) {
+async function downloadSingle(opName) {
   const rows = distributedData.filter(d => d.운영자 === opName);
   if (rows.length === 0) return;
-  const wb = buildWorkbook(rows);
-  XLSX.writeFile(wb, makeFileName(opName));
-  showToast(`📥 ${opName} 파일 다운로드 시작!`, 'success');
+  showToast(`⏳ ${opName} 파일 생성 중...`, '');
+  try {
+    const wb = await buildWorkbookExcelJS(rows);
+    const buf = await wb.xlsx.writeBuffer();
+    const blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = makeFileName(opName); a.click(); URL.revokeObjectURL(a.href);
+    showToast(`📥 ${opName} 파일 다운로드 완료!`, 'success');
+  } catch(e) { showToast('오류: ' + e.message, 'error'); }
 }
 
-function downloadAllSeparate() {
+async function downloadAllSeparate() {
   const ops = [...new Set(distributedData.map(d => d.운영자))];
-  ops.forEach((opName, i) => {
-    setTimeout(() => downloadSingle(opName), i * 400);
-  });
-  showToast(`📁 ${ops.length}개 파일 다운로드 시작!`, 'success');
+  for (let i = 0; i < ops.length; i++) {
+    await downloadSingle(ops[i]);
+    await new Promise(r => setTimeout(r, 500));
+  }
+  showToast(`📁 ${ops.length}개 파일 다운로드 완료!`, 'success');
 }
 
 // ── Step Progress ──
@@ -902,8 +1013,8 @@ function resetAll() {
   resetFile();
   distributedData = [];
   operators = [];
-  addOperator('이름 입력');
-  addOperator('이름 입력');
+  DEFAULT_OPERATORS.forEach(name => operators.push({ id: Date.now() + Math.random(), name }));
+  renderOperators();
   document.getElementById('card-step3').classList.remove('show');
   document.getElementById('card-step4').classList.remove('show');
   resetSteps(); setStepActive(1);
