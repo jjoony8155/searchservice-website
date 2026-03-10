@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>new_prod_morphboard | 다나와 검색서비스팀</title>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --primary: #FF6600;
+      --primary-light: #FF8533;
+      --primary-dark: #CC5200;
+      --secondary: #1A1A2E;
+      --accent: #0066CC;
+      --success: #28A745;
+      --warning: #FFC107;
+      --danger: #DC3545;
+      --bg: #F5F6FA;
+      --card: #FFFFFF;
+      --border: #E0E4ED;
+      --text: #2C3E50;
+      --text-muted: #7F8C9A;
+      --shadow: 0 4px 20px rgba(0,0,0,0.08);
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, var(--secondary) 0%, #16213E 100%);
+      color: #fff;
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 14px; }
+    .logo-badge {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 800;
+      font-size: 15px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      letter-spacing: -0.3px;
+    }
+    .header-title { font-size: 16px; font-weight: 600; opacity: 0.9; }
+    .header-sub { font-size: 12px; opacity: 0.5; margin-top: 2px; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .today-badge {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 12px;
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+
+    /* ── Progress Steps ── */
+    .progress-bar {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      cursor: default;
+    }
+    .step-num {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px;
+      background: #E8ECF0;
+      color: var(--text-muted);
+      transition: all 0.3s;
+      flex-shrink: 0;
+    }
+    .step-label { font-size: 13px; font-weight: 500; color: var(--text-muted); transition: all 0.3s; }
+    .step-divider { width: 40px; height: 2px; background: #E8ECF0; margin: 0 8px; flex-shrink: 0; transition: all 0.3s; }
+    .step-item.active .step-num { background: var(--primary); color: #fff; box-shadow: 0 0 0 4px rgba(255,102,0,0.2); }
+    .step-item.active .step-label { color: var(--primary); font-weight: 700; }
+    .step-item.done .step-num { background: var(--success); color: #fff; }
+    .step-item.done .step-label { color: var(--success); }
+    .step-divider.done { background: var(--success); }
+
+    /* ── Main ── */
+    main { max-width: 960px; margin: 32px auto; padding: 0 24px 60px; }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 20px 28px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .card-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .card-title { font-size: 16px; font-weight: 700; }
+    .card-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .card-body { padding: 24px 28px; }
+    .step-badge {
+      margin-left: auto;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .step-badge.active { background: #FFF3EC; border-color: var(--primary); color: var(--primary); }
+
+    /* ── Upload Zone ── */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      background: #FAFBFD;
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--primary);
+      background: #FFF6F0;
+    }
+    .upload-icon { font-size: 40px; margin-bottom: 12px; }
+    .upload-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .upload-hint { font-size: 12px; color: var(--text-muted); }
+    #fileInput { display: none; }
+
+    .file-loaded {
+      display: flex; align-items: center; gap: 14px;
+      background: #F0FDF4; border: 1.5px solid #86EFAC;
+      border-radius: 10px; padding: 16px 20px;
+    }
+    .file-loaded-icon { font-size: 28px; }
+    .file-loaded-name { font-size: 14px; font-weight: 600; color: #166534; }
+    .file-loaded-info { font-size: 12px; color: #4CAF50; margin-top: 2px; }
+    .file-reset-btn {
+      margin-left: auto;
+      background: none; border: 1px solid #86EFAC;
+      color: #166534; padding: 6px 12px; border-radius: 6px;
+      font-size: 12px; cursor: pointer;
+    }
+    .file-reset-btn:hover { background: #DCFCE7; }
+
+    /* ── Operators ── */
+    .operator-list { display: flex; flex-direction: column; gap: 10px; }
+    .operator-row {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 14px;
+      animation: slideIn 0.2s ease;
+    }
+    @keyframes slideIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+    .operator-num {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; flex-shrink: 0;
+    }
+    .operator-input {
+      flex: 1; border: 1px solid var(--border); border-radius: 6px;
+      padding: 8px 12px; font-size: 14px; background: #fff;
+      outline: none; transition: border-color 0.2s;
+    }
+    .operator-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,102,0,0.1); }
+    .operator-count-badge {
+      background: #EEF2FF; color: #4F46E5;
+      font-size: 11px; font-weight: 600;
+      padding: 3px 8px; border-radius: 12px;
+      white-space: nowrap;
+    }
+    .btn-del-op {
+      width: 28px; height: 28px; border-radius: 6px;
+      background: none; border: 1px solid #FECACA;
+      color: var(--danger); cursor: pointer; font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; flex-shrink: 0;
+    }
+    .btn-del-op:hover { background: #FEF2F2; }
+
+    .operators-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 14px;
+    }
+    .btn-add-op {
+      display: flex; align-items: center; gap: 6px;
+      border: 1.5px dashed var(--primary); background: #FFF6F0;
+      color: var(--primary); padding: 8px 16px; border-radius: 8px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-add-op:hover { background: #FFEDE0; }
+    .total-info {
+      font-size: 12px; color: var(--text-muted);
+      background: var(--bg); padding: 6px 12px; border-radius: 6px;
+    }
+
+    /* ── Distribution Preview ── */
+    .preview-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px; margin-bottom: 20px;
+    }
+    .preview-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px; padding: 16px;
+      color: #fff; text-align: center;
+    }
+    .preview-card:nth-child(2n) { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+    .preview-card:nth-child(3n) { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+    .preview-card:nth-child(4n) { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+    .preview-card:nth-child(5n) { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+    .preview-name { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .preview-count { font-size: 24px; font-weight: 800; }
+    .preview-unit { font-size: 11px; opacity: 0.8; margin-top: 2px; }
+    .preview-range { font-size: 11px; opacity: 0.7; margin-top: 4px; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 22px; border-radius: 8px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      border: none; transition: all 0.2s; text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--primary); color: #fff;
+      box-shadow: 0 4px 14px rgba(255,102,0,0.3);
+    }
+    .btn-primary:hover:not(:disabled) { background: var(--primary-dark); box-shadow: 0 6px 20px rgba(255,102,0,0.4); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-success {
+      background: var(--success); color: #fff;
+      box-shadow: 0 4px 14px rgba(40,167,69,0.3);
+    }
+    .btn-success:hover { background: #218838; transform: translateY(-1px); }
+    .btn-outline {
+      background: #fff; color: var(--text);
+      border: 1.5px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); background: #FFF6F0; }
+    .btn-lg { padding: 14px 32px; font-size: 15px; border-radius: 10px; }
+    .btn-sm { padding: 7px 14px; font-size: 12px; border-radius: 6px; }
+
+    .action-row {
+      display: flex; gap: 12px; justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    /* ── Result ── */
+    .result-section { display: none; }
+    .result-section.show { display: block; }
+    .result-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .result-title { font-size: 18px; font-weight: 700; }
+    .result-filename {
+      background: #F0FDF4; border: 1px solid #86EFAC;
+      color: #166534; padding: 6px 14px; border-radius: 6px;
+      font-size: 12px; font-weight: 600;
+    }
+
+    .download-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .download-card {
+      border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 16px; background: #fff;
+      transition: all 0.2s; cursor: pointer;
+      text-align: center;
+    }
+    .download-card:hover { border-color: var(--success); box-shadow: 0 4px 16px rgba(40,167,69,0.15); transform: translateY(-2px); }
+    .download-card .dc-icon { font-size: 32px; margin-bottom: 8px; }
+    .download-card .dc-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .download-card .dc-count { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+    .download-card .dc-btn {
+      display: inline-block; background: var(--success); color: #fff;
+      font-size: 11px; font-weight: 600; padding: 5px 14px; border-radius: 16px;
+    }
+    .download-card.all-card { border-color: var(--primary); background: #FFF6F0; }
+    .download-card.all-card .dc-btn { background: var(--primary); }
+
+    /* ── Preview Table ── */
+    .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); max-height: 360px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    thead { background: var(--secondary); color: #fff; position: sticky; top: 0; }
+    th { padding: 10px 12px; font-weight: 600; text-align: left; white-space: nowrap; }
+    td { padding: 8px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; max-width: 260px; overflow: hidden; text-overflow: ellipsis; }
+    tr:hover td { background: #FFF6F0; }
+    .op-tag {
+      display: inline-block; padding: 2px 8px; border-radius: 10px;
+      font-size: 11px; font-weight: 600; color: #fff;
+    }
+    .table-pagination { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: var(--bg); border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed; bottom: 30px; right: 30px;
+      background: var(--secondary); color: #fff;
+      padding: 12px 20px; border-radius: 10px;
+      font-size: 13px; font-weight: 500;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      transform: translateY(20px); opacity: 0;
+      transition: all 0.3s; z-index: 999;
+      display: flex; align-items: center; gap: 8px;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.success { background: var(--success); }
+    #toast.error { background: var(--danger); }
+
+    /* ── Loader ── */
+    .loader { display: none; }
+    .loader.show { display: flex; align-items: center; gap: 10px; color: var(--primary); font-size: 13px; font-weight: 500; }
+    .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,102,0,0.2); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Divider ── */
+    .section-divider { border: none; border-top: 1px dashed var(--border); margin: 8px 0 16px; }
+
+    /* ── Info row ── */
+    .info-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .info-chip {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--bg); border: 1px solid var(--border);
+      padding: 6px 12px; border-radius: 20px; font-size: 12px;
+    }
+    .info-chip strong { color: var(--primary); }
+
+    @media (max-width: 640px) {
+      main { padding: 0 12px 60px; }
+      .progress-bar { padding: 12px 16px; gap: 4px; }
+      .step-divider { width: 16px; }
+      .step-label { font-size: 11px; }
+      header { padding: 0 16px; }
+      .card-body { padding: 16px; }
+      .card-header { padding: 14px 16px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="header-left">
+    <div class="logo-badge">다나와</div>
+    <div>
+      <div class="header-title">new_prod_morphboard</div>
+      <div class="header-sub">검색서비스팀 · 신규 기준상품명 형태소 분석 검수 배분</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="today-badge" id="todayBadge">📅 로딩중...</div>
+  </div>
+</header>
+
+<!-- Progress Steps -->
+<div class="progress-bar">
+  <div class="step-item active" id="step1-item">
+    <div class="step-num">1</div>
+    <div class="step-label">파일 업로드</div>
+  </div>
+  <div class="step-divider" id="div1"></div>
+  <div class="step-item" id="step2-item">
+    <div class="step-num">2</div>
+    <div class="step-label">운영자 설정</div>
+  </div>
+  <div class="step-divider" id="div2"></div>
+  <div class="step-item" id="step3-item">
+    <div class="step-num">3</div>
+    <div class="step-label">배분 미리보기</div>
+  </div>
+  <div class="step-divider" id="div3"></div>
+  <div class="step-item" id="step4-item">
+    <div class="step-num">4</div>
+    <div class="step-label">엑셀 다운로드</div>
+  </div>
+</div>
+
+<main>
+
+  <!-- STEP 1: 파일 업로드 -->
+  <div class="card" id="card-step1">
+    <div class="card-header">
+      <div class="card-icon" style="background:#FFF3EC;">📂</div>
+      <div>
+        <div class="card-title">형태소 분석 원본 파일 업로드</div>
+        <div class="card-desc">매일 생성되는 형태소 분석 결과 엑셀 파일을 업로드하세요</div>
+      </div>
+      <div class="step-badge active">STEP 1</div>
+    </div>
+    <div class="card-body">
+      <div id="uploadZoneWrap">
+        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+          <div class="upload-icon">📊</div>
+          <div class="upload-title">클릭하거나 파일을 여기로 드래그하세요</div>
+          <div class="upload-hint" style="margin-top:8px;">
+            <code style="background:#F0F4FF;padding:2px 6px;border-radius:4px;font-size:11px;">morpheme_analysis_data_YYYYMMDD_요일_es.xlsx</code>
+          </div>
+          <div class="upload-hint" style="margin-top:6px;">*.xlsx 파일만 지원</div>
+        </div>
+      </div>
+      <input type="file" id="fileInput" accept=".xlsx,.xls" />
+      <div id="fileLoaded" style="display:none;">
+        <div class="file-loaded">
+          <div class="file-loaded-icon">✅</div>
+          <div>
+            <div class="file-loaded-name" id="loadedFileName">-</div>
+            <div class="file-loaded-info" id="loadedFileInfo">-</div>
+          </div>
+          <button class="file-reset-btn" onclick="resetFile()">다시 선택</button>
+        </div>
+        <div class="info-row" style="margin-top:14px;" id="fileInfoRow"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: 운영자 설정 -->
+  <div class="card" id="card-step2" style="opacity:0.5;pointer-events:none;">
+    <div class="card-header">
+      <div class="card-icon" style="background:#EEF2FF;">👥</div>
+      <div>
+        <div class="card-title">오늘 출근 운영자 설정</div>
+        <div class="card-desc">오늘 검수에 참여하는 운영자 이름을 입력하세요. 인원에 따라 자동 균등 배분됩니다.</div>
+      </div>
+      <div class="step-badge" id="step2-badge">STEP 2</div>
+    </div>
+    <div class="card-body">
+      <div class="operator-list" id="operatorList"></div>
+      <div class="operators-footer">
+        <button class="btn-add-op" onclick="addOperator()">
+          <span>＋</span> 운영자 추가
+        </button>
+        <div class="total-info" id="totalInfo">데이터 업로드 후 확인 가능</div>
+      </div>
+      <hr class="section-divider" style="margin-top:20px;">
+      <div class="action-row" style="margin-top:0;">
+        <div class="loader" id="previewLoader"><div class="spinner"></div>배분 계산 중...</div>
+        <button class="btn btn-primary" id="previewBtn" onclick="generatePreview()" disabled>
+          📋 배분 미리보기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: 미리보기 + 다운로드 -->
+  <div class="result-section card" id="card-step3">
+    <div class="card-header">
+      <div class="card-icon" style="background:#F0FDF4;">📋</div>
+      <div>
+        <div class="card-title">배분 결과 미리보기</div>
+        <div class="card-desc">운영자별 배분 현황과 데이터를 확인하세요</div>
+      </div>
+      <div class="step-badge active" style="background:#F0FDF4;border-color:#86EFAC;color:#166534;">STEP 3</div>
+    </div>
+    <div class="card-body">
+      <div class="preview-grid" id="previewGrid"></div>
+      <hr class="section-divider">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div style="font-size:13px;font-weight:600;">📄 데이터 미리보기 <span style="color:var(--text-muted);font-weight:400;">(상위 50행)</span></div>
+        <div id="tableInfo" style="font-size:12px;color:var(--text-muted);"></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>no</th>
+              <th>운영자</th>
+              <th>날짜</th>
+              <th>제조사명</th>
+              <th>브랜드명</th>
+              <th>기준상품명</th>
+              <th>형태소 분석</th>
+              <th>리포트 유형</th>
+              <th>내용</th>
+              <th>코멘트</th>
+            </tr>
+          </thead>
+          <tbody id="previewTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: 다운로드 -->
+  <div class="result-section card" id="card-step4">
+    <div class="card-header">
+      <div class="card-icon" style="background:#F0FDF4;">⬇️</div>
+      <div>
+        <div class="card-title">엑셀 파일 다운로드</div>
+        <div class="card-desc">전체 통합 파일 또는 운영자별 개별 파일을 다운로드하세요</div>
+      </div>
+      <div class="step-badge active" style="background:#F0FDF4;border-color:#86EFAC;color:#166534;">STEP 4</div>
+    </div>
+    <div class="card-body">
+      <div id="downloadCards" class="download-cards"></div>
+      <hr class="section-divider">
+      <div class="action-row" style="justify-content:flex-start;gap:10px;margin-top:0;">
+        <button class="btn btn-primary btn-lg" onclick="downloadAll()">
+          📥 전체 통합 파일 다운로드
+        </button>
+        <button class="btn btn-outline" onclick="downloadAllSeparate()">
+          📁 운영자별 개별 파일 모두 다운로드
+        </button>
+        <button class="btn btn-outline" onclick="resetAll()" style="margin-left:auto;">
+          🔄 처음부터 다시
+        </button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ── State ──
+let sourceData = [];      // 원본 데이터
+let distributedData = []; // 배분된 데이터
+let sourceFileName = '';
+let operators = [];
+let totalRows = 0;
+
+const OP_COLORS = ['#667eea','#f5576c','#4facfe','#43e97b','#fa709a','#fd7f20','#a18cd1','#ffecd2'];
+
+// ── Init ──
+window.onload = function() {
+  const today = new Date();
+  const days = ['일','월','화','수','목','금','토'];
+  const ymd = today.toLocaleDateString('ko-KR', { year:'numeric', month:'2-digit', day:'2-digit' }).replace(/\. /g,'-').replace('.','-').replace('.','-').replace(' ','');
+  document.getElementById('todayBadge').textContent = `📅 ${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')} (${days[today.getDay()]})`;
+
+  // 기본 운영자 2명
+  addOperator('이름 입력');
+  addOperator('이름 입력');
+
+  // Drag & Drop
+  const zone = document.getElementById('uploadZone');
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f) handleFile(f);
+  });
+  document.getElementById('fileInput').addEventListener('change', e => {
+    if (e.target.files[0]) handleFile(e.target.files[0]);
+  });
+};
+
+// ── File Handling ──
+function handleFile(file) {
+  if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
+    showToast('xlsx 또는 xls 파일만 업로드 가능합니다.', 'error'); return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const wb = XLSX.read(e.target.result, { type:'array', cellDates: true });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const raw = XLSX.utils.sheet_to_json(ws, { header:1 });
+
+      // 헤더 찾기
+      const headerRow = raw[0];
+      const dataRows = raw.slice(1).filter(r => r.some(c => c !== null && c !== undefined && c !== ''));
+
+      // 컬럼 인덱스
+      const colIdx = {};
+      ['no','제조사명','브랜드명','상품명','형태소 분석'].forEach(col => {
+        colIdx[col] = headerRow.findIndex(h => String(h).trim() === col);
+      });
+
+      sourceData = dataRows.map((r, i) => ({
+        제조사명: r[colIdx['제조사명']] ?? '',
+        브랜드명: r[colIdx['브랜드명']] ?? '',
+        기준상품명: r[colIdx['상품명']] ?? '',
+        형태소분석: r[colIdx['형태소 분석']] ?? '',
+      }));
+
+      totalRows = sourceData.length;
+      sourceFileName = file.name;
+
+      // UI 업데이트
+      document.getElementById('uploadZoneWrap').style.display = 'none';
+      document.getElementById('fileLoaded').style.display = 'block';
+      document.getElementById('loadedFileName').textContent = file.name;
+      document.getElementById('loadedFileInfo').textContent = `총 ${totalRows.toLocaleString()}개 상품 로드 완료`;
+
+      // Info chips
+      const uniqueMfg = [...new Set(sourceData.map(d => d.제조사명))].length;
+      document.getElementById('fileInfoRow').innerHTML = `
+        <div class="info-chip">📦 총 상품 <strong>${totalRows.toLocaleString()}개</strong></div>
+        <div class="info-chip">🏭 제조사 <strong>${uniqueMfg}개</strong></div>
+      `;
+
+      // Step 2 활성화
+      document.getElementById('card-step2').style.opacity = '1';
+      document.getElementById('card-step2').style.pointerEvents = 'auto';
+      document.getElementById('step2-badge').classList.add('active');
+      setStepDone(1); setStepActive(2);
+      updateTotalInfo();
+      checkPreviewBtn();
+      showToast(`✅ ${totalRows.toLocaleString()}개 상품 로드 완료!`, 'success');
+    } catch(err) {
+      showToast('파일 파싱 실패: ' + err.message, 'error');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function resetFile() {
+  sourceData = []; totalRows = 0; sourceFileName = '';
+  document.getElementById('uploadZoneWrap').style.display = 'block';
+  document.getElementById('fileLoaded').style.display = 'none';
+  document.getElementById('fileInput').value = '';
+  document.getElementById('card-step2').style.opacity = '0.5';
+  document.getElementById('card-step2').style.pointerEvents = 'none';
+  document.getElementById('card-step3').classList.remove('show');
+  document.getElementById('card-step4').classList.remove('show');
+  resetSteps();
+  setStepActive(1);
+}
+
+// ── Operators ──
+function addOperator(name = '') {
+  operators.push({ id: Date.now() + Math.random(), name: name });
+  renderOperators();
+}
+
+function removeOperator(id) {
+  if (operators.length <= 1) { showToast('운영자는 최소 1명 이상이어야 합니다.', 'error'); return; }
+  operators = operators.filter(o => o.id !== id);
+  renderOperators();
+  updateTotalInfo();
+  checkPreviewBtn();
+}
+
+function renderOperators() {
+  const list = document.getElementById('operatorList');
+  list.innerHTML = '';
+  operators.forEach((op, idx) => {
+    const perCount = totalRows > 0 ? Math.ceil(totalRows / operators.length) : '-';
+    const myCount = totalRows > 0 ? getOpCount(idx, totalRows, operators.length) : '-';
+    const div = document.createElement('div');
+    div.className = 'operator-row';
+    div.innerHTML = `
+      <div class="operator-num" style="background:${OP_COLORS[idx % OP_COLORS.length]}">${idx+1}</div>
+      <input class="operator-input" type="text" placeholder="운영자 이름 (예: 김철수)"
+        value="${op.name === '이름 입력' ? '' : op.name}"
+        data-id="${op.id}"
+        oninput="updateOpName('${op.id}', this.value)"
+      />
+      <div class="operator-count-badge">${typeof myCount === 'number' ? myCount.toLocaleString()+'개' : myCount}</div>
+      <button class="btn-del-op" onclick="removeOperator('${op.id}')" title="삭제">✕</button>
+    `;
+    list.appendChild(div);
+  });
+  updateTotalInfo();
+}
+
+function getOpCount(idx, total, opCount) {
+  const base = Math.floor(total / opCount);
+  const extra = total % opCount;
+  return base + (idx < extra ? 1 : 0);
+}
+
+function updateOpName(id, value) {
+  const op = operators.find(o => String(o.id) === String(id));
+  if (op) { op.name = value; }
+  checkPreviewBtn();
+}
+
+function updateTotalInfo() {
+  const el = document.getElementById('totalInfo');
+  if (totalRows === 0) { el.textContent = '데이터 업로드 후 확인 가능'; return; }
+  const validOps = operators.filter(o => o.name.trim() !== '' && o.name !== '이름 입력').length;
+  el.innerHTML = `총 <strong style="color:var(--primary)">${totalRows.toLocaleString()}</strong>개 ÷ ${operators.length}명 운영자`;
+}
+
+function checkPreviewBtn() {
+  const btn = document.getElementById('previewBtn');
+  const hasData = sourceData.length > 0;
+  const validOps = operators.filter(o => o.name.trim() !== '' && o.name !== '이름 입력');
+  btn.disabled = !(hasData && validOps.length > 0);
+}
+
+// ── Preview & Distribution ──
+function generatePreview() {
+  const validOps = operators.filter(o => o.name.trim() !== '' && o.name !== '이름 입력');
+  if (validOps.length === 0) { showToast('운영자 이름을 입력해주세요.', 'error'); return; }
+  if (sourceData.length === 0) { showToast('파일을 먼저 업로드해주세요.', 'error'); return; }
+
+  document.getElementById('previewLoader').classList.add('show');
+  document.getElementById('previewBtn').disabled = true;
+
+  setTimeout(() => {
+    const today = new Date();
+    const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+    // 배분 로직
+    distributedData = sourceData.map((row, i) => {
+      const opIdx = i % validOps.length;
+      return {
+        no: i + 1,
+        운영자: validOps[opIdx].name,
+        날짜: dateStr,
+        제조사명: row.제조사명,
+        브랜드명: row.브랜드명,
+        기준상품명: row.기준상품명,
+        형태소분석: row.형태소분석,
+        리포트유형: '',
+        내용: '',
+        코멘트: ''
+      };
+    });
+
+    // Preview cards
+    const grid = document.getElementById('previewGrid');
+    grid.innerHTML = '';
+    validOps.forEach((op, idx) => {
+      const count = distributedData.filter(d => d.운영자 === op.name).length;
+      const startNo = distributedData.findIndex(d => d.운영자 === op.name) + 1;
+      const endNo = distributedData.map(d => d.운영자).lastIndexOf(op.name) + 1;
+      grid.innerHTML += `
+        <div class="preview-card" style="background:linear-gradient(135deg,${OP_COLORS[idx%OP_COLORS.length]}cc,${OP_COLORS[(idx+1)%OP_COLORS.length]}cc)">
+          <div class="preview-name">👤 ${op.name}</div>
+          <div class="preview-count">${count.toLocaleString()}</div>
+          <div class="preview-unit">개 상품</div>
+          <div class="preview-range">No.${startNo} ~ No.${endNo}</div>
+        </div>
+      `;
+    });
+
+    // Preview table (50행)
+    const tbody = document.getElementById('previewTbody');
+    tbody.innerHTML = '';
+    const preview50 = distributedData.slice(0, 50);
+    preview50.forEach(row => {
+      const opIdx = validOps.findIndex(o => o.name === row.운영자);
+      const color = OP_COLORS[opIdx % OP_COLORS.length];
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${row.no}</td>
+        <td><span class="op-tag" style="background:${color}">${row.운영자}</span></td>
+        <td>${row.날짜}</td>
+        <td>${row.제조사명}</td>
+        <td>${row.브랜드명}</td>
+        <td title="${row.기준상품명}">${row.기준상품명}</td>
+        <td title="${row.형태소분석}" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;">${row.형태소분석}</td>
+        <td></td><td></td><td></td>
+      `;
+      tbody.appendChild(tr);
+    });
+    document.getElementById('tableInfo').textContent = `전체 ${distributedData.length.toLocaleString()}행 중 50행 표시`;
+
+    // Download cards
+    const dcards = document.getElementById('downloadCards');
+    dcards.innerHTML = `
+      <div class="download-card all-card" onclick="downloadAll()">
+        <div class="dc-icon">📊</div>
+        <div class="dc-name">전체 통합 파일</div>
+        <div class="dc-count">${distributedData.length.toLocaleString()}개 상품 · 전체 운영자</div>
+        <div class="dc-btn">📥 다운로드</div>
+      </div>
+    `;
+    validOps.forEach((op, idx) => {
+      const count = distributedData.filter(d => d.운영자 === op.name).length;
+      dcards.innerHTML += `
+        <div class="download-card" onclick="downloadSingle('${op.name}')">
+          <div class="dc-icon">👤</div>
+          <div class="dc-name">${op.name}</div>
+          <div class="dc-count">${count.toLocaleString()}개 상품</div>
+          <div class="dc-btn" style="background:${OP_COLORS[idx%OP_COLORS.length]}">📥 다운로드</div>
+        </div>
+      `;
+    });
+
+    document.getElementById('previewLoader').classList.remove('show');
+    document.getElementById('previewBtn').disabled = false;
+    document.getElementById('card-step3').classList.add('show');
+    document.getElementById('card-step4').classList.add('show');
+    setStepDone(1); setStepDone(2); setStepActive(3);
+
+    document.getElementById('card-step3').scrollIntoView({ behavior:'smooth', block:'start' });
+    showToast(`✅ 배분 완료! ${validOps.length}명 운영자에게 균등 배분되었습니다.`, 'success');
+  }, 300);
+}
+
+// ── Excel Export ──
+function makeFileName(suffix = '') {
+  const today = new Date();
+  const yy = String(today.getFullYear()).slice(2);
+  const mm = String(today.getMonth()+1).padStart(2,'0');
+  const dd = String(today.getDate()).padStart(2,'0');
+  if (suffix) return `${yy}${mm}${dd}_${suffix}_신규 기준상품명 형태소 분석 검수.xlsx`;
+  return `${yy}${mm}${dd}_신규 기준상품명 형태소 분석 검수.xlsx`;
+}
+
+function buildWorkbook(rows) {
+  const wsData = [
+    ['no','운영자','날짜','제조사명','브랜드명','기준상품명','형태소 분석','리포트 유형','내용','코멘트']
+  ];
+  rows.forEach(r => {
+    wsData.push([
+      r.no, r.운영자, r.날짜, r.제조사명, r.브랜드명,
+      r.기준상품명, r.형태소분석, r.리포트유형, r.내용, r.코멘트
+    ]);
+  });
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  // 컬럼 너비
+  ws['!cols'] = [
+    {wch:6},{wch:10},{wch:14},{wch:14},{wch:14},
+    {wch:45},{wch:60},{wch:12},{wch:20},{wch:20}
+  ];
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  return wb;
+}
+
+function downloadAll() {
+  if (distributedData.length === 0) { showToast('먼저 배분을 실행해주세요.', 'error'); return; }
+  const wb = buildWorkbook(distributedData);
+  XLSX.writeFile(wb, makeFileName());
+  showToast('📥 전체 통합 파일 다운로드 시작!', 'success');
+}
+
+function downloadSingle(opName) {
+  const rows = distributedData.filter(d => d.운영자 === opName);
+  if (rows.length === 0) return;
+  const wb = buildWorkbook(rows);
+  XLSX.writeFile(wb, makeFileName(opName));
+  showToast(`📥 ${opName} 파일 다운로드 시작!`, 'success');
+}
+
+function downloadAllSeparate() {
+  const ops = [...new Set(distributedData.map(d => d.운영자))];
+  ops.forEach((opName, i) => {
+    setTimeout(() => downloadSingle(opName), i * 400);
+  });
+  showToast(`📁 ${ops.length}개 파일 다운로드 시작!`, 'success');
+}
+
+// ── Step Progress ──
+function setStepActive(n) {
+  [1,2,3,4].forEach(i => {
+    const el = document.getElementById(`step${i}-item`);
+    if (!el) return;
+    if (i === n) el.classList.add('active');
+    else el.classList.remove('active');
+  });
+}
+function setStepDone(n) {
+  const el = document.getElementById(`step${n}-item`);
+  if (el) { el.classList.remove('active'); el.classList.add('done'); }
+  const div = document.getElementById(`div${n}`);
+  if (div) div.classList.add('done');
+}
+function resetSteps() {
+  [1,2,3,4].forEach(i => {
+    const el = document.getElementById(`step${i}-item`);
+    if (el) { el.classList.remove('active','done'); }
+  });
+  [1,2,3].forEach(i => {
+    const div = document.getElementById(`div${i}`);
+    if (div) div.classList.remove('done');
+  });
+}
+
+// ── Reset All ──
+function resetAll() {
+  resetFile();
+  distributedData = [];
+  operators = [];
+  addOperator('이름 입력');
+  addOperator('이름 입력');
+  document.getElementById('card-step3').classList.remove('show');
+  document.getElementById('card-step4').classList.remove('show');
+  resetSteps(); setStepActive(1);
+  window.scrollTo({ top:0, behavior:'smooth' });
+  showToast('🔄 초기화 완료!');
+}
+
+// ── Toast ──
+let toastTimer;
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = ''; }, 2800);
+}
+</script>
+</body>
+</html>
