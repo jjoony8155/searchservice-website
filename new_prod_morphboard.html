@@ -757,8 +757,14 @@ function generatePreview() {
     const today = new Date();
     const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 
-    // 배분 로직: 운영자별 균등 분할 → 순차 블록 배분 (A A A ... B B B ... C C C ...)
-    const total = sourceData.length;
+    // 배분 로직: 제조사명 오름차순 정렬 → 운영자별 균등 분할 → 순차 블록 배분 (A A A ... B B B ... C C C ...)
+    const sortedData = [...sourceData].sort((a, b) => {
+      const ma = String(a.제조사명 ?? '').toLowerCase();
+      const mb = String(b.제조사명 ?? '').toLowerCase();
+      return ma < mb ? -1 : ma > mb ? 1 : 0;
+    });
+
+    const total = sortedData.length;
     const opCount = validOps.length;
     const base = Math.floor(total / opCount);
     const extra = total % opCount;
@@ -776,7 +782,7 @@ function generatePreview() {
     distributedData = [];
     opRanges.forEach(({ op, start, count }) => {
       for (let i = 0; i < count; i++) {
-        const row = sourceData[start + i];
+        const row = sortedData[start + i];
         distributedData.push({
           no: i + 1,          // 운영자별 1부터 시작
           운영자: op.name,
