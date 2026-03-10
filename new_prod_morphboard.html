@@ -757,21 +757,39 @@ function generatePreview() {
     const today = new Date();
     const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 
-    // 배분 로직
-    distributedData = sourceData.map((row, i) => {
-      const opIdx = i % validOps.length;
-      return {
-        no: i + 1,
-        운영자: validOps[opIdx].name,
-        날짜: dateStr,
-        제조사명: row.제조사명,
-        브랜드명: row.브랜드명,
-        기준상품명: row.기준상품명,
-        형태소분석: row.형태소분석,
-        리포트유형: '',
-        내용: '',
-        코멘트: ''
-      };
+    // 배분 로직: 운영자별 균등 분할 → 순차 블록 배분 (A A A ... B B B ... C C C ...)
+    const total = sourceData.length;
+    const opCount = validOps.length;
+    const base = Math.floor(total / opCount);
+    const extra = total % opCount;
+
+    // 각 운영자별 담당 행 범위 계산
+    const opRanges = [];
+    let cursor = 0;
+    validOps.forEach((op, idx) => {
+      const count = base + (idx < extra ? 1 : 0);
+      opRanges.push({ op, start: cursor, count });
+      cursor += count;
+    });
+
+    // 운영자 블록 순서로 데이터 배치 + 운영자별 no 1부터 시작
+    distributedData = [];
+    opRanges.forEach(({ op, start, count }) => {
+      for (let i = 0; i < count; i++) {
+        const row = sourceData[start + i];
+        distributedData.push({
+          no: i + 1,          // 운영자별 1부터 시작
+          운영자: op.name,
+          날짜: dateStr,
+          제조사명: row.제조사명,
+          브랜드명: row.브랜드명,
+          기준상품명: row.기준상품명,
+          형태소분석: row.형태소분석,
+          리포트유형: '',
+          내용: '',
+          코멘트: ''
+        });
+      }
     });
 
     // Preview cards
@@ -870,7 +888,7 @@ async function buildWorkbookExcelJS(rows) {
     { key: 'mfg',     width: 15.625},   // D
     { key: 'brand',   width: 8.43  },   // E (기본값)
     { key: 'prod',    width: 50.625},   // F
-    { key: 'morph',   width: 8.43  },   // G (기본값)
+    { key: 'morph',   width: 50.625},   // G (F열과 동일)
     { key: 'report',  width: 11.5  },   // H
     { key: 'content', width: 35.625},   // I
     { key: 'comment', width: 8.43  },   // J (기본값)
@@ -940,7 +958,7 @@ function buildWorkbook(rows) {
   const ws = XLSX.utils.aoa_to_sheet(wsData);
   ws['!cols'] = [
     {wch:5},{wch:7.6},{wch:10},{wch:15.6},{wch:8.4},
-    {wch:50.6},{wch:8.4},{wch:11.5},{wch:35.6},{wch:8.4}
+    {wch:50.6},{wch:50.6},{wch:11.5},{wch:35.6},{wch:8.4}
   ];
   XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
   return wb;
