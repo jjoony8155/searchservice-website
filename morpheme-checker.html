@@ -156,6 +156,7 @@
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('analyze')">🔍 검수 분석</button>
     <button class="tab-btn" onclick="switchTab('cases')">📚 오분석 케이스 관리 <span class="case-count-badge" id="caseCountBadge">0</span></button>
+    <button class="tab-btn" onclick="switchTab('loanwords')">🔤 외래어 사전 <span class="case-count-badge" id="loanwordCountBadge">0</span></button>
     <button class="tab-btn" onclick="switchTab('rules')">⚙️ 규칙 필터</button>
   </div>
 
@@ -367,7 +368,81 @@
       <div id="caseListWrap"></div>
     </div>
 
+
   </div>
+  <!-- ===== 외래어 사전 탭 ===== -->
+  <div class="tab-pane" id="tab-loanwords">
+
+    <!-- 외래어 파트 추가 -->
+    <div class="section-box">
+      <div class="section-title">
+        🔤 외래어 파트 사전
+        <button class="help-toggle" onclick="toggleHelp('help-loanword')">❓ 도움말</button>
+      </div>
+      <div class="help-box" id="help-loanword">
+        <div class="help-row">
+          <span class="help-badge" style="background:#fdf4ff;color:#7c3aed;width:60px;">역할</span>
+          <div class="help-content">
+            <strong>한글 1자 외래어 음차를 등록하는 사전입니다.</strong><br>
+            형태소 분석기가 단어를 분리했을 때 <b>1자 파트가 이 사전에 있고</b>, 나머지 파트가 외래어이면 AI가 <b>합성어</b>로 판정합니다.<br>
+            예) <span class="help-example">숏,슬리브</span> → 숏(사전✅) + 슬리브(AI가 외래어 판단✅) → 합성어
+          </div>
+        </div>
+        <div class="help-row">
+          <span class="help-badge" style="background:#fdf4ff;color:#7c3aed;width:60px;">내장</span>
+          <div class="help-content">
+            <strong>기본 내장된 한글 1자 외래어 9개</strong> — 숏(short), 롱(long), 빅(big), 탑(top), 핏(fit), 온(on), 인(in), 업(up), 뉴(new)<br>
+            ✕ 버튼으로 제외 가능 · 제외된 항목은 취소선으로 표시되며 클릭 시 복원
+          </div>
+        </div>
+        <div class="help-row">
+          <span class="help-badge" style="background:#fdf4ff;color:#7c3aed;width:60px;">추가</span>
+          <div class="help-content">
+            <strong>새로운 1자 외래어가 오분석으로 잘못 잡힐 때</strong> 추가하세요.<br>
+            예) <span class="help-example">풀</span>(full), <span class="help-example">반</span>(half), <span class="help-example">구</span>(구=nine이 아닌 외래어 음차) 등<br>
+            2자 이상 외래어 조합(에어홀, 드레스룸 등)은 AI가 직접 판단하므로 여기에 등록 불필요
+          </div>
+        </div>
+        <div class="help-row">
+          <span class="help-badge" style="background:#fdf4ff;color:#7c3aed;width:60px;">주의</span>
+          <div class="help-content">
+            <strong>1자 파트가 사전에 있어도</strong> 나머지 파트가 외래어가 아니면 합성어가 아닌 오분석으로 판정합니다.<br>
+            예) <span class="help-example">핏,감</span> → 핏(사전✅) + 감(한글1자, 외래어❌) → 오분석
+          </div>
+        </div>
+        <div class="help-tip">
+          💡 <strong>합성어 판단 역할 분담</strong> · <b>1자 파트 → 이 사전</b>이 담당 · <b>2자 이상 외래어 여부 → AI</b>가 판단 · 운영하면서 오탐이 나는 1자 패턴만 추가하면 됩니다.
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center;">
+        <input type="text" id="newLoanword" placeholder="한글 1자 외래어 추가 (예: 풀, 반)" style="flex:1;background:#f9fafb;border:1px solid #d1d5db;border-radius:7px;color:#222;font-size:13px;padding:10px 14px;outline:none;font-family:inherit;" onkeydown="if(event.key==='Enter')addLoanword()" />
+        <button class="btn btn-orange" onclick="addLoanword()" style="white-space:nowrap;padding:10px 20px;">+ 추가</button>
+      </div>
+    </div>
+
+    <!-- 내장/사용자 목록 -->
+    <div class="section-box">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="font-size:13px;font-weight:700;color:#374151;">
+          내장 목록
+          <span style="font-size:11px;font-weight:400;color:#aaa;margin-left:4px;">✕로 제외 · 제외된 항목 클릭 시 복원</span>
+        </div>
+        <span style="font-size:11px;color:#aaa;" id="builtinLoanwordCount"></span>
+      </div>
+      <div id="loanwordBuiltinTags" style="display:flex;flex-wrap:wrap;gap:6px;min-height:40px;padding:12px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;margin-bottom:16px;"></div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="font-size:13px;font-weight:700;color:#1d4ed8;">
+          사용자 추가 목록
+        </div>
+        <span id="customLoanwordCount" style="font-size:11px;color:#aaa;"></span>
+      </div>
+      <div id="loanwordCustomTags" style="display:flex;flex-wrap:wrap;gap:6px;min-height:40px;padding:12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;"></div>
+    </div>
+
+  </div>
+
   <!-- ===== 규칙 필터 탭 ===== -->
   <div class="tab-pane" id="tab-rules">
 
@@ -764,6 +839,152 @@ const BUILTIN_CASES = [ // {m:형태소, w:잘못된단어, c:올바른단어, c
 // 구조: { id, type: 'builtin'|'custom'|'corrected', morpheme, wrong, correct, memo, addedAt }
 let customCases = []; // 사용자 추가 케이스
 // 외래어 정상 케이스 내장 (분리된 각 파트가 독립적 의미를 가지는 경우)
+// ===================== 외래어 파트 사전 =====================
+// 형태소 파트가 모두 이 목록에 있으면 AI 호출 없이 합성어로 자동 처리
+const BUILTIN_LOANWORDS = new Set([
+  // 한글 1자 외래어 음차 — 단독으로는 합성어 판단 불가하여 사전 등록 필요
+  '숏', // short
+  '롱', // long
+  '빅', // big
+  '탑', // top
+  '핏', // fit
+  '온',  // on
+  '인',  // in
+  '업',  // up
+  '뉴',  // new
+]);
+
+let customLoanwords = []; // 사용자 추가 외래어 파트
+let deletedBuiltinLoanwords = []; // 삭제된 내장 외래어 파트
+
+function getAllLoanwords() {
+  const all = new Set(BUILTIN_LOANWORDS);
+  deletedBuiltinLoanwords.forEach(w => all.delete(w));
+  customLoanwords.forEach(w => all.add(w));
+  return all;
+}
+
+function hasOneCharLoanword(parts) {
+  // 파트 중 1자 한글이 외래어 파트 사전에 있는지 확인
+  const activeOneChar = new Set(
+    Array.from(BUILTIN_LOANWORDS)
+      .filter(function(w) { return w.length === 1 && !deletedBuiltinLoanwords.includes(w); })
+      .concat(customLoanwords.filter(function(w) { return w.length === 1; }))
+  );
+  return parts.some(function(p) {
+    var clean = p.trim();
+    return clean.length === 1 && /[가-힣]/.test(clean) && activeOneChar.has(clean);
+  });
+}
+
+function isAllLoanword(parts) {
+  // 코드 자동 처리: 모든 파트가 사전에 등록된 경우만
+  var dict = getAllLoanwords();
+  return parts.every(function(p) {
+    var clean = p.trim();
+    if (!clean) return true;
+    return dict.has(clean);
+  });
+}
+
+function saveLoanwordsToStorage() {
+  try {
+    sessionStorage.setItem('danawa_loanwords', JSON.stringify(customLoanwords));
+    sessionStorage.setItem('danawa_loanwords_deleted', JSON.stringify(deletedBuiltinLoanwords));
+  } catch(e) {}
+}
+function loadLoanwordsFromStorage() {
+  try {
+    const saved = sessionStorage.getItem('danawa_loanwords');
+    if (saved) customLoanwords = JSON.parse(saved);
+    const del = sessionStorage.getItem('danawa_loanwords_deleted');
+    if (del) deletedBuiltinLoanwords = JSON.parse(del);
+  } catch(e) {}
+}
+
+function addLoanword() {
+  const val = document.getElementById('newLoanword').value.trim();
+  if (!val) return;
+  if (BUILTIN_LOANWORDS.has(val)) { showToast('이미 내장 목록에 있어요.', 'error'); return; }
+  if (customLoanwords.includes(val)) { showToast('이미 추가된 항목이에요.', 'error'); return; }
+  customLoanwords.push(val);
+  saveLoanwordsToStorage();
+  document.getElementById('newLoanword').value = '';
+  renderLoanwordTags();
+  showToast('"' + val + '" 추가됐어요!');
+}
+
+function deleteLoanword(word) {
+  customLoanwords = customLoanwords.filter(w => w !== word);
+  saveLoanwordsToStorage();
+  renderLoanwordTags();
+  showToast('"' + word + '" 삭제됐어요.');
+}
+
+function deleteBuiltinLoanword(word) {
+  if (!deletedBuiltinLoanwords.includes(word)) {
+    deletedBuiltinLoanwords.push(word);
+    saveLoanwordsToStorage();
+    renderLoanwordTags();
+    showToast('"' + word + '" 내장 목록에서 제외됐어요.');
+  }
+}
+
+function restoreBuiltinLoanword(word) {
+  deletedBuiltinLoanwords = deletedBuiltinLoanwords.filter(w => w !== word);
+  saveLoanwordsToStorage();
+  renderLoanwordTags();
+  showToast('"' + word + '" 복원됐어요.');
+}
+
+function renderLoanwordTags() {
+  const builtinWrap = document.getElementById('loanwordBuiltinTags');
+  const customWrap = document.getElementById('loanwordCustomTags');
+  if (!builtinWrap || !customWrap) return;
+
+  // 내장 목록 — 활성/비활성 구분, 삭제 버튼
+  const allBuiltin = Array.from(BUILTIN_LOANWORDS).sort();
+  const activeBuiltin = allBuiltin.filter(w => !deletedBuiltinLoanwords.includes(w));
+  const deletedBuiltin = allBuiltin.filter(w => deletedBuiltinLoanwords.includes(w));
+
+  let builtinHtml = activeBuiltin.map(w =>
+    `<span style="display:inline-flex;align-items:center;gap:4px;background:#f3f4f6;color:#555;border:1px solid #e5e7eb;border-radius:14px;padding:4px 10px;font-size:12px;">
+      ${w}<button onclick="deleteBuiltinLoanword('${w}')" title="제외" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:13px;padding:0;line-height:1;">✕</button>
+    </span>`
+  ).join('');
+
+  if (deletedBuiltin.length > 0) {
+    builtinHtml += '<div style="width:100%;margin-top:8px;font-size:11px;color:#aaa;">제외된 항목 (클릭하여 복원)</div>';
+    builtinHtml += deletedBuiltin.map(w =>
+      `<span onclick="restoreBuiltinLoanword('${w}')" title="클릭하여 복원" style="display:inline-flex;align-items:center;gap:4px;background:#fafafa;color:#bbb;border:1px dashed #e5e7eb;border-radius:14px;padding:4px 10px;font-size:12px;cursor:pointer;text-decoration:line-through;">
+        ${w}
+      </span>`
+    ).join('');
+  }
+  builtinWrap.innerHTML = builtinHtml || '<span style="color:#aaa;font-size:12px;">없음</span>';
+
+  // 내장 목록 카운트
+  const builtinCountEl = document.getElementById('builtinLoanwordCount');
+  if (builtinCountEl) builtinCountEl.textContent = activeBuiltin.length + '개 활성' + (deletedBuiltin.length > 0 ? ' · ' + deletedBuiltin.length + '개 제외' : '');
+
+  // 사용자 추가 목록
+  const countEl = document.getElementById('customLoanwordCount');
+  if (countEl) countEl.textContent = customLoanwords.length > 0 ? customLoanwords.length + '개' : '';
+  if (customLoanwords.length === 0) {
+    customWrap.innerHTML = '<span style="color:#93c5fd;font-size:12px;">아직 추가된 항목이 없어요. 위에서 추가해보세요!</span>';
+  } else {
+    customWrap.innerHTML = customLoanwords.map(w =>
+      `<span style="display:inline-flex;align-items:center;gap:5px;background:#dbeafe;color:#1d4ed8;border:1px solid #93c5fd;border-radius:14px;padding:4px 12px;font-size:12px;">
+        ${w}<button onclick="deleteLoanword('${w}')" style="background:none;border:none;color:#3b82f6;cursor:pointer;font-size:14px;padding:0;line-height:1;font-weight:700;">✕</button>
+      </span>`
+    ).join('');
+  }
+
+  // 탭 배지 업데이트 — 전체 등록 수 (내장 활성 + 사용자)
+  const badge = document.getElementById('loanwordCountBadge');
+  if (badge) badge.textContent = activeBuiltin.length + customLoanwords.length;
+}
+
 const BUILTIN_NORMAL_CASES = [
   {id:'n_0', type:'corrected', morpheme:'힐링, 쉴드',       wrong:'힐링,쉴드',     correct:'힐링쉴드',       memo:'힐링(healing)+쉴드(shield) 각각 의미O', addedAt:''},
   {id:'n_1', type:'corrected', morpheme:'캐디, 백',         wrong:'캐디,백',       correct:'캐디백',         memo:'캐디(caddie)+백(bag) 각각 의미O',     addedAt:''},
@@ -1084,7 +1305,12 @@ ${normalLines ? '\n[정상으로 확인된 케이스 - 오분석으로 감지하
 - [엄격 금지] "내용" 필드에는 반드시 형태소분석에 실제로 존재하는 파트만 사용할 것. 형태소에 없는 단어를 만들어 내거나 조합하는 것은 절대 금지
 - [엄격 금지] "신규단어후보"는 반드시 상품명 또는 형태소분석에 실제로 등장하는 단어만 기재할 것. 상품명/형태소 어디에도 없는 단어를 지어내는 것은 절대 금지
   잘못된 예) 상품명 "재점화 라이터" 형태소 "재,점화" → 신규단어후보: "재점퍼" (X — 상품명에 없는 단어)
-  올바른 예) 상품명 "재점화 라이터" 형태소 "재,점화" → {"no":번호,"s":"N"} (정상 처리)`;
+  올바른 예) 상품명 "재점화 라이터" 형태소 "재,점화" → {"no":번호,"s":"N"} (정상 처리)
+- [엄격 금지] "내용" 필드에서 형태소 파트를 상품명의 다른 단어로 교체하는 것은 절대 금지
+  잘못된 예) 형태소 "프로스펙스,어센틱" → 내용: "프로스펙스,어센틱 → LG트윈스" (X — LG트윈스는 형태소 파트가 아님)
+  올바른 예) 형태소와 상품명의 브랜드명이 다른 경우 → 판단 불가, 정상으로 처리
+- [엄격 금지] 제조사명/브랜드명 컬럼과 상품명 내 브랜드가 다른 경우(라이선스 상품 등) 오분석으로 판단하지 말 것
+  예) 제조사: 프로스펙스, 상품명: "LG트윈스 어센틱 유광점퍼" → 정상 (브랜드 불일치는 오분석이 아님)`;
 }
 
 // ===================== 분석 변수 =====================
@@ -1095,12 +1321,13 @@ let cancelRequested = false;
 // ===================== 탭 =====================
 function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach((b, i) => {
-    b.classList.toggle('active', ['analyze','cases','rules'][i] === name);
+    b.classList.toggle('active', ['analyze','cases','loanwords','rules'][i] === name);
   });
   document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
   var tabEl = document.getElementById('tab-' + name);
   if (tabEl) tabEl.classList.add('active');
   if (name === 'cases') renderCaseList();
+  if (name === 'loanwords') renderLoanwordTags();
 }
 
 // ===================== 파일 파싱 =====================
@@ -1399,15 +1626,39 @@ function startAnalyze() {
   var dupCount = rowsToAnalyze.length - dedupedRows.length;
   rowsToAnalyze = dedupedRows;
 
+  // 외래어 파트 사전 기반 합성어 자동 처리 (AI 호출 전)
+  var loanwordAutoCount = 0;
+  var finalRows = [];
+  rowsToAnalyze.forEach(function(r) {
+    var morph = (r._filteredMorpheme || r.형태소분석 || '').trim();
+    if (!morph) { finalRows.push(r); return; }
+    var parts = morph.split(',').map(function(p) { return p.trim(); }).filter(Boolean);
+    // 파트 2개 이상이고 모두 외래어 사전에 있으면 합성어 자동 처리
+    if (parts.length >= 2 && isAllLoanword(parts)) {
+      var combined = parts.join('');
+      analysisResults.push({
+        no: r.no, 상태: '합성어',
+        내용: parts.join(',') + ' → ' + combined,
+        코멘트: '외래어 파트 사전 자동 판정',
+        신규단어여부: 'Y', 신규단어후보: combined, 신규단어비고: '복합어등록필요'
+      });
+      loanwordAutoCount++;
+    } else {
+      finalRows.push(r);
+    }
+  });
+  rowsToAnalyze = finalRows;
+
   var skippedCount = skippedResults.length;
   var analyzeTotal = rowsToAnalyze.length;
   // 1만건 이상 시 예상시간 안내
   var estMin = Math.round(analyzeTotal / BATCH / 3 * 4 / 60); // 배치당 4초 가정
   var dupMsg = dupCount > 0 ? ' · 중복 제거 ' + dupCount.toLocaleString() + '건' : '';
+  var loanMsg = loanwordAutoCount > 0 ? ' · 외래어합성어 ' + loanwordAutoCount.toLocaleString() + '건' : '';
   var timeMsg = analyzeTotal > 3000
     ? ' · 예상 약 ' + estMin + '분 소요 (동시 3개 처리) · 탭을 닫지 마세요'
     : '';
-  showToast('규칙 필터: ' + skippedCount.toLocaleString() + '건' + dupMsg + ' · ' + analyzeTotal.toLocaleString() + '건 AI 분석' + timeMsg);
+  showToast('규칙 필터: ' + skippedCount.toLocaleString() + '건' + dupMsg + loanMsg + ' · ' + analyzeTotal.toLocaleString() + '건 AI 분석' + timeMsg);
 
   // 단일 배치 API 호출 (재시도 포함)
   function callBatchAPI(batch, retryCount) {
@@ -1635,6 +1886,10 @@ function eojeolBasedFilter(r) {
     var wClean = w.replace(/[.,]+$/, '');
     var wNorm = normalizeStr(wClean);
     if (makerWords[wNorm]) return; // 제조사명 어절 무시
+
+    // 외래어 파트 사전으로 합성어 자동 판단
+    // 현재 어절의 모든 파트(같은 그룹)가 외래어면 합성어로 자동 처리
+    // → 여기서는 단일 파트만 체크, 그룹 체크는 아래 toAnalyze 후처리에서
     var etype = classifyEojeol(wClean);
     if (isSkipEtype(etype)) {
       skipWordNorms[wNorm] = true;
@@ -2071,9 +2326,11 @@ function populateCategorySelects() {
   });
 }
 loadCasesFromStorage();
+loadLoanwordsFromStorage();
 populateCategorySelects();
 updateCaseCountBadge();
 restoreBatchIfExists();
+renderLoanwordTags();
 
 </script>
 </body>
