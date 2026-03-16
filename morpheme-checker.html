@@ -174,26 +174,12 @@
       <button class="btn btn-primary" id="btnAnalyze" onclick="startAnalyze()" style="flex:1;margin-bottom:0;">
         ⚡ 실시간 분석 <span style="font-size:11px;font-weight:400;opacity:0.8;">· 즉시 결과</span>
       </button>
-      <button class="btn" id="btnBatch" onclick="startBatchAnalyze()" style="flex:1;margin-bottom:0;background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;">
-        📦 Batch 분석 <span style="font-size:11px;font-weight:400;opacity:0.8;">· 50% 저렴 · 1~4시간</span>
+      <button class="btn" disabled title="Batch API는 서버 환경에서만 지원됩니다. 5월 자동화 전환 시 적용 예정입니다." style="flex:1;margin-bottom:0;background:#2e1065;color:#7c6db0;cursor:not-allowed;opacity:0.5;border:1px solid #4c1d95;">
+        📦 Batch 분석 <span style="font-size:11px;font-weight:400;">· 5월 적용 예정</span>
       </button>
     </div>
     <button id="btnCancel" class="btn btn-red hidden" onclick="cancelAnalysis()" style="margin-bottom:16px;">⏹ 분석 중단</button>
-    <!-- Batch 상태 패널 -->
-    <div id="batchPanel" style="display:none;background:#1e1b4b;border:1px solid #4c1d95;border-radius:12px;padding:16px 20px;margin-bottom:16px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-        <span style="color:#a78bfa;font-weight:700;font-size:14px;">📦 Batch 분석 진행 중</span>
-        <span id="batchStatus" style="font-size:12px;color:#c4b5fd;background:#2e1065;padding:3px 10px;border-radius:8px;">대기중</span>
-      </div>
-      <div style="font-size:12px;color:#7c6db0;margin-bottom:10px;">
-        Job ID: <code id="batchJobId" style="color:#a78bfa;font-size:11px;">-</code>
-      </div>
-      <div style="font-size:12px;color:#9ca3af;margin-bottom:12px;" id="batchDesc">배치 작업이 제출됐어요. 완료까지 1~4시간 소요됩니다.</div>
-      <div style="display:flex;gap:8px;">
-        <button class="btn" onclick="checkBatchResult()" style="background:#4c1d95;color:#e9d5ff;font-size:13px;padding:8px 16px;">🔄 결과 확인</button>
-        <button class="btn" onclick="cancelBatch()" style="background:#3b1d1d;color:#fca5a5;font-size:13px;padding:8px 16px;">❌ 취소</button>
-      </div>
-    </div>
+
 
     <!-- Progress -->
     <div class="progress-box" id="progressBox">
@@ -1078,7 +1064,6 @@ function handleFile(input) {
       grp.style.display = 'flex';
       grp.classList.remove('hidden');
       document.getElementById('btnAnalyze').textContent = `⚡ 실시간 분석 (${parsedRows.length.toLocaleString()}건)`;
-      document.getElementById('btnBatch').textContent = `📦 Batch 분석 (${parsedRows.length.toLocaleString()}건) · 50% 저렴`;
     } catch(err) { showError('파일 파싱 오류: ' + err.message); }
   };
   reader.readAsArrayBuffer(f);
@@ -1255,7 +1240,7 @@ function checkBatchResult() {
       dateStr = saved.dateStr;
       analysisResults = saved.skipped.concat(allParsed);
 
-      document.getElementById('batchPanel').style.display = 'none';
+    
       sessionStorage.removeItem('danawa_batch_job');
       renderResults();
       showToast('Batch 분석 완료! ' + allParsed.length.toLocaleString() + '건 처리됐어요.');
@@ -1267,7 +1252,7 @@ function checkBatchResult() {
 function cancelBatch() {
   var apiKey = document.getElementById('apiKey').value.trim();
   if (!batchJobId || !apiKey) {
-    document.getElementById('batchPanel').style.display = 'none';
+  
     sessionStorage.removeItem('danawa_batch_job');
     return;
   }
@@ -1281,7 +1266,7 @@ function cancelBatch() {
     }
   }).finally(function() {
     if (batchPollTimer) { clearInterval(batchPollTimer); batchPollTimer = null; }
-    document.getElementById('batchPanel').style.display = 'none';
+  
     sessionStorage.removeItem('danawa_batch_job');
     showToast('Batch 작업이 취소됐어요.');
   });
@@ -1921,7 +1906,7 @@ function resetAll() {
   grp.style.display = 'none';
   grp.classList.add('hidden');
   document.getElementById('btnAnalyze').disabled = false;
-  document.getElementById('batchPanel').style.display = 'none';
+
   document.getElementById('statsGrid').classList.add('hidden');
   document.getElementById('btnDownload').classList.add('hidden');
   document.getElementById('tableBox').classList.add('hidden');
