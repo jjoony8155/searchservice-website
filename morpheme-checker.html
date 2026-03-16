@@ -771,6 +771,62 @@ const BUILTIN_NORMAL_CASES = [
   {id:'n_3', type:'corrected', morpheme:'플라이, 워크',      wrong:'플라이,워크',   correct:'플라이워크',     memo:'플라이(fly)+워크(work) 각각 의미O',     addedAt:''},
   {id:'n_4', type:'corrected', morpheme:'터치, 안티, 포그',  wrong:'터치,안티,포그',correct:'터치안티포그',   memo:'터치+안티+포그 모두 독립 의미O',         addedAt:''},
   {id:'n_5', type:'corrected', morpheme:'하드, 라이트',      wrong:'하드,라이트',   correct:'하드라이트',     memo:'하드(hard)+라이트(light) 각각 의미O',   addedAt:''},
+  {id:'n_6', type:'corrected', morpheme:'인, 후드',           wrong:'인,후드',       correct:'인후드',         memo:'인(in)+후드(hood) 외래어 합성어',        addedAt:''},
+  {id:'n_7', type:'corrected', morpheme:'숏, 슬리브',         wrong:'숏,슬리브',     correct:'숏슬리브',       memo:'숏(short)+슬리브(sleeve) 외래어 합성어', addedAt:''},
+  {id:'n_8', type:'corrected', morpheme:'소프트, 쉘',         wrong:'소프트,쉘',     correct:'소프트쉘',       memo:'소프트(soft)+쉘(shell) 외래어 합성어',   addedAt:''},
+  {id:'n_9',  type:'corrected', morpheme:'반, 집업, 하이, 넥',  wrong:'반,집업,하이,넥',   correct:'반집업,하이넥',    memo:'반집업+하이넥 각각 독립 합성어',               addedAt:''},
+  // ── 넥라인 합성어 ──
+  {id:'n_10', type:'corrected', morpheme:'라운드, 넥',          wrong:'라운드,넥',         correct:'라운드넥',         memo:'라운드(round)+넥(neck) 외래어',               addedAt:''},
+  {id:'n_11', type:'corrected', morpheme:'터틀, 넥',            wrong:'터틀,넥',           correct:'터틀넥',           memo:'터틀(turtle)+넥(neck) 외래어',                addedAt:''},
+  {id:'n_12', type:'corrected', morpheme:'크루, 넥',            wrong:'크루,넥',           correct:'크루넥',           memo:'크루(crew)+넥(neck) 외래어',                  addedAt:''},
+  {id:'n_13', type:'corrected', morpheme:'모크, 넥',            wrong:'모크,넥',           correct:'모크넥',           memo:'모크(mock)+넥(neck) 외래어',                  addedAt:''},
+  {id:'n_14', type:'corrected', morpheme:'카라, 넥',            wrong:'카라,넥',           correct:'카라넥',           memo:'카라(collar)+넥(neck) 외래어',                addedAt:''},
+  {id:'n_15', type:'corrected', morpheme:'브이, 넥',            wrong:'브이,넥',           correct:'브이넥',           memo:'브이(V)+넥(neck) 외래어',                     addedAt:''},
+  {id:'n_16', type:'corrected', morpheme:'하이, 넥',            wrong:'하이,넥',           correct:'하이넥',           memo:'하이(high)+넥(neck) 외래어',                  addedAt:''},
+  // ── 에어 계열 합성어 ──
+  {id:'n_17', type:'corrected', morpheme:'에어, 홀',            wrong:'에어,홀',           correct:'에어홀',           memo:'에어(air)+홀(hole) 외래어',                   addedAt:''},
+  {id:'n_18', type:'corrected', morpheme:'에어, 닷',            wrong:'에어,닷',           correct:'에어닷',           memo:'에어(air)+닷(dot) 외래어',                    addedAt:''},
+  {id:'n_19', type:'corrected', morpheme:'에어, 도트',          wrong:'에어,도트',         correct:'에어도트',         memo:'에어(air)+도트(dot) 외래어',                  addedAt:''},
+  {id:'n_20', type:'corrected', morpheme:'에어, 포스',          wrong:'에어,포스',         correct:'에어포스',         memo:'에어(air)+포스(force) 외래어',                addedAt:''},
+  {id:'n_21', type:'corrected', morpheme:'에어, 맥스',          wrong:'에어,맥스',         correct:'에어맥스',         memo:'에어(air)+맥스(max) 외래어',                  addedAt:''},
+  {id:'n_22', type:'corrected', morpheme:'에어, 프라이어',      wrong:'에어,프라이어',     correct:'에어프라이어',     memo:'에어(air)+프라이어(fryer) 외래어',            addedAt:''},
+  // ── 기능성 소재/제품 합성어 ──
+  {id:'n_23', type:'corrected', morpheme:'드레스, 룸',          wrong:'드레스,룸',         correct:'드레스룸',         memo:'드레스(dress)+룸(room) 외래어',               addedAt:''},
+  {id:'n_24', type:'corrected', morpheme:'프레시, 벤트',        wrong:'프레시,벤트',       correct:'프레시벤트',       memo:'프레시(fresh)+벤트(vent) 외래어',             addedAt:''},
+  {id:'n_25', type:'corrected', morpheme:'핫, 멜트',            wrong:'핫,멜트',           correct:'핫멜트',           memo:'핫(hot)+멜트(melt) 외래어',                   addedAt:''},
+  {id:'n_26', type:'corrected', morpheme:'컬러, 티핑',          wrong:'컬러,티핑',         correct:'컬러티핑',         memo:'컬러(color)+티핑(tipping) 외래어',            addedAt:''},
+  {id:'n_27', type:'corrected', morpheme:'윈드, 플로우',        wrong:'윈드,플로우',       correct:'윈드플로우',       memo:'윈드(wind)+플로우(flow) 외래어',              addedAt:''},
+  {id:'n_28', type:'corrected', morpheme:'윈드, 브레이커',      wrong:'윈드,브레이커',     correct:'윈드브레이커',     memo:'윈드(wind)+브레이커(breaker) 외래어',         addedAt:''},
+  {id:'n_29', type:'corrected', morpheme:'라이트, 웨이트',      wrong:'라이트,웨이트',     correct:'라이트웨이트',     memo:'라이트(light)+웨이트(weight) 외래어',         addedAt:''},
+  {id:'n_30', type:'corrected', morpheme:'마이크로, 파이버',    wrong:'마이크로,파이버',   correct:'마이크로파이버',   memo:'마이크로(micro)+파이버(fiber) 외래어',        addedAt:''},
+  {id:'n_31', type:'corrected', morpheme:'스팀, 쿡',            wrong:'스팀,쿡',           correct:'스팀쿡',           memo:'스팀(steam)+쿡(cook) 외래어',                 addedAt:''},
+  {id:'n_32', type:'corrected', morpheme:'미드, 센츄리',        wrong:'미드,센츄리',       correct:'미드센츄리',       memo:'미드(mid)+센츄리(century) 외래어',            addedAt:''},
+  // ── 삭스/양말 합성어 ──
+  {id:'n_33', type:'corrected', morpheme:'니, 삭스',            wrong:'니,삭스',           correct:'니삭스',           memo:'니(knee)+삭스(socks) 외래어',                 addedAt:''},
+  {id:'n_34', type:'corrected', morpheme:'크루, 삭스',          wrong:'크루,삭스',         correct:'크루삭스',         memo:'크루(crew)+삭스(socks) 외래어',               addedAt:''},
+  // ── 기타 외래어 합성어 ──
+  {id:'n_35', type:'corrected', morpheme:'로고, 컷',            wrong:'로고,컷',           correct:'로고컷',           memo:'로고(logo)+컷(cut) 외래어',                   addedAt:''},
+  {id:'n_36', type:'corrected', morpheme:'글로우, 커버',        wrong:'글로우,커버',       correct:'글로우커버',       memo:'글로우(glow)+커버(cover) 외래어',             addedAt:''},
+  {id:'n_37', type:'corrected', morpheme:'레빅, 스킨',          wrong:'레빅,스킨',         correct:'레빅스킨',         memo:'레빅+스킨(skin) 합성어',                      addedAt:''},
+  {id:'n_38', type:'corrected', morpheme:'풀, 커버',            wrong:'풀,커버',           correct:'풀커버',           memo:'풀(full)+커버(cover) 외래어',                 addedAt:''},
+  {id:'n_39', type:'corrected', morpheme:'풀, 집업',            wrong:'풀,집업',           correct:'풀집업',           memo:'풀(full)+집업(zip-up) 외래어',                addedAt:''},
+  {id:'n_40', type:'corrected', morpheme:'핑거, 링',            wrong:'핑거,링',           correct:'핑거링',           memo:'핑거(finger)+링(ring) 외래어',                addedAt:''},
+  {id:'n_41', type:'corrected', morpheme:'이어, 머프',          wrong:'이어,머프',         correct:'이어머프',         memo:'이어(ear)+머프(muff) 외래어',                 addedAt:''},
+  {id:'n_42', type:'corrected', morpheme:'이어, 커프',          wrong:'이어,커프',         correct:'이어커프',         memo:'이어(ear)+커프(cuff) 외래어',                 addedAt:''},
+  {id:'n_43', type:'corrected', morpheme:'메이크, 업',          wrong:'메이크,업',         correct:'메이크업',         memo:'메이크(make)+업(up) 외래어',                  addedAt:''},
+  {id:'n_44', type:'corrected', morpheme:'슬링, 백',            wrong:'슬링,백',           correct:'슬링백',           memo:'슬링(sling)+백(bag) 외래어',                  addedAt:''},
+  {id:'n_45', type:'corrected', morpheme:'스웨트, 셔츠',        wrong:'스웨트,셔츠',       correct:'스웨트셔츠',       memo:'스웨트(sweat)+셔츠(shirts) 외래어',           addedAt:''},
+  {id:'n_46', type:'corrected', morpheme:'스웻, 셔츠',          wrong:'스웻,셔츠',         correct:'스웻셔츠',         memo:'스웻(sweat)+셔츠(shirts) 외래어',             addedAt:''},
+  {id:'n_47', type:'corrected', morpheme:'니트, 웨어',          wrong:'니트,웨어',         correct:'니트웨어',         memo:'니트(knit)+웨어(wear) 외래어',                addedAt:''},
+  {id:'n_48', type:'corrected', morpheme:'패치, 워크',          wrong:'패치,워크',         correct:'패치워크',         memo:'패치(patch)+워크(work) 외래어',               addedAt:''},
+  {id:'n_49', type:'corrected', morpheme:'올, 오버',            wrong:'올,오버',           correct:'올오버',           memo:'올(all)+오버(over) 외래어',                   addedAt:''},
+  {id:'n_50', type:'corrected', morpheme:'바디, 수트',          wrong:'바디,수트',         correct:'바디수트',         memo:'바디(body)+수트(suit) 외래어',                addedAt:''},
+  {id:'n_51', type:'corrected', morpheme:'바디, 슈트',          wrong:'바디,슈트',         correct:'바디슈트',         memo:'바디(body)+슈트(suit) 외래어',                addedAt:''},
+  {id:'n_52', type:'corrected', morpheme:'헤어, 핀',            wrong:'헤어,핀',           correct:'헤어핀',           memo:'헤어(hair)+핀(pin) 외래어',                   addedAt:''},
+  {id:'n_53', type:'corrected', morpheme:'핸드, 크림',          wrong:'핸드,크림',         correct:'핸드크림',         memo:'핸드(hand)+크림(cream) 외래어',               addedAt:''},
+  {id:'n_54', type:'corrected', morpheme:'헤드, 스파',          wrong:'헤드,스파',         correct:'헤드스파',         memo:'헤드(head)+스파(spa) 외래어',                 addedAt:''},
+  {id:'n_55', type:'corrected', morpheme:'클린, 노트',          wrong:'클린,노트',         correct:'클린노트',         memo:'클린(clean)+노트(note) 외래어',               addedAt:''},
+  {id:'n_56', type:'corrected', morpheme:'팻, 버너',            wrong:'팻,버너',           correct:'팻버너',           memo:'팻(fat)+버너(burner) 외래어',                 addedAt:''},
 ];
 let correctedCases = [...BUILTIN_NORMAL_CASES]; // 교정 케이스 (외래어 정상 케이스 포함)
 let deletedBuiltinIds = []; // 삭제된 기본 케이스 ID
@@ -944,6 +1000,9 @@ function buildSystemPrompt() {
 - "핏감"이 [핏, 감]으로 분리됨 → 오분석 (감=1자 한글이며 외래어 아님 → 합성어 조건 불충족)
 - "숏형"이 [숏, 형]으로 분리됨 → 오분석 (형=1자 한글이며 외래어 아님 → 합성어 조건 불충족)
 - "인팩"이 [인, 팩]으로 분리됨 → 합성어 (인=in 외래어, 팩=pack 외래어 → 둘 다 외래어이므로 인정)
+- "인후드"가 [인, 후드]로 분리됨 → 합성어 (인=in 외래어, 후드=hood 외래어)
+- "숏슬리브"가 [숏, 슬리브]로 분리됨 → 합성어 (숏=short, 슬리브=sleeve 외래어)
+- "소프트쉘"이 [소프트, 쉘]로 분리됨 → 합성어 (소프트=soft, 쉘=shell 외래어)
 - "롱기장"이 [롱, 기장]으로 분리됨 → 합성어 (롱=long 외래어, 기장=한글 2자 의미O → 인정)
 - "카라티"가 [카라, 티]로 분리됨 → 합성어 (카라=collar 외래어, 티=T/tee 1자 외래어 인정)
 - "고워크"가 [고, 워크]로 분리됨 → 합성어 (고=go 1자 외래어 인정, 워크=work 외래어)
