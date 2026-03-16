@@ -194,12 +194,13 @@
     <div class="error-box" id="errorBox"></div>
 
     <!-- Stats -->
-    <div class="stats-grid hidden" id="statsGrid" style="grid-template-columns:repeat(5,1fr);">
+    <div class="stats-grid hidden" id="statsGrid" style="grid-template-columns:repeat(6,1fr);">
       <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-value" id="statTotal" style="color:#60a5fa">0</div><div class="stat-label">전체 분석</div></div>
       <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-value" id="statY" style="color:#f87171">0</div><div id="statErrorPct" style="font-size:12px;font-weight:600;color:#f87171;margin-top:2px;">0%</div><div class="stat-label">오분석</div></div>
       <div class="stat-card"><div class="stat-icon">🔗</div><div class="stat-value" id="statC" style="color:#a78bfa">0</div><div class="stat-label">합성어</div></div>
       <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" id="statN" style="color:#4ade80">0</div><div class="stat-label">정상</div></div>
       <div class="stat-card"><div class="stat-icon">🆕</div><div class="stat-value" id="statNew" style="color:#fb923c">0</div><div class="stat-label">신규단어 후보</div></div>
+      <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-value" id="statDup" style="color:#38bdf8">0</div><div class="stat-label">중복 재사용</div></div>
     </div>
 
     <button class="btn btn-green hidden" id="btnDownload" onclick="downloadExcel()">⬇️ 검수결과 엑셀 다운로드</button>
@@ -929,19 +930,30 @@ function buildSystemPrompt() {
 분리된 각 파트가 모두 외래어이거나 뜻이 있는 2자 이상 한글 단어인 경우.
 합성어는 오분석이 아니지만, 붙여쓰기 시 검색에서 누락될 수 있어 복합어 등록이 필요한 케이스입니다.
 조건: 분리된 모든 파트가 각각 ① 외래어(영어 등 외국어 음차) 또는 ② 뜻이 있는 한글 단어(2자 이상)이어야 합니다.
-단, 단순 한글 조사/어미/1자 단어는 제외 — 외래어 파트와 조합된 경우에는 인정합니다.
+단, 단순 한글 조사/어미/1자 단어는 제외 — 아래 예외 인정 조건에 해당하면 인정합니다.
+
+[한글 1자 외래어 음차 예외 — 아래 단어는 1자이지만 외래어로 인정]
+숏(short), 롱(long), 빅(big), 탑(top), 핏(fit), 온(on), 인(in), 업(up), 뉴(new)
+→ 단, 이 단어들이 합성어로 인정되려면 나머지 파트가 반드시 ① 외래어 또는 ② 한글 2자 이상이어야 함
+→ 나머지 파트가 한글 1자(외래어 아님)이면 합성어 불가 → 오분석으로 판정
+
 합성어 예시:
+- "숏사각"이 [숏, 사각]으로 분리됨 → 합성어 (숏=short 1자 외래어 인정, 사각=한글 2자 의미O)
+- "롱패딩"이 [롱, 패딩]으로 분리됨 → 합성어 (롱=long 1자 외래어 인정, 패딩=padding 외래어)
+- "빅사이즈"가 [빅, 사이즈]로 분리됨 → 합성어 (빅=big 1자 외래어 인정, 사이즈=size 외래어)
+- "핏감"이 [핏, 감]으로 분리됨 → 오분석 (감=1자 한글이며 외래어 아님 → 합성어 조건 불충족)
+- "숏형"이 [숏, 형]으로 분리됨 → 오분석 (형=1자 한글이며 외래어 아님 → 합성어 조건 불충족)
+- "인팩"이 [인, 팩]으로 분리됨 → 합성어 (인=in 외래어, 팩=pack 외래어 → 둘 다 외래어이므로 인정)
+- "롱기장"이 [롱, 기장]으로 분리됨 → 합성어 (롱=long 외래어, 기장=한글 2자 의미O → 인정)
 - "반바지"가 [반, 바지]로 분리됨 → 합성어 (반=2자 한글 의미O, 바지=2자 한글 의미O)
 - "세미크롭"이 [세미, 크롭]으로 분리됨 → 합성어 (세미=semi 외래어, 크롭=crop 외래어)
-- "반집업"이 [반, 집업]으로 분리됨 → 합성어 (반=한글, 집업=zip-up 외래어)
+- "반집업"이 [반, 집업]으로 분리됨 → 합성어 (반=한글 2자, 집업=zip-up 외래어)
 - "스노우피크"가 [스노우, 피크]로 분리됨 → 합성어 (스노우=snow, 피크=peak 모두 외래어)
 - "에어플로우"가 [에어, 플로우]로 분리됨 → 합성어 (에어=air, 플로우=flow 모두 외래어)
-- "클라우드틸트"가 [클라우드, 틸트]로 분리됨 → 합성어 (cloud+tilt 외래어)
-- "클라우드스위프트"가 [클라우드, 스위프트]로 분리됨 → 합성어 (cloud+swift 외래어)
 - "내셔널지오그래픽"이 [내셔널, 지오그래픽]으로 분리됨 → 합성어 (national+geographic 외래어)
 - "세르지오타키니"가 [세르지오, 타키니]로 분리됨 → 합성어 (고유명사 각 파트 의미O)
-- "슬립온"이 [슬립, 온]으로 분리됨 → 합성어 (slip+on 외래어 — on은 1자지만 외래어이므로 인정)
-- "세미오버핏"이 [세미, 오버, 핏]으로 분리됨 → 합성어 (semi+over+fit 외래어)
+- "슬립온"이 [슬립, 온]으로 분리됨 → 합성어 (slip+on 외래어 — on은 1자 외래어 인정)
+- "세미오버핏"이 [세미, 오버, 핏]으로 분리됨 → 합성어 (semi+over+fit 외래어 — 핏은 1자 외래어 인정)
 - "힐링쉴드"가 [힐링, 쉴드]로 분리됨 → 합성어 (healing+shield 외래어)
 - "캐디백"이 [캐디, 백]으로 분리됨 → 합성어 (caddie+bag 외래어)
 
@@ -1306,14 +1318,34 @@ function startAnalyze() {
   var rowsToAnalyze = filterResult.toAnalyze;
   analysisResults = skippedResults.slice(); // 필터 통과한 것 먼저 담기
 
+  // 중복 형태소 제거 — 동일한 _filteredMorpheme는 한 번만 AI 분석
+  var morphemeCache = {}; // key: filteredMorpheme, value: 첫 번째 row
+  var dedupedRows = [];   // 실제 AI 분석할 대표 행들
+  var dupMap = {};        // key: 중복 row의 no, value: 대표 row의 no
+
+  rowsToAnalyze.forEach(function(r) {
+    var key = (r._filteredMorpheme || r.형태소분석).trim();
+    if (morphemeCache[key] !== undefined) {
+      // 이미 분석된 형태소 → 대표 행 no 기록
+      dupMap[r.no] = morphemeCache[key];
+    } else {
+      morphemeCache[key] = r.no;
+      dedupedRows.push(r);
+    }
+  });
+
+  var dupCount = rowsToAnalyze.length - dedupedRows.length;
+  rowsToAnalyze = dedupedRows;
+
   var skippedCount = skippedResults.length;
   var analyzeTotal = rowsToAnalyze.length;
   // 1만건 이상 시 예상시간 안내
   var estMin = Math.round(analyzeTotal / BATCH / 3 * 4 / 60); // 배치당 4초 가정
+  var dupMsg = dupCount > 0 ? ' · 중복 제거 ' + dupCount.toLocaleString() + '건' : '';
   var timeMsg = analyzeTotal > 3000
     ? ' · 예상 약 ' + estMin + '분 소요 (동시 3개 처리) · 탭을 닫지 마세요'
     : '';
-  showToast('규칙 필터: ' + skippedCount.toLocaleString() + '건 처리 · ' + analyzeTotal.toLocaleString() + '건 AI 분석' + timeMsg);
+  showToast('규칙 필터: ' + skippedCount.toLocaleString() + '건' + dupMsg + ' · ' + analyzeTotal.toLocaleString() + '건 AI 분석' + timeMsg);
 
   // 단일 배치 API 호출 (재시도 포함)
   function callBatchAPI(batch, retryCount) {
@@ -1384,6 +1416,20 @@ function startAnalyze() {
   var nextIdx = 0;
 
   function finishAll() {
+    // 중복 제거된 행들에 대표 행의 결과 복사
+    if (Object.keys(dupMap).length > 0) {
+      var rmTemp = {};
+      analysisResults.forEach(function(r) { rmTemp[r.no] = r; });
+      Object.keys(dupMap).forEach(function(dupNo) {
+        var repNo = dupMap[dupNo];
+        var repResult = rmTemp[repNo];
+        if (repResult) {
+          // 대표 행 결과를 복사하되 no만 중복 행 번호로 교체
+          var copied = Object.assign({}, repResult, { no: Number(dupNo) });
+          analysisResults.push(copied);
+        }
+      });
+    }
     document.getElementById('progressBox').style.display = 'none';
     document.getElementById('btnCancel').classList.add('hidden');
     document.getElementById('btnAnalyze').disabled = false;
@@ -1594,6 +1640,8 @@ function renderResults() {
   if (pctEl) pctEl.textContent = parsedRows.length > 0 ? ((yCount/parsedRows.length)*100).toFixed(1)+'%' : '0%';
   document.getElementById('statN').textContent = nCount.toLocaleString();
   document.getElementById('statNew').textContent = newCount.toLocaleString();
+  const dupEl = document.getElementById('statDup');
+  if (dupEl) dupEl.textContent = (typeof dupMap !== 'undefined' ? Object.keys(dupMap).length : 0).toLocaleString();
   document.getElementById('statsGrid').classList.remove('hidden');
   document.getElementById('btnDownload').classList.remove('hidden');
 
