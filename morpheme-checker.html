@@ -186,9 +186,10 @@
     <div class="error-box" id="errorBox"></div>
 
     <!-- Stats -->
-    <div class="stats-grid hidden" id="statsGrid">
+    <div class="stats-grid hidden" id="statsGrid" style="grid-template-columns:repeat(5,1fr);">
       <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-value" id="statTotal" style="color:#60a5fa">0</div><div class="stat-label">전체 분석</div></div>
-      <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-value" id="statY" style="color:#f87171">0</div><div id="statErrorPct" style="font-size:12px;font-weight:600;color:#f87171;margin-top:2px;">0%</div><div class="stat-label">오분석 의심</div></div>
+      <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-value" id="statY" style="color:#f87171">0</div><div id="statErrorPct" style="font-size:12px;font-weight:600;color:#f87171;margin-top:2px;">0%</div><div class="stat-label">오분석</div></div>
+      <div class="stat-card"><div class="stat-icon">🔗</div><div class="stat-value" id="statC" style="color:#a78bfa">0</div><div class="stat-label">합성어</div></div>
       <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" id="statN" style="color:#4ade80">0</div><div class="stat-label">정상</div></div>
       <div class="stat-card"><div class="stat-icon">🆕</div><div class="stat-value" id="statNew" style="color:#fb923c">0</div><div class="stat-label">신규단어 후보</div></div>
     </div>
@@ -198,16 +199,31 @@
     <!-- 오분석 테이블 -->
     <div class="table-box hidden" id="tableBox">
       <div class="table-header">
-        <span class="table-title">⚠️ 오분석 의심 목록</span>
+        <span class="table-title">⚠️ 오분석 목록</span>
         <span class="table-count" id="tableCount" style="color:#f87171"></span>
       </div>
       <div class="table-scroll">
         <table>
-          <thead><tr><th>no</th><th>제조사명</th><th>브랜드명</th><th>기준상품명</th><th>오분석 내용</th><th>코멘트</th><th>교정</th></tr></thead>
+          <thead><tr><th>no</th><th>제조사명</th><th>브랜드명</th><th>기준상품명</th><th>내용</th><th>코멘트</th><th>교정</th></tr></thead>
           <tbody id="tableBody"></tbody>
         </table>
       </div>
       <div class="table-more hidden" id="tableMore"></div>
+    </div>
+
+    <!-- 합성어 테이블 -->
+    <div class="table-box hidden" id="compoundBox">
+      <div class="table-header">
+        <span class="table-title">🔗 합성어 목록 <span style="font-size:11px;font-weight:400;color:#c4b5fd;">(복합어 등록 필요)</span></span>
+        <span class="table-count" id="compoundCount" style="color:#a78bfa"></span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>no</th><th>제조사명</th><th>브랜드명</th><th>기준상품명</th><th>합성어 내용</th><th>코멘트</th></tr></thead>
+          <tbody id="compoundBody"></tbody>
+        </table>
+      </div>
+      <div class="table-more hidden" id="compoundMore"></div>
     </div>
 
     <!-- 신규단어 테이블 -->
@@ -482,7 +498,17 @@
             <td style="padding:8px 12px;text-align:center;"><span style="background:#dcfce7;color:#16a34a;padding:1px 7px;border-radius:8px;font-size:11px;font-weight:700;">정상</span></td>
             <td style="padding:8px 12px;color:#888;">touch + anti + fog 모두 의미O</td>
           </tr>
+          <tr style="border-bottom:1px solid #f3f4f6;">
+            <td style="padding:8px 12px;font-family:monospace;">반바지 → [반, 바지]</td>
+            <td style="padding:8px 12px;text-align:center;"><span style="background:#ede9fe;color:#7c3aed;padding:1px 7px;border-radius:8px;font-size:11px;font-weight:700;">합성어</span></td>
+            <td style="padding:8px 12px;color:#888;">반(한글2자) + 바지(한글2자) 각각 의미O</td>
+          </tr>
           <tr style="border-bottom:1px solid #f3f4f6;background:#fafafa;">
+            <td style="padding:8px 12px;font-family:monospace;">세미크롭 → [세미, 크롭]</td>
+            <td style="padding:8px 12px;text-align:center;"><span style="background:#ede9fe;color:#7c3aed;padding:1px 7px;border-radius:8px;font-size:11px;font-weight:700;">합성어</span></td>
+            <td style="padding:8px 12px;color:#888;">semi + crop 외래어 각각 의미O</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f3f4f6;">
             <td style="padding:8px 12px;font-family:monospace;">뉴발란스 → [뉴, 발란스]</td>
             <td style="padding:8px 12px;text-align:center;"><span style="background:#fee2e2;color:#dc2626;padding:1px 7px;border-radius:8px;font-size:11px;font-weight:700;">오분석</span></td>
             <td style="padding:8px 12px;color:#888;">브랜드 고유명사, 발란스 단독 의미X</td>
@@ -541,7 +567,7 @@
         </tbody>
       </table>
       <div style="margin-top:10px;padding:10px 14px;background:#faf5ff;border:1px solid #e9d5ff;border-radius:9px;font-size:12px;color:#6b21a8;">
-        💡 오분석(Y)이면서 동시에 신규단어(Y)일 수 있습니다. 두 필드 모두 Y로 표기됩니다.
+        💡 <b>합성어</b>는 오분석이 아니지만, 붙여쓰기 시 검색 누락 방지를 위해 <b>복합어 등록 필요</b>로 신규단어여부=Y 표기됩니다.<br>        &nbsp;&nbsp;&nbsp;&nbsp;오분석이면서 동시에 신규단어일 수도 있습니다.
       </div>
     </div>
 
@@ -888,18 +914,44 @@ function buildSystemPrompt() {
 - "lg전자"가 [lg, 전자]로 분리됨 → 정상 (패턴 경계 분리)
 - "2025그램"이 [2025, 그램]으로 분리됨 → 정상
 
-[외래어 합성어 판단 기준 - 중요]
-분리된 각 파트가 독립적인 외래어 의미를 가지면 정상 분리로 판단합니다.
-- "힐링쉴드"가 [힐링, 쉴드]로 분리됨 → 정상 (힐링=healing 의미O, 쉴드=shield 의미O)
-- "캐디백"이 [캐디, 백]으로 분리됨 → 정상 (캐디=caddie 의미O, 백=bag 의미O)
-- "레이스업"이 [레이스, 업]으로 분리됨 → 정상 (레이스=lace 의미O, 업=up 의미O)
-- "플라이워크"가 [플라이, 워크]로 분리됨 → 정상 (플라이=fly 의미O, 워크=walk/work 의미O)
-- "터치안티포그"가 [터치, 안티, 포그]로 분리됨 → 정상 (터치=touch, 안티=anti, 포그=fog 모두 의미O)
-- "하드라이트"가 [하드, 라이트]로 분리됨 → 정상 (하드=hard 의미O, 라이트=light 의미O)
-반면, 분리된 파트가 독립적 의미가 없으면 오분석입니다.
-- "뉴발란스"가 [뉴, 발란스]로 분리됨 → 오분석 (브랜드명 고유명사, 발란스는 단독 의미 없음)
+[상태값 3단계 판단 기준 - 중요]
+상태는 반드시 "정상" / "오분석" / "합성어" 중 하나로만 판단합니다.
+
+■ 합성어 (상태="합성어") — 가장 먼저 판단
+분리된 각 파트가 모두 외래어이거나 뜻이 있는 2자 이상 한글 단어인 경우.
+합성어는 오분석이 아니지만, 붙여쓰기 시 검색에서 누락될 수 있어 복합어 등록이 필요한 케이스입니다.
+조건: 분리된 모든 파트가 각각 ① 외래어(영어 등 외국어 음차) 또는 ② 뜻이 있는 한글 단어(2자 이상)이어야 합니다.
+단, 단순 한글 조사/어미/1자 단어는 제외 — 외래어 파트와 조합된 경우에는 인정합니다.
+합성어 예시:
+- "반바지"가 [반, 바지]로 분리됨 → 합성어 (반=2자 한글 의미O, 바지=2자 한글 의미O)
+- "세미크롭"이 [세미, 크롭]으로 분리됨 → 합성어 (세미=semi 외래어, 크롭=crop 외래어)
+- "반집업"이 [반, 집업]으로 분리됨 → 합성어 (반=한글, 집업=zip-up 외래어)
+- "스노우피크"가 [스노우, 피크]로 분리됨 → 합성어 (스노우=snow, 피크=peak 모두 외래어)
+- "에어플로우"가 [에어, 플로우]로 분리됨 → 합성어 (에어=air, 플로우=flow 모두 외래어)
+- "클라우드틸트"가 [클라우드, 틸트]로 분리됨 → 합성어 (cloud+tilt 외래어)
+- "클라우드스위프트"가 [클라우드, 스위프트]로 분리됨 → 합성어 (cloud+swift 외래어)
+- "내셔널지오그래픽"이 [내셔널, 지오그래픽]으로 분리됨 → 합성어 (national+geographic 외래어)
+- "세르지오타키니"가 [세르지오, 타키니]로 분리됨 → 합성어 (고유명사 각 파트 의미O)
+- "슬립온"이 [슬립, 온]으로 분리됨 → 합성어 (slip+on 외래어 — on은 1자지만 외래어이므로 인정)
+- "세미오버핏"이 [세미, 오버, 핏]으로 분리됨 → 합성어 (semi+over+fit 외래어)
+- "힐링쉴드"가 [힐링, 쉴드]로 분리됨 → 합성어 (healing+shield 외래어)
+- "캐디백"이 [캐디, 백]으로 분리됨 → 합성어 (caddie+bag 외래어)
+
+■ 오분석 (상태="오분석")
+분리된 파트 중 하나라도 단독으로 의미가 없는 음절 조각인 경우.
+- "뉴발란스"가 [뉴, 발란스]로 분리됨 → 오분석 (발란스는 외래어 단독 의미 없음)
 - "이클립테인"이 [이클립, 테인]으로 분리됨 → 오분석 (조어, 각 조각에 의미 없음)
-- "아이앤"이 [아이, 앤]으로 분리됨 → 오분석 (이니셜 조합, 각 조각에 독립적 의미 없음)
+- "아이앤"이 [아이, 앤]으로 분리됨 → 오분석 (이니셜 조합, 의미 없음)
+- "푸드렐라"가 [푸, 드렐라]로 분리됨 → 오분석 (의미없는 음절 조각)
+
+■ 정상 (상태="정상")
+분리가 올바르거나, 영숫혼합 모델번호, 단위명 등 규칙 처리된 경우.
+특히 아래 경우는 반드시 정상으로 처리합니다:
+- 형태소 분리 결과가 상품명의 띄어쓰기와 일치하는 경우
+  예) 상품명 "드 말카 재킷" → 형태소 "드, 말카, 재킷" → 정상 (상품명에서 원래 띄어 쓰는 단어)
+  예) 상품명 "드 쾨흐 셔츠" → 형태소 "드, 쾨흐, 셔츠" → 정상
+  예) 상품명 "페탈르 다무르" → 형태소 "페탈르, 다무르" → 정상
+  이 경우 신규단어 제안도 하지 않습니다.
 
 [실제 오분석 예시 - 이 패턴을 학습하세요]
 아래는 "잘못분리된형태소(쉼표구분) → 올바른단어(쉼표구분)" 형식입니다.
@@ -911,6 +963,8 @@ ${normalLines ? '\n[정상으로 확인된 케이스 - 오분석으로 감지하
 
 유형 1. 오분석된 고유명사 (브랜드/제품명) → 비고: "신규브랜드" 또는 "사전등록필요"
 - 형태소가 잘못 분리된 브랜드명, 제품명, 외래어 고유명사
+- 단, 형태소 분리가 상품명의 띄어쓰기와 일치하는 경우에는 신규단어 제안 금지
+  예) 상품명 "드 말카" → 형태소 "드, 말카" → 신규단어 제안 안 함 (원래 띄어 쓰는 단어)
 - 예시:
   상품명 "카펜더 팬츠" 형태소 "카,펜더" → 신규단어후보: "카펜더", 비고: "사전등록필요"
   상품명 "텔루릭스 자켓" 형태소 "텔,루릭,스" → 신규단어후보: "텔루릭스", 비고: "신규브랜드"
@@ -934,15 +988,20 @@ ${normalLines ? '\n[정상으로 확인된 케이스 - 오분석으로 감지하
 
 [응답 규칙]
 - 반드시 JSON 배열만 응답. 다른 텍스트 절대 금지.
-- 형식: [{"no": 번호, "오분석유무": "Y" 또는 "N", "내용": "잘못분리된형태소 → 올바른단어", "코멘트": "간략한 이유", "신규단어여부": "Y" 또는 "N", "신규단어후보": "신규단어1, 신규단어2", "신규단어비고": "동의어등록필요/신규브랜드 등"}]
-- "내용" 필드 작성 규칙: 반드시 "형태소분석에 나온 잘못된 조각들 → 올바르게 인식되어야 할 단어" 순서로 작성
-  - 올바른 예: "푸,드렐라 → 푸드렐라" (잘못된 조각이 왼쪽, 올바른 단어가 오른쪽)
-  - 잘못된 예: "푸드렐라 → 푸,드렐라" (이렇게 뒤집어 쓰면 안 됨)
+- 형식: [{"no": 번호, "상태": "정상" 또는 "오분석" 또는 "합성어", "내용": "분리된형태소 → 올바른단어", "코멘트": "간략한 이유", "신규단어여부": "Y" 또는 "N", "신규단어후보": "신규단어1, 신규단어2", "신규단어비고": "동의어등록필요/신규브랜드/복합어등록필요 등"}]
+- "상태" 판단 순서: 합성어 조건 먼저 확인 → 해당하면 "합성어" / 의미없는 조각이면 "오분석" / 그 외 "정상"
+- "내용" 필드: 분리된 형태소 조각들 → 합쳐진 올바른 단어 형태로 작성 (오분석, 합성어 모두 동일)
+  - 올바른 예: "세미,크롭 → 세미크롭", "푸,드렐라 → 푸드렐라"
 - 정상이면 내용/코멘트는 빈 문자열로
+- 합성어는 신규단어여부="Y", 신규단어비고="복합어등록필요"로 표기
 - 신규단어가 없으면 신규단어여부="N", 신규단어후보="", 신규단어비고=""
 - 신규단어 탐지 기준 3가지 유형 중 하나라도 해당하면 반드시 신규단어여부="Y"로 표기
-- 오분석(Y)이면서 동시에 신규단어(Y)일 수 있음 — 두 필드 모두 Y로 표기 가능
-- 신규단어후보는 올바른 단어 형태로 기재 (잘못 분리된 조각 말고, 합쳐진 완성형)`;
+- 오분석이면서 동시에 신규단어일 수 있음 — 두 필드 모두 표기 가능
+- 신규단어후보는 합쳐진 완성형으로 기재
+- [엄격 금지] "내용" 필드에는 반드시 형태소분석에 실제로 존재하는 파트만 사용할 것. 형태소에 없는 단어를 만들어 내거나 조합하는 것은 절대 금지
+- [엄격 금지] "신규단어후보"는 반드시 상품명 또는 형태소분석에 실제로 등장하는 단어만 기재할 것. 상품명/형태소 어디에도 없는 단어를 지어내는 것은 절대 금지
+  잘못된 예) 상품명 "재점화 라이터" 형태소 "재,점화" → 신규단어후보: "재점퍼" (X — 상품명에 없는 단어)
+  올바른 예) 상품명 "재점화 라이터" 형태소 "재,점화" → 상태: 정상, 신규단어 없음 (상품명 기준 정상 어절)`;
 }
 
 // ===================== 분석 변수 =====================
@@ -1136,7 +1195,7 @@ function startAnalyze() {
       })
       .catch(function(err) {
         batch.forEach(function(r) {
-          analysisResults.push({ no: r.no, 오분석유무: 'N', 내용: '', 코멘트: '분석실패: ' + err.message });
+          analysisResults.push({ no: r.no, 상태: '정상', 내용: '', 코멘트: '분석실패: ' + err.message });
         });
       })
       .then(function() {
@@ -1190,7 +1249,7 @@ function applyRuleFilter(rows) {
     var result = eojeolBasedFilter(r);
     if (result.allSkipped) {
       skipped.push({
-        no: r.no, 오분석유무: 'N', 내용: '', 코멘트: '규칙필터: 정상패턴',
+        no: r.no, 상태: '정상', 내용: '', 코멘트: '규칙필터: 정상패턴',
         신규단어여부: 'N', 신규단어후보: ''
       });
     } else {
@@ -1290,12 +1349,14 @@ function eojeolBasedFilter(r) {
 function renderResults() {
   const rm = {};
   analysisResults.forEach(r => { rm[r.no] = r; });
-  const yCount = analysisResults.filter(r => r.오분석유무 === 'Y').length;
-  const nCount = analysisResults.filter(r => r.오분석유무 === 'N').length;
-  const newCount = analysisResults.filter(r => r.신규단어여부 === 'Y').length;
+  const yCount  = analysisResults.filter(r => r.상태 === '오분석').length;
+  const cCount  = analysisResults.filter(r => r.상태 === '합성어').length;
+  const nCount  = analysisResults.filter(r => r.상태 === '정상').length;
+  const newCount= analysisResults.filter(r => r.신규단어여부 === 'Y').length;
 
   document.getElementById('statTotal').textContent = parsedRows.length.toLocaleString();
   document.getElementById('statY').textContent = yCount.toLocaleString();
+  document.getElementById('statC').textContent = cCount.toLocaleString();
   const pctEl = document.getElementById('statErrorPct');
   if (pctEl) pctEl.textContent = parsedRows.length > 0 ? ((yCount/parsedRows.length)*100).toFixed(1)+'%' : '0%';
   document.getElementById('statN').textContent = nCount.toLocaleString();
@@ -1304,7 +1365,7 @@ function renderResults() {
   document.getElementById('btnDownload').classList.remove('hidden');
 
   // 오분석 테이블
-  const yRows = parsedRows.filter(r => rm[r.no]?.오분석유무 === 'Y');
+  const yRows = parsedRows.filter(r => rm[r.no]?.상태 === '오분석');
   if (yRows.length > 0) {
     document.getElementById('tableCount').textContent = `${yRows.length}건`;
     const tbody = document.getElementById('tableBody');
@@ -1333,6 +1394,33 @@ function renderResults() {
       const more = document.getElementById('tableMore');
       more.textContent = `상위 100건 미리보기 · 전체 ${yRows.length}건은 엑셀에서 확인`;
       more.classList.remove('hidden');
+    }
+  }
+
+  // 합성어 테이블
+  const cRows = parsedRows.filter(r => rm[r.no]?.상태 === '합성어');
+  if (cRows.length > 0) {
+    document.getElementById('compoundCount').textContent = `${cRows.length}건`;
+    const tbodyC = document.getElementById('compoundBody');
+    tbodyC.innerHTML = '';
+    cRows.slice(0, 100).forEach(r => {
+      const res = rm[r.no] || {};
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="td-no">${r.no}</td>
+        <td class="td-muted">${esc(r.제조사명)}</td>
+        <td class="td-muted">${esc(r.브랜드명)}</td>
+        <td class="td-ellipsis" title="${esc(r.기준상품명)}">${esc(r.기준상품명)}</td>
+        <td style="color:#a78bfa;font-size:13px;">${esc(res.내용 || '')}</td>
+        <td class="td-comment" title="${esc(res.코멘트 || '')}">${esc(res.코멘트 || '')}</td>
+      `;
+      tbodyC.appendChild(tr);
+    });
+    document.getElementById('compoundBox').classList.remove('hidden');
+    if (cRows.length > 100) {
+      const moreC = document.getElementById('compoundMore');
+      moreC.textContent = `상위 100건 미리보기 · 전체 ${cRows.length}건은 엑셀에서 확인`;
+      moreC.classList.remove('hidden');
     }
   }
 
@@ -1399,7 +1487,7 @@ function submitCorrection() {
   // 결과에서 해당 건 N으로 변경
   const idx = analysisResults.findIndex(r => r.no == corrTargetNo);
   if (idx !== -1) {
-    analysisResults[idx].오분석유무 = 'N';
+    analysisResults[idx].상태 = '정상';
     analysisResults[idx].코멘트 = '[교정] ' + note;
   }
 
@@ -1556,7 +1644,7 @@ function downloadExcel() {
       'no': r.no, '날짜': dateStr,
       '제조사명': r.제조사명, '브랜드명': r.브랜드명,
       '기준상품명': r.기준상품명, '형태소분석': r.형태소분석,
-      '오분석유무': res.오분석유무 || 'N',
+      '상태': res.상태 || '정상',
       '내용': res.내용 || '', '코멘트': res.코멘트 || '',
       '신규단어여부': res.신규단어여부 || 'N',
       '신규단어후보': res.신규단어후보 || '',
@@ -1588,6 +1676,9 @@ function resetAll() {
   document.getElementById('tableBox').classList.add('hidden');
   document.getElementById('tableBody').innerHTML = '';
   document.getElementById('tableMore').classList.add('hidden');
+  document.getElementById('compoundBox').classList.add('hidden');
+  document.getElementById('compoundBody').innerHTML = '';
+  document.getElementById('compoundMore').classList.add('hidden');
   document.getElementById('newWordBox').classList.add('hidden');
   document.getElementById('newWordBody').innerHTML = '';
   document.getElementById('newWordMore').classList.add('hidden');
