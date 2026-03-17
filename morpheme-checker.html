@@ -1327,6 +1327,28 @@ function buildSystemPrompt() {
 - 팜,레스트 → 정상 (팜palm✅ 레스트rest✅)
 - 올,앤,선드리 → 정상 (올all✅ 앤and✅ 선드리sundry✅)
 - 샤인,머스켓 → 정상 (샤인shine✅ 머스켓muscat✅)
+- 프레시,벤트 → 정상 (프레시fresh✅ 벤트vent✅)
+- 뉴,발란스 → 정상 (뉴new✅ 발란스balance✅)
+- 제이,린드버그 → 정상 (제이J✅ 린드버그Lindeberg✅)
+- 블랙,야크 → 정상 (블랙black✅ 야크yak✅)
+- 락,스터드 → 정상 (락rock✅ 스터드stud✅)
+- 잭,바니 → 정상 (잭Jack✅ 바니Bunny✅)
+- 브루넬로,쿠치넬리 → 정상 (브루넬로Brunello✅ 쿠치넬리Cucinelli✅)
+- 비비안,웨스트우드 → 정상 (비비안Vivienne✅ 웨스트우드Westwood✅)
+- 마크,제이콥스 → 정상 (마크Marc✅ 제이콥스Jacobs✅)
+- 카툰,폴라,베어 → 정상 (카툰cartoon✅ 폴라polar✅ 베어bear✅)
+- 러프,웨어 → 정상 (러프rough✅ 웨어wear✅)
+- 밀키,웨이 → 정상 (밀키milky✅ 웨이way✅)
+- 말본,골프 → 정상 (말본Malbon✅ 골프golf✅)
+- 파리,게이츠 → 정상 (파리Paris✅ 게이츠Gates✅)
+- 수,앤,진,골드 → 정상 (수Sue✅ 앤and✅ 진Jin✅ 골드gold✅)
+- 마이클,코어스 → 정상 (마이클Michael✅ 코어스Kors✅)
+- 버킷,햇 → 정상 (버킷bucket✅ 햇hat✅)
+- 보트,슈즈 → 정상 (보트boat✅ 슈즈shoes✅)
+- 베스트,리빙 → 정상 (베스트best✅ 리빙living✅)
+- 골드,랙 → 정상 (골드gold✅ 랙rack✅)
+- 락,브로스 → 정상 (락lock✅ 브로스bros✅)
+- 아크,테릭스 → 정상 (아크Arc✅ 테릭스Teryx✅)
 
 ■ 정상 (상태="정상")
 분리가 올바르거나, 영숫혼합 모델번호, 단위명 등 규칙 처리된 경우.
@@ -1599,6 +1621,7 @@ function checkBatchResult() {
               // 합성어도 정상으로 처리 (형태소 분리가 검색에 유리)
               if (r.상태 === '합성어') { r.상태 = '정상'; r.내용 = ''; r.코멘트 = ''; r.신규단어여부 = 'N'; r.신규단어후보 = ''; r.신규단어비고 = ''; }
               if (r.상태 === '오분산') r.상태 = '오분석'; // 오타 자동 수정
+              if (r.상태 === '오분식') r.상태 = '오분석'; // 오타 자동 수정
               if (!r.상태) r.상태 = '정상';
               return r;
             });
