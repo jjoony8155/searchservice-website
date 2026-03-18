@@ -221,21 +221,6 @@
       <div class="table-more hidden" id="tableMore"></div>
     </div>
 
-    <!-- 합성어 테이블 -->
-    <div class="table-box hidden" id="compoundBox">
-      <div class="table-header">
-        <span class="table-title">🔗 합성어 목록 <span style="font-size:11px;font-weight:400;color:#c4b5fd;">(복합어 등록 필요)</span></span>
-        <span class="table-count" id="compoundCount" style="color:#a78bfa"></span>
-      </div>
-      <div class="table-scroll">
-        <table>
-          <thead><tr><th>no</th><th>제조사명</th><th>브랜드명</th><th>기준상품명</th><th>합성어 내용</th><th>코멘트</th></tr></thead>
-          <tbody id="compoundBody"></tbody>
-        </table>
-      </div>
-      <div class="table-more hidden" id="compoundMore"></div>
-    </div>
-
     <!-- 신규단어 테이블 -->
     <div class="table-box hidden" id="newWordBox">
       <div class="table-header">
@@ -559,7 +544,7 @@
       </table>
 
       <!-- 2-2. 외래어 합성어 기준 -->
-      <div style="font-size:12px;font-weight:700;color:#374151;margin-bottom:8px;padding-left:2px;">📌 외래어 합성어 — 분리된 각 파트가 독립 의미를 가지면 정상</div>
+      <div style="font-size:12px;font-weight:700;color:#374151;margin-bottom:8px;padding-left:2px;">📌 외래어/한글 조합 — 분리된 각 파트가 독립 의미를 가지면 정상 (분리가 검색에 유리)</div>
       <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px;">
         <thead><tr style="background:#f3f4f6;">
           <th style="padding:8px 12px;text-align:left;color:#555;border-bottom:1px solid #e5e7eb;">예시</th>
@@ -584,18 +569,18 @@
           </tr>
           <tr style="border-bottom:1px solid #f3f4f6;">
             <td style="padding:8px 12px;font-family:monospace;">반바지 → [반, 바지]</td>
-            <td style="padding:8px 12px;text-align:center;"><span style="background:#ede9fe;color:#7c3aed;padding:1px 7px;border-radius:8px;font-size:11px;font-weight:700;">합성어</span></td>
-            <td style="padding:8px 12px;color:#888;">반(한글2자) + 바지(한글2자) 각각 의미O</td>
+            <td style="padding:8px 12px;text-align:center;"><span style="background:#dcfce7;color:#16a34a;padding:1px 7px;border-radius:8px;font-size:11px;font-weight:700;">정상</span></td>
+            <td style="padding:8px 12px;color:#888;">반(한글2자) + 바지(한글2자) 각각 의미O → 분리가 검색에 유리</td>
           </tr>
           <tr style="border-bottom:1px solid #f3f4f6;background:#fafafa;">
             <td style="padding:8px 12px;font-family:monospace;">세미크롭 → [세미, 크롭]</td>
-            <td style="padding:8px 12px;text-align:center;"><span style="background:#ede9fe;color:#7c3aed;padding:1px 7px;border-radius:8px;font-size:11px;font-weight:700;">합성어</span></td>
-            <td style="padding:8px 12px;color:#888;">semi + crop 외래어 각각 의미O</td>
+            <td style="padding:8px 12px;text-align:center;"><span style="background:#dcfce7;color:#16a34a;padding:1px 7px;border-radius:8px;font-size:11px;font-weight:700;">정상</span></td>
+            <td style="padding:8px 12px;color:#888;">semi + crop 외래어 각각 의미O → 분리가 검색에 유리</td>
           </tr>
           <tr style="border-bottom:1px solid #f3f4f6;">
             <td style="padding:8px 12px;font-family:monospace;">뉴발란스 → [뉴, 발란스]</td>
             <td style="padding:8px 12px;text-align:center;"><span style="background:#fee2e2;color:#dc2626;padding:1px 7px;border-radius:8px;font-size:11px;font-weight:700;">오분석</span></td>
-            <td style="padding:8px 12px;color:#888;">브랜드 고유명사, 발란스 단독 의미X</td>
+            <td style="padding:8px 12px;color:#888;">발란스는 의미없는 음절 조각</td>
           </tr>
           <tr style="background:#fafafa;">
             <td style="padding:8px 12px;font-family:monospace;">이클립테인 → [이클립, 테인]</td>
@@ -630,12 +615,7 @@
           <th style="padding:8px 12px;text-align:left;color:#555;border-bottom:1px solid #e5e7eb;white-space:nowrap;">비고 표기</th>
         </tr></thead>
         <tbody>
-          <tr style="border-bottom:1px solid #f3f4f6;">
-            <td style="padding:8px 12px;font-weight:700;color:#7c3aed;white-space:nowrap;">① 오분석 고유명사</td>
-            <td style="padding:8px 12px;color:#555;">잘못 분리된 브랜드명·제품명</td>
-            <td style="padding:8px 12px;font-family:monospace;font-size:11px;color:#888;">카,펜더 → 카펜더<br>텔,루릭,스 → 텔루릭스</td>
-            <td style="padding:8px 12px;font-size:11px;color:#7c3aed;font-weight:600;">사전등록필요<br>신규브랜드</td>
-          </tr>
+          
           <tr style="border-bottom:1px solid #f3f4f6;background:#fafafa;">
             <td style="padding:8px 12px;font-weight:700;color:#0891b2;white-space:nowrap;">② 영문 동의어 없음</td>
             <td style="padding:8px 12px;color:#555;">영문이 형태소에 그대로 남아 한글 동의어 등록 필요<br><span style="color:#aaa;font-size:11px;">단, 모델번호(영숫혼합)는 해당 없음</span></td>
@@ -645,9 +625,7 @@
           
         </tbody>
       </table>
-      <div style="margin-top:10px;padding:10px 14px;background:#faf5ff;border:1px solid #e9d5ff;border-radius:9px;font-size:12px;color:#6b21a8;">
-        💡 <b>합성어</b>는 오분석이 아니지만, 붙여쓰기 시 검색 누락 방지를 위해 <b>복합어 등록 필요</b>로 신규단어여부=Y 표기됩니다.<br>        &nbsp;&nbsp;&nbsp;&nbsp;오분석이면서 동시에 신규단어일 수도 있습니다.
-      </div>
+
     </div>
 
     <!-- 4. 비용 구조 -->
@@ -1239,7 +1217,7 @@ function buildSystemPrompt() {
 - "2025그램"이 [2025, 그램]으로 분리됨 → 정상
 
 [상태값 3단계 판단 기준 - 중요]
-상태는 반드시 "정상" / "오분석" / "합성어" 중 하나로만 판단합니다.
+상태는 반드시 "정상" / "오분석" 중 하나로만 판단합니다.
 
 ■ 정상 우선 판단 — 합성어는 정상으로 처리
 외래어 파트끼리 조합되거나 의미있는 한글 단어끼리 조합된 경우(기존 합성어 케이스)는 모두 정상으로 처리합니다.
@@ -1298,6 +1276,28 @@ AI의 독자적 판단으로 오분석 추가 절대 금지.
 - 와일드,캣 → 정상 (wild+cat 각각 의미있음)
 - 스카이,로켓 → 정상 (sky+rocket 각각 의미있음)
 - 바운티,헌터즈 → 정상 (bounty+hunters 각각 의미있음)
+- 드레스,룸 → 정상 (dress+room 각각 의미있음)
+- 반,지갑 → 정상 (반+지갑 각각 의미있음)
+- 장,지갑 → 정상 (장+지갑 각각 의미있음)
+- 레더,벨트 → 정상 (leather+belt 각각 의미있음)
+- 레더,지갑 → 정상 (leather+wallet 각각 의미있음)
+- 선,가드 → 정상 (sun+guard 각각 의미있음)
+- 썬,바이저 → 정상 (sun+visor 각각 의미있음)
+- 올,데이 → 정상 (all+day 각각 의미있음)
+- 소,가죽 → 정상 (소+가죽 각각 의미있음)
+- 들,기름 → 정상 (들+기름 각각 의미있음)
+- 스위치,허브 → 정상 (switch+hub 각각 의미있음)
+- 암,체어 → 정상 (arm+chair 각각 의미있음)
+- 그리들,팬 → 정상 (griddle+pan 각각 의미있음)
+- 레그,컬 → 정상 (leg+curl 각각 의미있음)
+- 굿,그립 → 정상 (good+grip 각각 의미있음)
+- 파워,렉 → 정상 (power+rack 각각 의미있음)
+- 캐슈,넛 → 정상 (cashew+nut 각각 의미있음)
+- 포,시즌 → 정상 (four+season 각각 의미있음)
+- 포,맨 → 정상 (for+men 각각 의미있음)
+- 마틴,게일 → 정상 (martingale — 각각 의미있음)
+- 카키,오렌지 → 정상 (카키+오렌지 색상명 조합)
+- 올,바르고 → 정상 (올바르고 = 한글 형용사, 상품명 띄어쓰기 일치)
 
 ■ 정상 (상태="정상")
 분리가 올바르거나, 영숫혼합 모델번호, 단위명 등 규칙 처리된 경우.
@@ -1976,6 +1976,15 @@ function eojeolBasedFilter(r) {
       }
     }
 
+    // 추가: 이 파트가 상품명의 단독 어절과 정확히 일치하면 스킵
+    // (예: 상품명 "리 울 블렌드" → "리", "울" 각각 상품명 어절 → 스킵)
+    if (!isSkip) {
+      var nameWordNorms = words.map(function(w) { return normalizeStr(w.replace(/[.,]+$/, '')); });
+      if (nameWordNorms.indexOf(pNorm) !== -1) {
+        isSkip = true;
+      }
+    }
+
     if (!isSkip) {
       aiMorphs.push(part);
     }
@@ -2041,33 +2050,6 @@ function renderResults() {
       const more = document.getElementById('tableMore');
       more.textContent = `상위 100건 미리보기 · 전체 ${yRows.length}건은 엑셀에서 확인`;
       more.classList.remove('hidden');
-    }
-  }
-
-  // 합성어 테이블
-  const cRows = parsedRows.filter(r => rm[r.no]?.상태 === '합성어');
-  if (cRows.length > 0) {
-    document.getElementById('compoundCount').textContent = `${cRows.length}건`;
-    const tbodyC = document.getElementById('compoundBody');
-    tbodyC.innerHTML = '';
-    cRows.slice(0, 100).forEach(r => {
-      const res = rm[r.no] || {};
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td class="td-no">${r.no}</td>
-        <td class="td-muted">${esc(r.제조사명)}</td>
-        <td class="td-muted">${esc(r.브랜드명)}</td>
-        <td class="td-ellipsis" title="${esc(r.기준상품명)}">${esc(r.기준상품명)}</td>
-        <td style="color:#a78bfa;font-size:13px;">${esc(res.내용 || '')}</td>
-        <td class="td-comment" title="${esc(res.코멘트 || '')}">${esc(res.코멘트 || '')}</td>
-      `;
-      tbodyC.appendChild(tr);
-    });
-    document.getElementById('compoundBox').classList.remove('hidden');
-    if (cRows.length > 100) {
-      const moreC = document.getElementById('compoundMore');
-      moreC.textContent = `상위 100건 미리보기 · 전체 ${cRows.length}건은 엑셀에서 확인`;
-      moreC.classList.remove('hidden');
     }
   }
 
@@ -2326,9 +2308,6 @@ function resetAll() {
   document.getElementById('tableBox').classList.add('hidden');
   document.getElementById('tableBody').innerHTML = '';
   document.getElementById('tableMore').classList.add('hidden');
-  document.getElementById('compoundBox').classList.add('hidden');
-  document.getElementById('compoundBody').innerHTML = '';
-  document.getElementById('compoundMore').classList.add('hidden');
   document.getElementById('newWordBox').classList.add('hidden');
   document.getElementById('newWordBody').innerHTML = '';
   document.getElementById('newWordMore').classList.add('hidden');
