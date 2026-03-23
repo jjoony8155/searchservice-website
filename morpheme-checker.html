@@ -1347,6 +1347,32 @@ AI의 독자적 판단으로 오분석 추가 절대 금지.
 - 천지,향쌀 → 정상 (천지+향쌀 품종명, 각각 의미있음)
 - 에이치아이,글로넷 → 정상 (에이치아이HI✅ 글로넷glonet✅)
 - 덴티,메이트,리,타임 → 정상 (덴티denti✅ 메이트mate✅ 리re✅ 타임time✅)
+- 돌연,변이 → 정상 (돌연突然✅ 변이變異✅ 각각 의미있음)
+- 호버,크래프트 → 정상 (호버hover✅ 크래프트craft✅)
+- 트리,하우스 → 정상 (트리tree✅ 하우스house✅)
+- 슈퍼,노바 → 정상 (슈퍼super✅ 노바nova✅)
+- 모스,플렉스 → 정상 (모스moss✅ 플렉스flex✅)
+- 손,돌 → 정상 (손手✅ 돌石✅ 각각 의미있음)
+- 돌,앞 → 정상 (돌石✅ 앞前✅ 각각 의미있음)
+- 닭,고기 → 정상 (닭✅ 고기✅ 각각 의미있음)
+- 미니미,베어 → 정상 (미니미miniMe✅ 베어bear✅)
+- 소소,해피,클럽 → 정상 (소소✅ 해피happy✅ 클럽club✅)
+- 옆,라인 → 정상 (옆✅ 라인line✅)
+- 이랜드,리테일 → 정상 (이랜드E.Land✅ 리테일retail✅)
+- 러브리,월드 → 정상 (러브리lovely✅ 월드world✅)
+- 퀵,모닝 → 정상 (퀵quick✅ 모닝morning✅)
+- 맛,소금 → 정상 (맛✅ 소금✅ 각각 의미있음)
+- 유니,아트 → 정상 (유니uni✅ 아트art✅)
+- 펀치,볼 → 정상 (펀치punch✅ 볼bowl✅)
+- 후레쉬,데이 → 정상 (후레쉬fresh✅ 데이day✅)
+- 업,리프트 → 정상 (업up✅ 리프트lift✅)
+- 슈퍼,노바 → 정상 (슈퍼super✅ 노바nova✅)
+- 환,출 → 정상 (환環✅ 출出✅ 각각 의미있음)
+- 비,아이콘 → 정상 (비B✅ 아이콘icon✅)
+- 스코티쉬,살몬 → 정상 (스코티쉬Scottish✅ 살몬salmon✅)
+- 쎄라,페딕 → 정상 (쎄라Cerra✅ 페딕pedic✅)
+- 귀,이구 → 정상 (귀貴✅ 이구✅ 각각 의미있음)
+- 뉴,프로미스 → 정상 (뉴new✅ 프로미스promise✅)
 
 ■ 정상 (상태="정상")
 분리가 올바르거나, 영숫혼합 모델번호, 단위명 등 규칙 처리된 경우.
@@ -1391,7 +1417,9 @@ ${normalLines ? '\n[정상으로 확인된 케이스 - 오분석으로 감지하
   - 올바른 예: "카,펜더 → 카펜더", "텔,루릭,스 → 텔루릭스"
 - 신규단어여부=Y 조건: 영문 단어에 한글 동의어가 없는 경우만 (동의어등록필요)
   - 오분석 브랜드/고유명사는 신규단어 아님 → 신규단어여부=N
-- [엄격 금지] "내용" 필드에는 반드시 형태소분석에 실제로 존재하는 파트만 사용할 것. 상품명에 없는 단어(GG Marmont 등)를 제안에 포함하는 것 절대 금지. 형태소에 없는 단어를 만들어 내거나 조합하는 것은 절대 금지
+- [엄격 금지] "내용" 필드에는 반드시 형태소분석(또는 원본형태소)에 실제로 존재하는 파트만 사용할 것.
+- "원본형태소(참고)"가 제공된 경우: 규칙 필터로 제거된 영문/숫자 파트들이 있다는 의미이며, 이 파트들은 이미 정상 처리된 것이므로 오분석으로 보고하지 말 것.
+- 예) 형태소분석: "자켓", 원본형태소: "FOR, REST, 자켓" → "자켓"만 AI 판단 대상, FOR/REST는 이미 정상 처리됨 → 오분석 아님. 상품명에 없는 단어(GG Marmont 등)를 제안에 포함하는 것 절대 금지. 형태소에 없는 단어를 만들어 내거나 조합하는 것은 절대 금지
 - [엄격 금지] "신규단어후보"는 반드시 상품명 또는 형태소분석에 실제로 등장하는 단어만 기재할 것. 상품명/형태소 어디에도 없는 단어를 지어내는 것은 절대 금지
   잘못된 예) 상품명 "재점화 라이터" 형태소 "재,점화" → 신규단어후보: "재점퍼" (X — 상품명에 없는 단어)
   올바른 예) 상품명 "재점화 라이터" 형태소 "재,점화" → {"no":번호,"s":"N"} (정상 처리)
@@ -1758,7 +1786,12 @@ function startAnalyze() {
     retryCount = retryCount || 0;
     var items = batch.map(function(r) {
       var morphToAnalyze = r._filteredMorpheme || r.형태소분석;
-      return 'no: ' + r.no + '\n제조사: ' + r.제조사명 + ' | 브랜드: ' + r.브랜드명 + ' | 상품명: ' + r.기준상품명 + '\n형태소분석: ' + morphToAnalyze;
+      // 필터된 형태소와 원본이 다를 때만 원본도 표시 (AI가 누락됐다고 오판하지 않도록)
+      var origMorph = r.형태소분석;
+      var morphInfo = (morphToAnalyze !== origMorph)
+        ? morphToAnalyze + '\n원본형태소(참고): ' + origMorph
+        : morphToAnalyze;
+      return 'no: ' + r.no + '\n제조사: ' + r.제조사명 + ' | 브랜드: ' + r.브랜드명 + ' | 상품명: ' + r.기준상품명 + '\n형태소분석: ' + morphInfo;
     }).join('\n\n---\n\n');
 
     return fetch('https://api.anthropic.com/v1/messages', {
@@ -1958,11 +1991,22 @@ function eojeolBasedFilter(r) {
   if (!allParts.length) return { allSkipped: true, aiMorpheme: '' };
 
   // 1. 제조사명 파트 제거 (형태소 앞에 제조사명과 일치하는 파트들 스킵)
+  // 제조사명이 "킨(KEEN)" 형태일 때 한글/영문 파트 모두 제거
   var startIdx = 0;
   if (maker) {
-    var makerNorm = normalizeStr(maker);
+    // 제조사명에서 괄호 안 영문과 괄호 밖 한글 각각 추출
+    var makerKor = normalizeStr(maker.replace(/\([^)]*\)/g, '').trim());
+    var makerEngMatch = maker.match(/\(([^)]+)\)/);
+    var makerEng = makerEngMatch ? normalizeStr(makerEngMatch[1].trim()) : '';
+    var makerFull = normalizeStr(maker);
+
     for (var idx = 0; idx < allParts.length; idx++) {
-      if (normalizeStr(allParts[idx]) === makerNorm) {
+      var pn = normalizeStr(allParts[idx]);
+      // 한글 파트, 영문 파트, 또는 전체 일치 중 하나라도 맞으면 제조사명으로 간주
+      var isMaker = (makerKor && pn === makerKor) ||
+                    (makerEng && pn === makerEng) ||
+                    (pn === makerFull);
+      if (isMaker) {
         startIdx = idx + 1;
       } else {
         break;
@@ -2034,6 +2078,8 @@ function eojeolBasedFilter(r) {
         isSkip = true;
       }
     }
+    // 단, 이 파트가 전체 aiMorphs에서 유일하게 남는 파트라면 스킵 취소
+    // (예: 포,맨 → 맨이 스킵되면 포만 남아 오판 → 포도 스킵하지 말 것)
 
     if (!isSkip) {
       aiMorphs.push(part);
@@ -2041,6 +2087,12 @@ function eojeolBasedFilter(r) {
   }
 
   if (!aiMorphs.length) {
+    return { allSkipped: true, aiMorpheme: '' };
+  }
+
+  // aiMorphs가 1개뿐이고 그게 1글자 한글이면 → 의미있는 분석이 안 되므로 전체 스킵
+  // (예: 포,맨 → 맨 스킵 → 포만 남음 → 포 단독으로는 오분석 판단 불가 → 전체 스킵)
+  if (aiMorphs.length === 1 && /^[가-힣]$/.test(aiMorphs[0])) {
     return { allSkipped: true, aiMorpheme: '' };
   }
 
