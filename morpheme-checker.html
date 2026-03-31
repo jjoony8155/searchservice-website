@@ -149,7 +149,7 @@
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;padding-top:4px;flex-shrink:0;">
     <span style="background:#1e3a5f;color:#60a5fa;border:1px solid #2563eb;border-radius:6px;padding:3px 10px;font-size:12px;font-weight:700;letter-spacing:0.5px;white-space:nowrap;">v1.9</span>
-    <span style="color:#555;font-size:11px;white-space:nowrap;">2026.03.30</span>
+    <span style="color:#555;font-size:11px;white-space:nowrap;">2026.03.31</span>
   </div>
 </div>
 
@@ -1072,6 +1072,7 @@ const BUILTIN_NORMAL_CASES = [
   {id:'n_55', type:'corrected', morpheme:'클린, 노트',          wrong:'클린,노트',         correct:'클린노트',         memo:'클린(clean)+노트(note) 외래어',               addedAt:''},
   {id:'n_56', type:'corrected', morpheme:'팻, 버너',            wrong:'팻,버너',           correct:'팻버너',           memo:'팻(fat)+버너(burner) 외래어',                 addedAt:''},
   {id:'n_57', type:'corrected', morpheme:'확인, 중', wrong:'확인,중', correct:'확인중', memo:'확인중 = 정상 (확인+중 의미있는 단어)', addedAt:''},
+  {id:'n_58', type:'corrected', morpheme:'시원, 서커', wrong:'시원,서커', correct:'시원서커', memo:'시원서커(seersucker) = 직물명, 정상 처리', addedAt:''},
 ];
 let correctedCases = [...BUILTIN_NORMAL_CASES]; // 교정 케이스 (외래어 정상 케이스 포함)
 let deletedBuiltinIds = []; // 삭제된 기본 케이스 ID
@@ -1473,6 +1474,25 @@ AI의 독자적 판단으로 오분석 추가 절대 금지.
 - 행텐,주니어 → 정상 (행텐HangTen✅ 주니어junior✅)
 - 행텐, 주니어 → 정상 (행텐HangTen✅ 주니어junior✅)
 - 래핑,차일드 → 정상 (래핑wrapping✅ 차일드child✅)
+- 시원,서커 → 정상 (시원✅ 서커seersucker✅ 직물명)
+- 에어,서커 → 정상 (에어air✅ 서커seersucker✅)
+- 웨스트,프롬 → 정상 (웨스트west✅ 프롬prom✅)
+- 슬립,인스 → 정상 (슬립slip✅ 인스ins✅)
+- 슬립, 인스 → 정상 (슬립slip✅ 인스ins✅)
+- 아이스,크랙 → 정상 (아이스ice✅ 크랙crack✅)
+- 램,스킨 → 정상 (램lamb✅ 스킨skin✅)
+- 폴라,베어 → 정상 (폴라polar✅ 베어bear✅)
+- 정글,피버 → 정상 (정글jungle✅ 피버fever✅)
+- 매직,홀 → 정상 (매직magic✅ 홀hole✅)
+- 큐롯,스커트 → 정상 (큐롯culottes✅ 스커트skirt✅)
+- 하이퍼,라이트 → 정상 (하이퍼hyper✅ 라이트light✅)
+- 스타,필드 → 정상 (스타star✅ 필드field✅)
+- 스퀘어,토 → 정상 (스퀘어square✅ 토toe✅)
+- 질,스튜어트 → 정상 (질Jill✅ 스튜어트Stuart✅)
+- 프로엔자,슐러 → 정상 (프로엔자Proenza✅ 슐러Schouler✅)
+- 연승,어패럴 → 정상 (연승✅ 어패럴apparel✅)
+- 로프,텐 → 정상 (로프rope✅ 텐ten✅)
+- 쿨,리츠 → 정상 (쿨cool✅ 리츠ritz✅)
 
 ■ 정상 (상태="정상")
 분리가 올바르거나, 영숫혼합 모델번호, 단위명 등 규칙 처리된 경우.
