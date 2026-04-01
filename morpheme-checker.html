@@ -1897,7 +1897,7 @@ function startAnalyze() {
   var dupMsg = dupCount > 0 ? ' · 중복 제거 ' + dupCount.toLocaleString() + '건' : '';
   var loanMsg = loanwordAutoCount > 0 ? ' · 외래어합성어 ' + loanwordAutoCount.toLocaleString() + '건' : '';
   var timeMsg = analyzeTotal > 3000
-    ? ' · 예상 약 ' + estMin + '분 소요 (동시 3개 처리) · 탭을 닫지 마세요'
+    ? ' · 예상 약 ' + estMin + '분 소요 (동시 ' + CONCURRENCY + '개 처리) · 탭을 닫지 마세요'
     : '';
   showToast('규칙 필터: ' + skippedCount.toLocaleString() + '건' + dupMsg + loanMsg + ' · ' + analyzeTotal.toLocaleString() + '건 AI 분석' + timeMsg);
 
