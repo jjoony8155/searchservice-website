@@ -1493,6 +1493,26 @@ AI의 독자적 판단으로 오분석 추가 절대 금지.
 - 연승,어패럴 → 정상 (연승✅ 어패럴apparel✅)
 - 로프,텐 → 정상 (로프rope✅ 텐ten✅)
 - 쿨,리츠 → 정상 (쿨cool✅ 리츠ritz✅)
+- 막스,마라 → 정상 (막스Max✅ 마라Mara✅)
+- 막스, 마라 → 정상 (막스Max✅ 마라Mara✅)
+- 캘빈,클라인 → 정상 (캘빈Calvin✅ 클라인Klein✅)
+- 캘빈, 클라인 → 정상 (캘빈Calvin✅ 클라인Klein✅)
+- 로로,피아나 → 정상 (로로Loro✅ 피아나Piana✅)
+- 로로, 피아나 → 정상 (로로Loro✅ 피아나Piana✅)
+- 휴고,보스 → 정상 (휴고Hugo✅ 보스Boss✅)
+- 휴고, 보스 → 정상 (휴고Hugo✅ 보스Boss✅)
+- 이자벨,마랑 → 정상 (이자벨Isabel✅ 마랑Marant✅)
+- 이자벨, 마랑 → 정상 (이자벨Isabel✅ 마랑Marant✅)
+- 에르마노,설비노 → 정상 (에르마노Ermanno✅ 설비노Scervino✅)
+- 파리,생,제르맹 → 정상 (파리Paris✅ 생Saint✅ 제르맹Germain✅)
+- 울,테크 → 정상 (울wool✅ 테크tech✅)
+- 크로스,바디 → 정상 (크로스cross✅ 바디body✅)
+- 크로스, 바디 → 정상 (크로스cross✅ 바디body✅)
+- 토리,버치 → 정상 (토리Tory✅ 버치Burch✅)
+- 토리, 버치 → 정상 (토리Tory✅ 버치Burch✅)
+- 드리스,노튼 → 정상 (드리스Dries✅ 노튼Noten✅)
+- 드리스, 노튼 → 정상 (드리스Dries✅ 노튼Noten✅)
+- 디,엣지 → 정상 (디the✅ 엣지edge✅)
 
 ■ 정상 (상태="정상")
 분리가 올바르거나, 영숫혼합 모델번호, 단위명 등 규칙 처리된 경우.
@@ -1612,6 +1632,7 @@ function handleFile(input) {
 // ===================== Batch API =====================
 var batchJobId = null;
 var batchPollTimer = null;
+var CONCURRENCY = 2; // 동시 API 요청 수
 var dupMap = {}; // 중복 형태소 전역 map
 
 function buildBatchRequests(rowsToAnalyze, sysPrompt) {
@@ -1969,7 +1990,6 @@ function startAnalyze() {
   }
 
   // 병렬 처리 (동시 CONCURRENCY개)
-  var CONCURRENCY = 2;
   var doneCount = 0;
   var activeTasks = 0;
   var nextIdx = 0;
