@@ -492,7 +492,7 @@ let result0 = [], result1 = [];
 let curTab = 0;
 
 const COL_MAP = {
-  '디바이스':'device','카테고리':'cat_id','카테고리명':'cat_nm',
+  '디바이스':'device','카테고리':'cat_id','카테고리명':'cat_nm','카테고리 명':'cat_nm',
   '키워드':'kw','호출 수':'imp','호출수':'imp',
   '클릭 수':'clk','클릭수':'clk',
   '상품 수':'prod','상품수':'prod','CTR':'ctr'
@@ -504,7 +504,10 @@ function normalizeDF(rows) {
   return rows.map(r => {
     const o = {};
     Object.entries(r).forEach(([k, v]) => {
-      const mk = COL_MAP[k.trim()] || k.trim();
+      const trimmed = k.trim();
+      // 공백 완전 제거한 키로도 시도 (e.g. "카테고리 명" → "카테고리명")
+      const noSpace = trimmed.replace(/\s+/g, '');
+      const mk = COL_MAP[trimmed] || COL_MAP[noSpace] || trimmed;
       o[mk] = v;
     });
     o.imp  = parseFloat(String(o.imp  || 0).replace(/,/g,'')) || 0;
