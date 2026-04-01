@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LP CPC 이상 키워드 탐지 어드민</title>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f8f9fb;
+    --surface: #ffffff;
+    --surface2: #f1f3f7;
+    --border: #e2e6ed;
+    --text: #1a1d23;
+    --text2: #5c6270;
+    --text3: #9aa0ad;
+    --blue: #1a56db;
+    --blue-bg: #eef3ff;
+    --red: #dc2626;
+    --red-bg: #fef2f2;
+    --orange: #d97706;
+    --orange-bg: #fffbeb;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.08);
+  }
+
+  body {
+    font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── 상단 헤더 ── */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-logo {
+    font-size: 15px; font-weight: 700; color: var(--blue);
+    letter-spacing: -0.3px;
+  }
+  .header-divider { width: 1px; height: 18px; background: var(--border); }
+  .header-title { font-size: 14px; color: var(--text2); }
+  .header-right { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text3); }
+  #last-run { font-size: 12px; color: var(--text3); }
+
+  /* ── 메인 레이아웃 ── */
+  .main { max-width: 1280px; margin: 0 auto; padding: 1.5rem 2rem 3rem; }
+
+  /* ── 섹션 카드 ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .card-title {
+    font-size: 13px; font-weight: 600; color: var(--text2);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .card-title::before {
+    content: ''; display: block;
+    width: 3px; height: 14px;
+    background: var(--blue); border-radius: 2px;
+  }
+
+  /* ── 설정 바 ── */
+  .settings-grid {
+    display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;
+  }
+  .setting-item { display: flex; align-items: center; gap: 8px; }
+  .setting-label { font-size: 13px; color: var(--text2); white-space: nowrap; }
+  .setting-item input[type=number] {
+    width: 68px; padding: 6px 10px; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); font-size: 13px; color: var(--text);
+    background: var(--surface); text-align: center;
+    transition: border-color .15s;
+  }
+  .setting-item input[type=number]:focus { outline: none; border-color: var(--blue); }
+  .setting-item select {
+    padding: 6px 28px 6px 10px; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); font-size: 13px; color: var(--text);
+    background: var(--surface); appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239aa0ad' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center;
+    cursor: pointer; transition: border-color .15s;
+  }
+  .setting-item select:focus { outline: none; border-color: var(--blue); }
+  .unit { font-size: 13px; color: var(--text2); }
+
+  /* ── 업로드 존 ── */
+  .upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .drop-box {
+    position: relative; border: 1.5px dashed var(--border);
+    border-radius: var(--radius); padding: 1.5rem 1rem;
+    text-align: center; cursor: pointer;
+    transition: all .2s;
+    background: var(--surface);
+  }
+  .drop-box:hover { border-color: var(--blue); background: var(--blue-bg); }
+  .drop-box.loaded { border-color: var(--green); border-style: solid; background: var(--green-bg); }
+  .drop-box.drag-over { border-color: var(--blue); background: var(--blue-bg); transform: scale(1.01); }
+  .drop-box input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; z-index: 2; }
+  .drop-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+  .drop-label { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .drop-sub { font-size: 12px; color: var(--text3); }
+  .drop-filename {
+    margin-top: 8px; font-size: 12px; font-weight: 600;
+    color: var(--green); display: none;
+  }
+  .drop-filename.show { display: block; }
+  .drop-rows { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+  /* ── 실행 버튼 ── */
+  .run-area { display: flex; gap: 10px; align-items: center; }
+  .btn-run {
+    flex: 1; padding: .75rem;
+    background: var(--blue); color: #fff;
+    border: none; border-radius: var(--radius);
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    transition: background .15s, transform .1s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-run:hover { background: #1344b8; }
+  .btn-run:active { transform: scale(0.99); }
+  .btn-run:disabled { background: var(--surface2); color: var(--text3); cursor: not-allowed; transform: none; }
+  .btn-reset {
+    padding: .75rem 1.25rem;
+    background: var(--surface); color: var(--text2);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: background .15s;
+  }
+  .btn-reset:hover { background: var(--surface2); }
+
+  /* ── 통계 카드 ── */
+  .stat-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    margin-bottom: 1rem;
+  }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1rem 1.25rem;
+    box-shadow: var(--shadow);
+  }
+  .stat-label { font-size: 12px; color: var(--text3); margin-bottom: 6px; }
+  .stat-val { font-size: 26px; font-weight: 700; color: var(--text); line-height: 1; }
+  .stat-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+  .stat-card.s-red .stat-val { color: var(--red); }
+  .stat-card.s-orange .stat-val { color: var(--orange); }
+  .stat-card.s-green .stat-val { color: var(--green); }
+
+  /* ── 탭 ── */
+  .tab-bar {
+    display: flex; gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1rem;
+  }
+  .tab-btn {
+    padding: .6rem 1.1rem; font-size: 13px; font-weight: 500;
+    color: var(--text2); background: none; border: none;
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+    cursor: pointer; transition: color .15s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+  .tab-cnt {
+    font-size: 11px; padding: 1px 6px; border-radius: 10px;
+    background: var(--surface2); color: var(--text3);
+    font-weight: 600;
+  }
+  .tab-btn.active .tab-cnt { background: var(--blue-bg); color: var(--blue); }
+
+  /* ── 툴바 ── */
+  .toolbar {
+    display: flex; gap: 8px; align-items: center;
+    margin-bottom: .75rem; flex-wrap: wrap;
+  }
+  .search-wrap { flex: 1; min-width: 180px; position: relative; }
+  .search-wrap::before {
+    content: ''; position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    width: 14px; height: 14px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239aa0ad' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+  }
+  .search-wrap input {
+    width: 100%; padding: 7px 10px 7px 30px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    font-size: 13px; color: var(--text); background: var(--surface);
+    transition: border-color .15s;
+  }
+  .search-wrap input:focus { outline: none; border-color: var(--blue); }
+  .toolbar select {
+    padding: 7px 28px 7px 10px; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); font-size: 13px; color: var(--text);
+    background: var(--surface); appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239aa0ad' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center;
+    cursor: pointer;
+  }
+  .toolbar select:focus { outline: none; border-color: var(--blue); }
+  .btn-dl {
+    padding: 7px 14px; font-size: 12px; font-weight: 500;
+    background: var(--surface); color: var(--text2);
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    cursor: pointer; white-space: nowrap; transition: background .15s;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .btn-dl:hover { background: var(--surface2); }
+  .row-count { font-size: 12px; color: var(--text3); }
+
+  /* ── 테이블 ── */
+  .tbl-wrap {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; overflow-x: auto;
+    box-shadow: var(--shadow);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: var(--surface2); }
+  th {
+    padding: .65rem .9rem; text-align: left;
+    font-weight: 600; color: var(--text2); font-size: 12px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap; cursor: pointer; user-select: none;
+  }
+  th:hover { color: var(--text); }
+  th.sort-asc::after { content: ' ↑'; color: var(--blue); }
+  th.sort-desc::after { content: ' ↓'; color: var(--blue); }
+  td {
+    padding: .6rem .9rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text); vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--blue-bg); }
+
+  .badge-red {
+    display: inline-flex; align-items: center;
+    background: var(--red-bg); color: var(--red);
+    font-size: 11px; font-weight: 600; padding: 2px 8px;
+    border-radius: 20px; white-space: nowrap;
+    border: 1px solid rgba(220,38,38,.15);
+  }
+  .badge-orange {
+    display: inline-flex; align-items: center;
+    background: var(--orange-bg); color: var(--orange);
+    font-size: 11px; font-weight: 600; padding: 2px 8px;
+    border-radius: 20px; white-space: nowrap;
+    border: 1px solid rgba(217,119,6,.15);
+  }
+  .badge-device {
+    display: inline-block;
+    background: var(--surface2); color: var(--text2);
+    font-size: 11px; font-weight: 600; padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .cat-path {
+    font-size: 11px; color: var(--text3);
+    display: block;
+    word-break: keep-all;
+    white-space: normal;
+    line-height: 1.4;
+  }
+  .kw-text { font-weight: 600; color: var(--text); }
+  .num-red { color: var(--red); font-weight: 600; }
+  .num-orange { color: var(--orange); font-weight: 600; }
+
+  .drop-bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .drop-bar-bg { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; min-width: 70px; overflow: hidden; }
+  .drop-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #f59e0b, #ef4444); transition: width .3s; }
+  .drop-pct { font-size: 12px; font-weight: 600; color: var(--orange); min-width: 40px; }
+
+  .empty {
+    text-align: center; padding: 4rem 1rem;
+    color: var(--text3); font-size: 13px;
+  }
+  .empty-icon { font-size: 36px; margin-bottom: .75rem; opacity: .3; display: block; }
+
+  /* ── 진행 바 ── */
+  .progress-wrap { display: none; margin-bottom: 1rem; }
+  .progress-bar {
+    height: 3px; background: var(--surface2);
+    border-radius: 2px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--blue);
+    border-radius: 2px; transition: width .3s;
+    animation: indeterminate 1.2s infinite;
+  }
+  @keyframes indeterminate {
+    0% { transform: translateX(-100%) scaleX(0.5); }
+    100% { transform: translateX(200%) scaleX(0.5); }
+  }
+
+  /* ── 토스트 ── */
+  .toast {
+    position: fixed; bottom: 1.5rem; right: 1.5rem;
+    background: var(--text); color: #fff;
+    padding: .65rem 1.1rem; border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 500;
+    opacity: 0; transform: translateY(12px);
+    transition: all .25s; pointer-events: none; z-index: 9999;
+    box-shadow: var(--shadow-md);
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 720px) {
+    .main { padding: 1rem; }
+    .upload-grid { grid-template-columns: 1fr; }
+    .stat-grid { grid-template-columns: repeat(2,1fr); }
+    .header { padding: 0 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <span class="header-logo">ENURI</span>
+    <div class="header-divider"></div>
+    <span class="header-title">LP CPC 이상 키워드 탐지</span>
+  </div>
+  <div class="header-right">
+    <span id="last-run">대기 중</span>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- 설정 -->
+  <div class="card">
+    <div class="card-title">탐지 설정</div>
+    <div class="settings-grid">
+      <div class="setting-item">
+        <span class="setting-label">호출수 급감 임계값</span>
+        <input type="number" id="threshold" value="50" min="1" max="99" step="1">
+        <span class="unit">% 이상 급감</span>
+      </div>
+      <div class="setting-item">
+        <span class="setting-label">광고 유형</span>
+        <select id="ad-type">
+          <option value="all">전체</option>
+          <option value="파워쇼핑">파워쇼핑(네이버)</option>
+          <option value="애드스마트">애드스마트(쿠팡)</option>
+        </select>
+      </div>
+      <div class="setting-item">
+        <span class="setting-label">디바이스</span>
+        <select id="dev-global">
+          <option value="all">전체</option>
+          <option value="PC">PC</option>
+          <option value="MW">MW</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- 파일 업로드 -->
+  <div class="card">
+    <div class="card-title">데이터 업로드</div>
+    <div class="upload-grid">
+      <div class="drop-box" id="box-today">
+        <input type="file" accept=".csv,.xlsx,.xls" id="file-today">
+        <span class="drop-icon">📅</span>
+        <div class="drop-label">당일 데이터</div>
+        <div class="drop-sub">CSV 또는 Excel(.xlsx/.xls)</div>
+        <div class="drop-filename" id="fn-today"></div>
+        <div class="drop-rows" id="rows-today"></div>
+      </div>
+      <div class="drop-box" id="box-yest">
+        <input type="file" accept=".csv,.xlsx,.xls" id="file-yest">
+        <span class="drop-icon">📆</span>
+        <div class="drop-label">전일 데이터 <span style="font-weight:400;color:var(--text3);font-size:12px">(선택)</span></div>
+        <div class="drop-sub">호출수 급감 탐지에 필요합니다</div>
+        <div class="drop-filename" id="fn-yest"></div>
+        <div class="drop-rows" id="rows-yest"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 실행 -->
+  <div class="card">
+    <div class="progress-wrap" id="prog-wrap">
+      <div class="progress-bar"><div class="progress-fill"></div></div>
+    </div>
+    <div class="run-area">
+      <button class="btn-run" id="btn-run" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        분석 실행
+      </button>
+      <button class="btn-reset" id="btn-reset">초기화</button>
+    </div>
+  </div>
+
+  <!-- 통계 -->
+  <div class="stat-grid" id="stat-grid" style="display:none">
+    <div class="stat-card">
+      <div class="stat-label">당일 전체 키워드</div>
+      <div class="stat-val" id="st-total">—</div>
+      <div class="stat-sub" id="st-total-sub"></div>
+    </div>
+    <div class="stat-card s-red">
+      <div class="stat-label">🔴 클릭0 · CTR0%</div>
+      <div class="stat-val" id="st-c1">—</div>
+      <div class="stat-sub" id="st-c1-sub"></div>
+    </div>
+    <div class="stat-card s-orange">
+      <div class="stat-label">🟠 호출수 급감</div>
+      <div class="stat-val" id="st-c2">—</div>
+      <div class="stat-sub" id="st-c2-sub"></div>
+    </div>
+    <div class="stat-card s-green">
+      <div class="stat-label">✅ 정상 키워드</div>
+      <div class="stat-val" id="st-ok">—</div>
+      <div class="stat-sub" id="st-ok-sub"></div>
+    </div>
+  </div>
+
+  <!-- 결과 -->
+  <div class="card" id="result-card" style="display:none">
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab(0)">
+        클릭0 · CTR0% <span class="tab-cnt" id="cnt0">0</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab(1)">
+        호출수 급감 <span class="tab-cnt" id="cnt1">0</span>
+      </button>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <input type="text" id="search" placeholder="키워드, 카테고리명으로 검색..." oninput="renderTable()">
+      </div>
+      <select id="dev-filter" onchange="renderTable()">
+        <option value="all">전체 디바이스</option>
+        <option value="PC">PC</option>
+        <option value="MW">MW</option>
+      </select>
+      <select id="sort-select" onchange="renderTable()">
+        <option value="default">기본순</option>
+        <option value="imp_desc">호출수 높은순</option>
+        <option value="imp_asc">호출수 낮은순</option>
+        <option value="drop_desc">급감률 높은순</option>
+      </select>
+      <button class="btn-dl" onclick="downloadCSV()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        CSV 다운로드
+      </button>
+      <span class="row-count" id="row-count"></span>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead id="tbl-head"></thead>
+        <tbody id="tbl-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── 전역 상태 ─────────────────────────────────────── */
+let todayData = [], yesterdayData = [];
+let result0 = [], result1 = [];
+let curTab = 0;
+
+const COL_MAP = {
+  '디바이스':'device','카테고리':'cat_id','카테고리명':'cat_nm',
+  '키워드':'kw','호출 수':'imp','호출수':'imp',
+  '클릭 수':'clk','클릭수':'clk',
+  '상품 수':'prod','상품수':'prod','CTR':'ctr'
+};
+
+/* ── 파일 정규화 ─────────────────────────────────── */
+function normalizeDF(rows) {
+  if (!rows || !rows.length) return [];
+  return rows.map(r => {
+    const o = {};
+    Object.entries(r).forEach(([k, v]) => {
+      const mk = COL_MAP[k.trim()] || k.trim();
+      o[mk] = v;
+    });
+    o.imp  = parseFloat(String(o.imp  || 0).replace(/,/g,'')) || 0;
+    o.clk  = parseFloat(String(o.clk  || 0).replace(/,/g,'')) || 0;
+    o.ctr  = parseFloat(String(o.ctr  || '0').replace(/%/g,'').replace(/,/g,'')) || 0;
+    o.prod = parseInt(String(o.prod || '0').replace(/,/g,'')) || 0;
+    return o;
+  }).filter(r => r.kw && String(r.kw).trim() !== '');
+}
+
+/* ── 파일 읽기 ──────────────────────────────────── */
+function readFile(file, cb) {
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (ext === 'csv') {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const res = Papa.parse(e.target.result, { header:true, skipEmptyLines:true });
+      cb(res.data);
+    };
+    reader.readAsText(file, 'utf-8');
+  } else {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const wb = XLSX.read(e.target.result, { type:'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      cb(XLSX.utils.sheet_to_json(ws, { defval:'' }));
+    };
+    reader.readAsArrayBuffer(file);
+  }
+}
+
+/* ── 드롭 박스 셋업 ──────────────────────────────── */
+function setupDropBox(boxId, inputId, fnId, rowsId, isToday) {
+  const box = document.getElementById(boxId);
+  const inp = document.getElementById(inputId);
+  const fn  = document.getElementById(fnId);
+  const rw  = document.getElementById(rowsId);
+
+  function load(file) {
+    fn.textContent = '⏳ 로딩 중...'; fn.classList.add('show');
+    readFile(file, rows => {
+      const d = normalizeDF(rows);
+      if (isToday) todayData = d; else yesterdayData = d;
+      fn.textContent = '✓ ' + file.name;
+      rw.textContent = d.length.toLocaleString() + '행 로드됨';
+      box.classList.add('loaded');
+      checkReady();
+    });
+  }
+
+  inp.addEventListener('change', e => { if (e.target.files[0]) load(e.target.files[0]); });
+  box.addEventListener('dragover', e => { e.preventDefault(); box.classList.add('drag-over'); });
+  box.addEventListener('dragleave', () => box.classList.remove('drag-over'));
+  box.addEventListener('drop', e => {
+    e.preventDefault(); box.classList.remove('drag-over');
+    const f = e.dataTransfer.files[0];
+    if (f) { inp.files = e.dataTransfer.files; load(f); }
+  });
+}
+
+setupDropBox('box-today','file-today','fn-today','rows-today',true);
+setupDropBox('box-yest','file-yest','fn-yest','rows-yest',false);
+
+function checkReady() {
+  document.getElementById('btn-run').disabled = todayData.length === 0;
+}
+
+/* ── 분석 실행 ──────────────────────────────────── */
+document.getElementById('btn-run').addEventListener('click', () => {
+  const prog = document.getElementById('prog-wrap');
+  prog.style.display = 'block';
+  setTimeout(() => {
+    runAnalysis();
+    prog.style.display = 'none';
+  }, 400);
+});
+
+document.getElementById('btn-reset').addEventListener('click', () => {
+  if (!confirm('초기화하시겠습니까?')) return;
+  todayData = []; yesterdayData = []; result0 = []; result1 = [];
+  ['box-today','box-yest'].forEach(id => document.getElementById(id).classList.remove('loaded'));
+  ['fn-today','fn-yest'].forEach(id => { const el = document.getElementById(id); el.textContent=''; el.classList.remove('show'); });
+  ['rows-today','rows-yest'].forEach(id => document.getElementById(id).textContent='');
+  document.getElementById('file-today').value='';
+  document.getElementById('file-yest').value='';
+  document.getElementById('stat-grid').style.display='none';
+  document.getElementById('result-card').style.display='none';
+  document.getElementById('btn-run').disabled=true;
+  document.getElementById('last-run').textContent='대기 중';
+  showToast('초기화되었습니다');
+});
+
+function runAnalysis() {
+  const thr = parseFloat(document.getElementById('threshold').value) / 100 || 0.5;
+
+  result0 = todayData.filter(r => r.clk === 0 && r.ctr === 0);
+
+  result1 = [];
+  if (yesterdayData.length > 0) {
+    const yMap = {};
+    yesterdayData.forEach(r => {
+      const key = (r.device||'') +'|'+ (r.cat_id||'') +'|'+ (r.kw||'');
+      yMap[key] = r.imp;
+    });
+    todayData.forEach(r => {
+      const key = (r.device||'') +'|'+ (r.cat_id||'') +'|'+ (r.kw||'');
+      const yImp = yMap[key];
+      if (yImp > 0) {
+        const drop = (yImp - r.imp) / yImp;
+        if (drop >= thr) result1.push({ ...r, yImp, dropRate: drop });
+      }
+    });
+  }
+
+  const total = todayData.length;
+  const c1 = result0.length;
+  const c2 = result1.length;
+  const ok = Math.max(0, total - c1 - c2);
+
+  document.getElementById('st-total').textContent = total.toLocaleString();
+  document.getElementById('st-c1').textContent = c1.toLocaleString();
+  document.getElementById('st-c2').textContent = c2.toLocaleString();
+  document.getElementById('st-ok').textContent = ok.toLocaleString();
+  document.getElementById('st-total-sub').textContent = '전체 키워드 행';
+  document.getElementById('st-c1-sub').textContent = '클릭수·CTR 모두 0';
+  document.getElementById('st-c2-sub').textContent = yesterdayData.length > 0
+    ? `임계값 ${document.getElementById('threshold').value}% 기준` : '전일 데이터 없음';
+  document.getElementById('st-ok-sub').textContent = '이상 없음';
+
+  document.getElementById('cnt0').textContent = c1;
+  document.getElementById('cnt1').textContent = c2;
+  document.getElementById('stat-grid').style.display = 'grid';
+  document.getElementById('result-card').style.display = 'block';
+
+  const now = new Date();
+  document.getElementById('last-run').textContent =
+    `마지막 실행: ${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${now.toLocaleTimeString('ko-KR')}`;
+
+  curTab = 0;
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+  renderTable();
+  showToast(`분석 완료 — 클릭0·CTR0% ${c1}건 / 호출수급감 ${c2}건`);
+}
+
+/* ── 탭 전환 ────────────────────────────────────── */
+function switchTab(n) {
+  curTab = n;
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===n));
+  document.getElementById('search').value = '';
+  renderTable();
+}
+
+/* ── 테이블 렌더 ─────────────────────────────────── */
+function renderTable() {
+  const q   = document.getElementById('search').value.toLowerCase();
+  const dev = document.getElementById('dev-filter').value;
+  const srt = document.getElementById('sort-select').value;
+  const data = curTab === 0 ? result0 : result1;
+
+  let rows = data.filter(r => {
+    const kw = (r.kw || '').toLowerCase();
+    const cn = (r.cat_nm || '').toLowerCase();
+    const matchQ = !q || kw.includes(q) || cn.includes(q);
+    const matchD = dev === 'all' || r.device === dev;
+    return matchQ && matchD;
+  });
+
+  if (srt === 'imp_desc') rows.sort((a,b) => b.imp - a.imp);
+  else if (srt === 'imp_asc') rows.sort((a,b) => a.imp - b.imp);
+  else if (srt === 'drop_desc') rows.sort((a,b) => (b.dropRate||0) - (a.dropRate||0));
+
+  /* 헤더 */
+  const head = document.getElementById('tbl-head');
+  if (curTab === 0) {
+    head.innerHTML = `<tr>
+      <th>구분</th><th>디바이스</th>
+      <th>카테고리 ID</th><th style="min-width:200px">카테고리명</th><th>키워드</th>
+      <th style="text-align:right">호출수</th>
+      <th style="text-align:right">클릭수</th>
+      <th style="text-align:right">상품수</th>
+      <th style="text-align:right">CTR</th>
+    </tr>`;
+  } else {
+    head.innerHTML = `<tr>
+      <th>구분</th><th>디바이스</th>
+      <th>카테고리 ID</th><th style="min-width:200px">카테고리명</th><th>키워드</th>
+      <th style="text-align:right">당일 호출수</th>
+      <th style="text-align:right">전일 호출수</th>
+      <th>급감률</th>
+      <th style="text-align:right">클릭수</th>
+      <th style="text-align:right">CTR</th>
+    </tr>`;
+  }
+
+  const body = document.getElementById('tbl-body');
+  if (!rows.length) {
+    body.innerHTML = `<tr><td colspan="10">
+      <div class="empty">
+        <span class="empty-icon">◎</span>
+        검색 결과가 없습니다
+      </div>
+    </td></tr>`;
+    document.getElementById('row-count').textContent = '';
+    return;
+  }
+
+  let html = '';
+  rows.forEach(r => {
+    if (curTab === 0) {
+      html += `<tr>
+        <td><span class="badge-red">클릭0·CTR0%</span></td>
+        <td><span class="badge-device">${r.device||'-'}</span></td>
+        <td style="color:var(--text3);font-size:12px">${r.cat_id||'-'}</td>
+        <td><span class="cat-path">${r.cat_nm||'-'}</span></td>
+        <td><span class="kw-text">${r.kw||'-'}</span></td>
+        <td style="text-align:right">${r.imp.toLocaleString()}</td>
+        <td style="text-align:right"><span class="num-red">${r.clk}</span></td>
+        <td style="text-align:right">${r.prod||0}</td>
+        <td style="text-align:right"><span class="num-red">${r.ctr}%</span></td>
+      </tr>`;
+    } else {
+      const pct = Math.round(r.dropRate * 100);
+      const barW = Math.min(pct, 100);
+      html += `<tr>
+        <td><span class="badge-orange">${pct}%↓ 급감</span></td>
+        <td><span class="badge-device">${r.device||'-'}</span></td>
+        <td style="color:var(--text3);font-size:12px">${r.cat_id||'-'}</td>
+        <td><span class="cat-path">${r.cat_nm||'-'}</span></td>
+        <td><span class="kw-text">${r.kw||'-'}</span></td>
+        <td style="text-align:right">${r.imp.toLocaleString()}</td>
+        <td style="text-align:right">${r.yImp.toLocaleString()}</td>
+        <td>
+          <div class="drop-bar-wrap">
+            <div class="drop-bar-bg"><div class="drop-bar-fill" style="width:${barW}%"></div></div>
+            <span class="drop-pct">${pct}%</span>
+          </div>
+        </td>
+        <td style="text-align:right">${r.clk}</td>
+        <td style="text-align:right">${r.ctr}%</td>
+      </tr>`;
+    }
+  });
+  body.innerHTML = html;
+  document.getElementById('row-count').textContent = `총 ${rows.length.toLocaleString()}건`;
+}
+
+/* ── CSV 다운로드 ─────────────────────────────────── */
+function downloadCSV() {
+  const q   = document.getElementById('search').value.toLowerCase();
+  const dev = document.getElementById('dev-filter').value;
+  const data = curTab === 0 ? result0 : result1;
+  const rows = data.filter(r => {
+    const matchQ = !q || (r.kw||'').toLowerCase().includes(q) || (r.cat_nm||'').toLowerCase().includes(q);
+    return matchQ && (dev === 'all' || r.device === dev);
+  });
+  if (!rows.length) { showToast('다운로드할 데이터가 없습니다'); return; }
+
+  let csv = '';
+  if (curTab === 0) {
+    csv = '구분,디바이스,카테고리ID,카테고리명,키워드,호출수,클릭수,상품수,CTR\n';
+    rows.forEach(r => {
+      csv += `클릭0·CTR0%,${r.device||''},${r.cat_id||''},"${(r.cat_nm||'').replace(/"/g,'""')}","${(r.kw||'').replace(/"/g,'""')}",${r.imp},${r.clk},${r.prod||0},${r.ctr}%\n`;
+    });
+  } else {
+    csv = '구분,디바이스,카테고리ID,카테고리명,키워드,당일호출수,전일호출수,급감률,클릭수,CTR\n';
+    rows.forEach(r => {
+      const pct = Math.round(r.dropRate*100);
+      csv += `${pct}%급감,${r.device||''},${r.cat_id||''},"${(r.cat_nm||'').replace(/"/g,'""')}","${(r.kw||'').replace(/"/g,'""')}",${r.imp},${r.yImp},${pct}%,${r.clk},${r.ctr}%\n`;
+    });
+  }
+
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const label = curTab === 0 ? '클릭0CTR0' : '호출수급감';
+  a.download = `LP_CPC_${label}_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  showToast('CSV 다운로드 완료');
+}
+
+/* ── 토스트 ──────────────────────────────────────── */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>
