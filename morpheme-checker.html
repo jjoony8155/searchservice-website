@@ -1933,7 +1933,7 @@ function startAnalyze() {
       // Rate Limit (429) 또는 서버 오류(529) → 재시도
       if (res.status === 429 || res.status === 529) {
         if (retryCount < 4) {
-          var delay = Math.min(5000 * Math.pow(2, retryCount), 60000); // 5s, 10s, 20s, 40s
+          var delay = Math.min(10000 * Math.pow(2, retryCount), 120000); // 10s, 20s, 40s, 80s // 5s, 10s, 20s, 40s
           var lbl = document.querySelector('.progress-label');
           if (lbl) lbl.textContent = '⏳ Rate Limit 대기 중... ' + Math.round(delay/1000) + '초 후 재시도 (' + (retryCount+1) + '/4)';
           return new Promise(function(resolve) { setTimeout(resolve, delay); })
@@ -1969,7 +1969,7 @@ function startAnalyze() {
   }
 
   // 병렬 처리 (동시 CONCURRENCY개)
-  var CONCURRENCY = 3;
+  var CONCURRENCY = 2;
   var doneCount = 0;
   var activeTasks = 0;
   var nextIdx = 0;
@@ -2003,7 +2003,7 @@ function startAnalyze() {
       '건 (필터제외 ' + skippedCount.toLocaleString() + '건)';
     document.getElementById('progressBar').style.width = pct + '%';
     if (lbl && !lbl.textContent.includes('대기')) {
-      lbl.textContent = '🔄 AI 분석 중... ' + pct + '% (동시 ' + CONCURRENCY + '개 처리)';
+      lbl.textContent = '🔄 AI 분석 중... ' + pct + '%';
     }
   }
 
@@ -2040,7 +2040,8 @@ function startAnalyze() {
         doneCount += batch.length;
         activeTasks--;
         updateProgress();
-        launchNext();
+        // 요청 사이 0.8초 간격 추가 (Rate Limit 방지)
+        setTimeout(function() { launchNext(); }, 800);
         if (activeTasks === 0 && nextIdx >= rowsToAnalyze.length) finishAll();
       });
   }
