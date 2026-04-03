@@ -155,7 +155,7 @@
     font-size: 14px; color: #3c4043; display: flex; align-items: flex-start; gap: 8px;
   }
   .kpi-body ul li:last-child { border-bottom: none; }
-  .kpi-body ul li::before { content: '•'; color: #1a73e8; font-weight: 900; flex-shrink: 0; }
+  .kpi-body ul li::before { content: ''; color: #1a73e8; font-weight: 900; flex-shrink: 0; }
   .kpi-common {
     background: #fff; border-radius: 14px;
     border: 1px solid #e8eaed; overflow: hidden;
@@ -248,7 +248,6 @@
     background: #e6f4ea; color: #1e8e3e;
     padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
   }
-  /* 사례 보기 버튼 */
   .case-link-btn {
     display: inline-flex; align-items: center; gap: 8px;
     margin-top: 20px; padding: 10px 20px;
@@ -259,6 +258,24 @@
   .case-link-btn:hover { background: #1557b0; }
   .case-link-btn.gray { background: #5f6368; }
   .case-link-btn.gray:hover { background: #3c4043; }
+  /* 외부교육 커리큘럼 테이블 */
+  .edu-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 16px 0; }
+  .edu-table th {
+    background: #1a73e8; color: #fff;
+    padding: 10px 14px; text-align: left; font-weight: 700;
+  }
+  .edu-table td { padding: 10px 14px; border-bottom: 1px solid #c5d8f8; color: #1a4a8a; vertical-align: top; }
+  .edu-table tr:last-child td { border-bottom: none; }
+  .edu-table tr:nth-child(even) td { background: rgba(255,255,255,0.5); }
+  .edu-pdf-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 16px; padding: 9px 20px;
+    background: #fff; color: #1a73e8;
+    border: 2px solid #1a73e8;
+    border-radius: 24px; font-size: 13px; font-weight: 700;
+    text-decoration: none; transition: all .2s;
+  }
+  .edu-pdf-btn:hover { background: #1a73e8; color: #fff; }
   .workflow-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   .wf-card {
     background: #fff; border-radius: 14px; padding: 24px;
@@ -272,7 +289,7 @@
     border-bottom: 1px solid #f1f3f4; display: flex; gap: 8px;
   }
   .wf-list li:last-child { border-bottom: none; }
-  .wf-list li::before { content: '→'; color: #34a853; font-weight: 700; flex-shrink: 0; }
+  .wf-list li::before { content: '✓'; color: #34a853; font-weight: 700; flex-shrink: 0; }
   .footer {
     text-align: center; padding: 32px;
     color: #9aa0a6; font-size: 13px; border-top: 1px solid #e8eaed;
@@ -297,10 +314,10 @@
 </div>
 
 <nav class="sticky-nav">
-  <a href="#s1">01 도입 배경</a>
-  <a href="#s2">02 실행 계획</a>
+  <a href="#s1">01 개요·도입 배경</a>
+  <a href="#s2">02 부서별 실행계획</a>
   <a href="#s3">03 역량 강화</a>
-  <a href="#s4">04 예산 · 기대효과</a>
+  <a href="#s4">04 예산·기대효과</a>
 </nav>
 
 <div class="page-wrap">
@@ -355,7 +372,7 @@
   <div class="section" id="s2">
     <div class="section-header">
       <div class="section-num">2</div>
-      <div class="section-title">부서별 세부 활용 및 실행 계획</div>
+      <div class="section-title">부서별 세부 활용 및 실행계획</div>
     </div>
 
     <!-- 2.1 -->
@@ -394,7 +411,7 @@
           </tbody>
         </table>
       </div>
-      <div style="margin-top:14px; font-size:15px; font-weight:600; color:#3c4043; text-align:right;">
+      <div style="margin-top:14px; font-size:16px; font-weight:700; color:#202124; text-align:right;">
         총 84명 (리더 14명 · 실무 70명 · 앰배서더 6명 포함)
       </div>
     </div>
@@ -448,16 +465,16 @@
         <div class="tab-buttons">
           <button class="tab-btn active" onclick="showTab(this,'case1')">📈 주간 키워드 리포트</button>
           <button class="tab-btn" onclick="showTab(this,'case2')">📊 SA광고 모니터링</button>
-          <button class="tab-btn" onclick="showTab(this,'case3')">📉 주간 트래픽 리포트</button>
+          <button class="tab-btn" onclick="showTab(this,'case3')">🌐 주간 트래픽 리포트</button>
           <button class="tab-btn" onclick="showTab(this,'case4')">🔍 형태소 오분석 감지</button>
         </div>
 
         <!-- 탭 1 -->
         <div id="case1" class="tab-content active">
           <div class="case-header">
-            <div class="case-team">📣 마케팅본부 · 퍼포먼스마케팅팀</div>
-            <div class="case-title">주간 급상승 키워드 자동 리포트</div>
-            <div class="case-desc">마케팅 담당자가 매주 수동으로 트렌드 키워드를 수집·정리하던 방식을 자동화. itemscout API로 네이버 쇼핑 급상승 키워드를 수집하고 AI가 데이터를 정제하여 매주 월요일 오전 자동 발송합니다. GWS 도입 후에는 내부 Gmail 계정을 통해 전체 구성원 배포로 확대 예정입니다.</div>
+            <div class="case-team">마케팅전략팀</div>
+            <div class="case-title">주간 트렌드 키워드 자동 리포트</div>
+            <div class="case-desc">네이버 쇼핑 트렌드 키워드를 매주 자동으로 수집·분석하여 메일로 발송하는 자동화 시스템. itemscout API와 AI를 결합해 수동 수집 작업을 완전 자동화했으며, GWS 도입 후 사내 Gmail 전체 발송으로 확장 예정.</div>
           </div>
           <div class="case-grid">
             <div class="case-item">
@@ -474,15 +491,15 @@
             <span class="result-chip">✅ AI 데이터 정제</span>
             <span class="result-chip">✅ GWS 도입 후 전사 배포 예정</span>
           </div>
-          <a href="keyword_report_260330.pdf" target="_blank" class="case-link-btn">📄 리포트 샘플 보기</a>
+          <a href="주간_트렌드리포트_급상승_260330.pdf" target="_blank" class="case-link-btn">📄 리포트 샘플 보기</a>
         </div>
 
         <!-- 탭 2 -->
         <div id="case2" class="tab-content">
           <div class="case-header">
-            <div class="case-team">🗂 서비스기획본부 · 검색서비스팀</div>
+            <div class="case-team">마케팅전략팀</div>
             <div class="case-title">다나와 SA광고 모니터링 대시보드</div>
-            <div class="case-desc">수천 개 키워드의 광고 성과를 매일 Excel로 수동 비교하던 방식에서 탈피. 이상 지표를 놓치거나 분석에 과도한 시간이 소요되는 문제를 해결하기 위해 AI 도구를 활용하여 웹 대시보드를 직접 구축. 개발 지식 없이도 AI와의 대화만으로 구현 완료.</div>
+            <div class="case-desc">수천 개 광고 키워드를 수동으로 Excel 비교하던 작업을 AI 웹 대시보드로 전환. 대화형 코딩으로 개발해 별도 개발 인력 없이 구현했으며, 6가지 이슈 유형을 자동 감지해 조기 대응이 가능합니다.</div>
           </div>
           <div class="case-grid">
             <div class="case-item">
@@ -491,7 +508,14 @@
             </div>
             <div class="case-item">
               <div class="case-item-title">⚡ 주요 기능 — 6가지 자동 감지</div>
-              <div class="case-item-body">클릭 이상 감지, 고호출 클릭0, 광고 공급부족, 호출수 급감 등 6가지 유형 자동 감지. 이상 지표 하이라이트 표시 및 분석 결과 리포트 자동 생성으로 조기 대응 가능.</div>
+              <div class="case-item-body">
+                🚨 클릭 0 감지 — 전일 클릭 있었는데 금일 0인 키워드<br>
+                ⚠️ 클릭 N%↓ 감지 — 설정 기준 이상 클릭 감소 키워드<br>
+                🔍 고호출 클릭0 — 호출수 충분하지만 클릭 없는 키워드<br>
+                📭 광고 공급부족 — 빈슬롯 6으로 광고 상품 전혀 없는 상태<br>
+                📉 호출수 급감 — 전일 대비 호출수 50% 이상 감소<br>
+                📋 전체 분석 대상 — 필터·중복 제거 후 전체 현황
+              </div>
             </div>
           </div>
           <div class="result-chips">
@@ -505,9 +529,9 @@
         <!-- 탭 3 -->
         <div id="case3" class="tab-content">
           <div class="case-header">
-            <div class="case-team">📣 마케팅본부 · 마케팅전략팀</div>
-            <div class="case-title">주간 트래픽 대시보드 + AI 분석 리포트</div>
-            <div class="case-desc">마케팅전략팀에서 매주 구글시트를 수작업으로 정리해 트래픽 현황을 메일 발송하던 방식을 자동화. DAU·세션·채널별 지표를 대시보드로 시각화하고, AI가 시장 동향 및 트래픽 변화 원인을 분석한 코멘트를 자동으로 생성하여 함께 발송합니다.</div>
+            <div class="case-team">마케팅본부 마케팅전략팀</div>
+            <div class="case-title">주간 트래픽 리포트 대시보드 + AI 분석</div>
+            <div class="case-desc">기존 구글시트 수작업으로 주간 트래픽 현황을 정리해 메일 발송하던 방식을 대시보드 자동화 + AI 분석 리포트로 전환. DAU 지표와 채널별 현황을 자동 시각화하고 AI가 시장 동향 분석 코멘트를 자동 생성합니다.</div>
           </div>
           <div class="case-grid">
             <div class="case-item">
@@ -530,17 +554,17 @@
         <!-- 탭 4 -->
         <div id="case4" class="tab-content">
           <div class="case-header">
-            <div class="case-team">🗂 서비스기획본부 · 검색서비스팀</div>
+            <div class="case-team">검색서비스팀 · Cowave</div>
             <div class="case-title">형태소 오분석 자동 감지 시스템</div>
-            <div class="case-desc">다나와·에누리 검색 서비스의 상품명 형태소 분석 결과를 월 16만 건 이상 수작업으로 검토하던 구조를 AI 자동화로 전환. 반복적·규칙 기반 작업의 특성상 AI 자동화에 최적화된 업무로 판단하여 개발 착수.</div>
+            <div class="case-desc">다나와·에누리 검색 서비스의 형태소 분석 결과를 월 16만 건 이상 수작업으로 검토하던 구조를 AI 자동화로 전환. 브라우저 기반 도구로 엑셀 업로드 후 AI가 오분석 여부를 자동 판단합니다.</div>
           </div>
           <div class="case-grid">
             <div class="case-item">
               <div class="case-item-title">🔧 구현 방식</div>
               <div class="case-item-body">브라우저 단독 실행(GitHub Pages 배포). 엑셀 업로드 → AI가 오분석 여부 자동 판단 → 결과 다운로드. AI 도구와의 대화로 개발하여 코드 작성 최소화.<br><br>
-              오분석 기준: 형태소 분석기가 단어를 의미 없는 음절 조각으로 잘못 분리한 경우.<br>
-              예) 텔루릭스 → [텔·루릭·스] 오분석 ✅<br>
-              예) 삼성전자 → [삼성·전자] 정상 ✅</div>
+                오분석 기준: 형태소 분석기가 단어를 의미 없는 음절 조각으로 잘못 분리한 경우.<br>
+                예) 텔루릭스 → [텔·루릭·스] 오분석 ✅<br>
+                예) 삼성전자 → [삼성·전자] 정상 ✅</div>
             </div>
             <div class="case-item">
               <div class="case-item-title">📈 성과</div>
@@ -624,14 +648,14 @@
       <div class="card-title">3.1 Best Practice 공유 및 문화 조성</div>
       <div class="community-grid" style="margin-bottom:16px;">
         <div class="comm-card">
-          <div class="comm-icon">💡</div>
-          <div class="comm-title">스마트워크 연구소: 오늘의 발견</div>
-          <div class="comm-desc">GWS 활용 팁을 자유롭게 공유하는 내부 게시판. "Gemini로 광고 문구 10개 생성" 등 실무 사례 중심으로 운영.</div>
+          <div class="comm-icon">💬</div>
+          <div class="comm-title">채널 : 활용 사례 공유</div>
+          <div class="comm-desc">GWS 활용 팁·사례를 자유롭게 공유. "Gemini로 기획서 10분 완성" 같은 실무 사례 공유.</div>
         </div>
         <div class="comm-card">
-          <div class="comm-icon">🆘</div>
-          <div class="comm-title">GWS/Gemini 해결소 (SOS)</div>
-          <div class="comm-desc">임직원 누구나 질문을 올리고 앰배서더·숙련자가 답변하는 Q&amp;A 게시판. 진입 장벽을 낮추고 심리적 안전감을 제공.</div>
+          <div class="comm-icon">🙋</div>
+          <div class="comm-title">GWS/Gemini 질문방 (SOS)</div>
+          <div class="comm-desc">사용 중 막히는 부분 Q&amp;A. 앰배서더가 우선 답변 제공.</div>
         </div>
       </div>
       <div style="background:#f8f9fa; border-radius:12px; padding:20px 24px;">
@@ -656,16 +680,48 @@
     <div class="card">
       <div class="card-title">3.2 교육 프로그램</div>
       <div class="grid-2" style="margin-bottom:24px; margin-top:8px;">
+
+        <!-- 외부 교육 (옵션 A 적용) -->
         <div style="background:#e8f0fe; border-radius:12px; padding:24px;">
           <div style="font-weight:800; color:#1a73e8; margin-bottom:12px; font-size:1rem;">🏢 외부 교육 — 1단계 (메가존소프트)</div>
-          <div style="font-size:14px; color:#1a4a8a; line-height:1.8;">
-            메가존소프트 제공 GWS 공식 도입 교육<br><br>
-            · GWS 핵심 기능 및 Gemini 활용법<br>
-            · 기업 도입 사례 및 적용 전략<br>
-            · 조직 문화 변화 관리<br><br>
-            <span style="background:#fff; color:#1a73e8; padding:4px 12px; border-radius:8px; font-size:13px; font-weight:700;">📋 세부 커리큘럼 협의 후 업데이트 예정</span>
+          <div style="font-size:14px; color:#1a4a8a; line-height:1.8; margin-bottom:12px;">
+            메가존소프트 DWP 변화관리 서비스 기반 GWS 공식 도입 교육
           </div>
+          <table class="edu-table">
+            <thead>
+              <tr>
+                <th style="width:70px;">단계</th>
+                <th style="width:120px;">대상</th>
+                <th>주요 교육 내용</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1단계</td>
+                <td>관리자 / IT담당자</td>
+                <td>관리 콘솔 운영, 계정·보안 정책 설정</td>
+              </tr>
+              <tr>
+                <td>2단계</td>
+                <td>전체 사용자</td>
+                <td>Gmail · Drive · Meet · Docs · Sheets · Slides 실무 활용</td>
+              </tr>
+              <tr>
+                <td>3단계</td>
+                <td>심화 대상자</td>
+                <td>Gemini AI 활용, AppSheet 노코드 앱, Apps Script 자동화</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="font-size:13px; color:#1a4a8a; margin-top:12px; line-height:1.7;">
+            · 도입 전략 컨설팅 및 온보딩 매뉴얼 지원<br>
+            · 헬프데스크 운영 (도입 초기 문의 대응)<br>
+            · 활용도 모니터링 및 리포트 제공
+          </div>
+          <a href="[MZS] DWP 변화관리 서비스 소개서.pdf" target="_blank" class="edu-pdf-btn">📄 서비스 소개서 보기</a>
         </div>
+
+        <!-- 내부 교육 -->
         <div style="background:#e6f4ea; border-radius:12px; padding:24px;">
           <div style="font-weight:800; color:#1e8e3e; margin-bottom:12px; font-size:1rem;">🖥 내부 교육 — 런치 &amp; 런</div>
           <div style="font-size:14px; color:#1b5e20; line-height:1.8;">
@@ -691,7 +747,7 @@
   <div class="section" id="s4">
     <div class="section-header">
       <div class="section-num">4</div>
-      <div class="section-title">소요 예산 및 기대효과 분석</div>
+      <div class="section-title">소요 예산 및 기대효과</div>
     </div>
 
     <div class="card" style="margin-bottom:24px;">
@@ -712,34 +768,34 @@
               <td>1인당 월 라이선스</td>
               <td>메가존소프트</td>
               <td>Business Standard · 1인</td>
-              <td>$15.80</td>
-              <td>₩23,700</td>
+              <td>$15.00</td>
+              <td>₩22,500</td>
             </tr>
             <tr>
               <td>월 라이선스 (84명)</td>
               <td>메가존소프트</td>
               <td>Business Standard · 84명</td>
-              <td>$1,327.20</td>
-              <td>₩1,990,800</td>
+              <td>$1,260.00</td>
+              <td>₩1,890,000</td>
             </tr>
             <tr class="highlight-row">
               <td><strong>3개월 라이선스 합계</strong></td>
               <td>메가존소프트</td>
               <td>Business Standard · 84명 · 3개월</td>
-              <td><strong>$3,981.60</strong></td>
-              <td><strong>₩5,972,400</strong></td>
+              <td><strong>$3,780.00</strong></td>
+              <td><strong>₩5,670,000</strong></td>
             </tr>
             <tr>
               <td>연간 라이선스 (참고)</td>
               <td>메가존소프트</td>
               <td>Business Standard · 84명 · 12개월</td>
-              <td>$15,926.40</td>
-              <td>₩23,889,600</td>
+              <td>$15,120.00</td>
+              <td>₩22,680,000</td>
             </tr>
             <tr>
               <td>외부 교육비</td>
               <td>메가존소프트</td>
-              <td>GWS 도입 교육</td>
+              <td>DWP 변화관리 서비스 교육</td>
               <td colspan="2"><span class="tbd-badge">TBD</span></td>
             </tr>
             <tr>
@@ -827,6 +883,7 @@
           </div>
         </div>
       </div>
+
       <div class="kpi-common">
         <div class="kpi-head kpi-head-gray">
           <span>📌</span>
@@ -841,7 +898,8 @@
           <span class="kpi-chip">커뮤니티 게시글 수</span>
         </div>
       </div>
-      <div style="font-weight:800; margin-bottom:16px; color:#202124;">📋 KPI 평가 프로세스</div>
+
+      <div class="card-title" style="margin-bottom:16px;">📋 KPI 평가 프로세스</div>
       <div class="process-flow">
         <div class="pf-item">
           <div class="pf-icon">👤</div>
@@ -867,7 +925,7 @@
           <div class="pf-sub">본부별 데이터 통합</div>
         </div>
         <div class="pf-arrow">→</div>
-        <div class="pf-item" style="border-color:#1a73e8;">
+        <div class="pf-item">
           <div class="pf-icon">🏆</div>
           <div class="pf-title">최종 결과</div>
           <div class="pf-sub">3개월 후</div>
@@ -877,7 +935,7 @@
 
     <div class="card">
       <div class="card-title">4.3 정성적 기대효과</div>
-      <div class="effect-grid" style="margin-top:16px;">
+      <div class="effect-grid">
         <div class="effect-card">
           <div class="effect-icon">🚀</div>
           <div class="effect-title">고부가 업무 집중</div>
@@ -912,26 +970,26 @@
     </div>
   </div>
 
-  <div class="footer">
-    <div>CC사업부 GWS 3개월 파일럿 운영 계획 · 2026.04</div>
-  </div>
+</div>
+
+<div class="footer">
+  CC사업부 GWS 3개월 파일럿 운영 계획 · 2026.04
 </div>
 
 <script>
-function showTab(btn, id) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById(id).classList.add('active');
-}
-
-function downloadHTML() {
-  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'CC_GWS_Pilot_Plan_2604.html';
-  a.click();
-}
+  function showTab(btn, id) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(id).classList.add('active');
+  }
+  function downloadHTML() {
+    const blob = new Blob([document.documentElement.outerHTML], {type:'text/html'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'CC_GWS_Pilot_Plan_2604.html';
+    a.click();
+  }
 </script>
 </body>
 </html>
