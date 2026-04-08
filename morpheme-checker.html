@@ -1073,6 +1073,7 @@ const BUILTIN_NORMAL_CASES = [
   {id:'n_56', type:'corrected', morpheme:'팻, 버너',            wrong:'팻,버너',           correct:'팻버너',           memo:'팻(fat)+버너(burner) 외래어',                 addedAt:''},
   {id:'n_57', type:'corrected', morpheme:'확인, 중', wrong:'확인,중', correct:'확인중', memo:'확인중 = 정상 (확인+중 의미있는 단어)', addedAt:''},
   {id:'n_58', type:'corrected', morpheme:'시원, 서커', wrong:'시원,서커', correct:'시원서커', memo:'시원서커(seersucker) = 직물명, 정상 처리', addedAt:''},
+  {id:'n_59', type:'corrected', morpheme:'질, 스튜어트', wrong:'질,스튜어트', correct:'질스튜어트', memo:'질(Jill)✅ 스튜어트(Stuart)✅ 각각 의미있음 → 정상', addedAt:''},
 ];
 let correctedCases = [...BUILTIN_NORMAL_CASES]; // 교정 케이스 (외래어 정상 케이스 포함)
 let deletedBuiltinIds = []; // 삭제된 기본 케이스 ID
@@ -1534,9 +1535,7 @@ AI의 독자적 판단으로 오분석 추가 절대 금지.
 - 메종,미하라,야스히로 → 정상 (메종maison✅ 미하라Mihara✅ 야스히로Yasuhiro✅)
 - 레터,몽 → 정상 (레터letter✅ 몽mont✅)
 - 레터, 몽 → 정상 (레터letter✅ 몽mont✅)
-- 앵글,백 → 정상 (앵글angle✅ 백bag✅)
 - 질, 스튜어트 → 정상 (질Jill✅ 스튜어트Stuart✅)
-- 테일러, 메이드 → 정상 (테일러Taylor✅ 메이드Made✅)
 
 ■ 정상 (상태="정상")
 분리가 올바르거나, 영숫혼합 모델번호, 단위명 등 규칙 처리된 경우.
