@@ -856,6 +856,11 @@ const BUILTIN_CASES = [ // {m:형태소, w:잘못된단어, c:올바른단어, c
   {m:'파리,게이츠,파리,게이츠',w:'파리,게이츠,파리,게이츠',c:'파리게이츠',cat:'패션/브랜드'},
   {m:'프레,보나, 프레, 보나',w:'프레,보나',c:'프레보나',cat:'패션/브랜드'},
   {m:'퓨어스트,라이크, 퓨어스트, 라이크',w:'퓨어스트,라이크',c:'퓨어스트라이크',cat:'패션/브랜드'},
+  {m:'디자, 인연, 디자, 인연',w:'디자,인연',c:'디자인연',cat:'기타'},
+  {m:'일레드, 일, 레드',w:'일,레드',c:'일레드',cat:'기타'},
+  {m:'파피뜨, 파피, 뜨',w:'파피,뜨',c:'파피뜨',cat:'기타'},
+  {m:'온비아, 온, 비아',w:'온,비아',c:'온비아',cat:'기타'},
+  {m:'이사바, 이, 사바',w:'이,사바',c:'이사바',cat:'기타'},
 ];
 
 // ===================== 케이스 스토리지 (메모리) =====================
@@ -1074,6 +1079,8 @@ const BUILTIN_NORMAL_CASES = [
   {id:'n_57', type:'corrected', morpheme:'확인, 중', wrong:'확인,중', correct:'확인중', memo:'확인중 = 정상 (확인+중 의미있는 단어)', addedAt:''},
   {id:'n_58', type:'corrected', morpheme:'시원, 서커', wrong:'시원,서커', correct:'시원서커', memo:'시원서커(seersucker) = 직물명, 정상 처리', addedAt:''},
   {id:'n_59', type:'corrected', morpheme:'질, 스튜어트', wrong:'질,스튜어트', correct:'질스튜어트', memo:'질(Jill)✅ 스튜어트(Stuart)✅ 각각 의미있음 → 정상', addedAt:''},
+  {id:'n_60', type:'corrected', morpheme:'디자인, 연', wrong:'디자,인연', correct:'디자인,연', memo:'디자인(design)✅ 연✅ 각각 의미있음 → 정상', addedAt:''},
+
 ];
 let correctedCases = [...BUILTIN_NORMAL_CASES]; // 교정 케이스 (외래어 정상 케이스 포함)
 let deletedBuiltinIds = []; // 삭제된 기본 케이스 ID
