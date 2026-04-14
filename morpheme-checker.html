@@ -1584,6 +1584,15 @@ AI의 독자적 판단으로 오분석 추가 절대 금지.
 - 루,올라 → 정상 (루올라 제품명)
 - 미,라루 → 정상 (미라루 제품명)
 - 엘르,이너웨어 → 정상 (엘르Elle✅ 이너inner✅ 웨어wear✅)
+- 녹,백 → 정상 (녹green✅ 백bag✅)
+- 오니츠카,타이거 → 정상 (오니츠카Onitsuka✅ 타이거tiger✅)
+- 오니츠카, 타이거 → 정상 (오니츠카Onitsuka✅ 타이거tiger✅)
+- 데이,크림 → 정상 (데이day✅ 크림cream✅)
+- 미드,센추리 → 정상 (미드mid✅ 센추리century✅)
+- 크레마,카발로 → 정상 (크레마crema✅ 카발로cavallo✅)
+- 아이,몰 → 정상 (아이I✅ 몰mall✅)
+- 아워,스킨 → 정상 (아워our✅ 스킨skin✅)
+- 크로스, 바디 → 정상 (크로스cross✅ 바디body✅)
 
 ■ 정상 (상태="정상")
 분리가 올바르거나, 영숫혼합 모델번호, 단위명 등 규칙 처리된 경우.
@@ -2212,16 +2221,22 @@ function eojeolBasedFilter(r) {
     var makerEng = makerEngMatch ? normalizeStr(makerEngMatch[1].trim()) : '';
     var makerFull = normalizeStr(maker);
 
+    // 연속 파트를 붙여서 제조사명과 비교 (예: 디자인연 → 디자+인연)
+    var concatStr = '';
     for (var idx = 0; idx < allParts.length; idx++) {
       var pn = normalizeStr(allParts[idx]);
-      // 한글 파트, 영문 파트, 또는 전체 일치 중 하나라도 맞으면 제조사명으로 간주
+      concatStr += pn;
+      // 단일 파트 일치 OR 연속 파트 합산 일치
       var isMaker = (makerKor && pn === makerKor) ||
                     (makerEng && pn === makerEng) ||
-                    (pn === makerFull);
+                    (pn === makerFull) ||
+                    (concatStr === makerFull) ||
+                    (makerKor && concatStr === makerKor);
       if (isMaker) {
         startIdx = idx + 1;
-      } else {
-        break;
+        concatStr = ''; // 리셋
+      } else if (!makerFull.startsWith(concatStr)) {
+        break; // 더 이상 매칭 불가
       }
     }
   }
