@@ -827,10 +827,11 @@
   <div class="formula-panel open" id="formulaPanel">
     <div class="formula-title">신규 인기점수 산출 공식 (단기) — 수식 변경 예정</div>
     <div class="formula-main">PS(단기) = Σ( log(1+값) / log(1+MAX값) × 가중치 ) + 신상품부스팅 → 패널티 적용</div>
+    <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;">※ MAX값 기준: 전체 다나와 카탈로그 상품 대상 (검수 샘플 내 최대값 아님)</div>
     <div class="formula-items">
       <div class="formula-item"><span class="formula-item-name">클릭아웃</span><span class="formula-item-weight">× 1.0</span></div>
-      <div class="formula-item"><span class="formula-item-name">주문수량</span><span class="formula-item-weight">× 2.0</span></div>
-      <div class="formula-item"><span class="formula-item-name">판매금액</span><span class="formula-item-weight">× 1.0 &nbsp;<span style="color:var(--text-muted);font-weight:400;">오픈마켓만</span></span></div>
+      <div class="formula-item"><span class="formula-item-name">주문수량</span><span class="formula-item-weight">× 2.0 &nbsp;<span style="color:var(--text-muted);font-weight:400;">가격비교 기준 (E마켓 제외)</span></span></div>
+      <div class="formula-item"><span class="formula-item-name">판매금액</span><span class="formula-item-weight">× 1.0 &nbsp;<span style="color:var(--text-muted);font-weight:400;">가격비교 기준 (E마켓 제외)</span></span></div>
       <div class="formula-item"><span class="formula-item-name">VIP클릭</span><span class="formula-item-weight">× 0.25 &nbsp;<span style="color:var(--text-muted);font-weight:400;">상세 PV(PC+MO)</span></span></div>
       <div class="formula-item"><span class="formula-item-name">찜/관심</span><span class="formula-item-weight">× 0.40</span></div>
       <div class="formula-item"><span class="formula-item-name">공급사수</span><span class="formula-item-weight">× 0.15</span></div>
@@ -925,8 +926,8 @@
       <div class="guide-item-desc">아래 각 항목의 가중치가 카테고리 특성에 맞게 반영됐는지 확인하고, 조정이 필요한 항목은 회의에서 의견 주세요.</div>
       <div class="weight-list">
         <div class="weight-tag">클릭아웃 <b>×1.0</b></div>
-        <div class="weight-tag">주문수량 <b>×2.0</b></div>
-        <div class="weight-tag">판매금액 <b>×1.0</b></div>
+        <div class="weight-tag">주문수량 <b>×2.0</b> <span style="font-size:9px;color:var(--text-muted);">가격비교(E마켓제외)</span></div>
+        <div class="weight-tag">판매금액 <b>×1.0</b> <span style="font-size:9px;color:var(--text-muted);">가격비교(E마켓제외)</span></div>
         <div class="weight-tag">VIP클릭 <b>×0.25</b></div>
         <div class="weight-tag">찜/관심 <b>×0.40</b></div>
         <div class="weight-tag">공급사수 <b>×0.15</b></div>
