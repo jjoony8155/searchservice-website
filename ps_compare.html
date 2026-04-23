@@ -287,23 +287,7 @@
   }
 
   /* ── GUIDE FLOAT ── */
-  .guide-float {
-    position: fixed;
-    top: 70px;
-    right: 24px;
-    width: 300px;
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.13);
-    z-index: 200;
-    overflow: hidden;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(-8px);
-    transition: opacity 0.2s, transform 0.2s;
-  }
-  .guide-float.open {
+    .guide-float.open {
     opacity: 1;
     pointer-events: auto;
     transform: translateY(0);
@@ -964,12 +948,25 @@ let selectedProdC = null; // 현재 하이라이트된 prod_c
 // ── 버킷 셀렉트 초기화
 const sel = document.getElementById('bucketSelect');
 
-// bucket 옵션 먼저
+// 본부별 그룹으로 정렬
+const bizOrder = ['광고영업본부', '디지털큐레이션본부', '라이프큐레이션본부'];
+const grouped = {};
 buckets.forEach(b => {
-  const opt = document.createElement('option');
-  opt.value = b.id;
-  opt.textContent = `[${b.biz}] ${b.name}`;
-  sel.appendChild(opt);
+  if (!grouped[b.biz]) grouped[b.biz] = [];
+  grouped[b.biz].push(b);
+});
+
+bizOrder.forEach(biz => {
+  if (!grouped[biz]) return;
+  const optgroup = document.createElement('optgroup');
+  optgroup.label = biz;
+  grouped[biz].forEach(b => {
+    const opt = document.createElement('option');
+    opt.value = b.id;
+    opt.textContent = b.name;
+    optgroup.appendChild(opt);
+  });
+  sel.appendChild(optgroup);
 });
 
 // 전체 옵션 맨 아래
