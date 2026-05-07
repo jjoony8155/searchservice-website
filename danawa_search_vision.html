@@ -388,6 +388,11 @@
     background: linear-gradient(135deg, #fffbeb, #fff);
   }
 
+  .benchmark-card.competitor {
+    border-color: var(--red);
+    background: linear-gradient(135deg, #fff5f5, #fff);
+  }
+
   .benchmark-header {
     display: flex;
     align-items: center;
@@ -409,6 +414,12 @@
     background: #fef3c7;
     color: #92400e;
     border: 1px solid #fcd34d;
+  }
+
+  .benchmark-badge.competitor-badge {
+    background: var(--red-light);
+    color: var(--red);
+    border: 1px solid #fca5a5;
   }
 
   .benchmark-strategy {
@@ -594,6 +605,44 @@
     font-size: 14px;
     color: var(--text2);
     line-height: 1.7;
+  }
+
+  /* 광고/비즈니스 신규 — 3영역 분리 박스 */
+  .three-roles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 28px;
+  }
+
+  .role-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 20px;
+  }
+
+  .role-card.role-ps { border-top: 3px solid var(--blue); }
+  .role-card.role-cm { border-top: 3px solid var(--green); }
+  .role-card.role-ad { border-top: 3px solid var(--amber); }
+
+  .role-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .role-subtitle {
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 12px;
+  }
+
+  .role-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
   }
 
   /* 협의체 아젠다 */
@@ -884,6 +933,7 @@
 
   @media (max-width: 720px) {
     .axes-grid, .benchmark-grid, .impact-grid, .council-grid { grid-template-columns: 1fr; }
+    .three-roles { grid-template-columns: 1fr; }
     .from-to { grid-template-columns: 1fr; }
     .arrow-col { min-height: 40px; transform: rotate(90deg); }
     .timeline::before { left: 70px; }
@@ -965,10 +1015,18 @@
       </div>
       <div class="benchmark-card">
         <div class="benchmark-header">
-          <div class="benchmark-name">네이버</div>
+          <div class="benchmark-name">네이버 검색</div>
         </div>
         <div class="benchmark-strategy">한국형 생태계 완결성으로 빅테크에 맞서다</div>
-        <p class="benchmark-desc">검색-쇼핑-결제-물류를 하나로 묶어 사용자가 이탈할 이유를 없앴다. 글로벌 빅테크가 단기간 따라올 수 없는 로컬 생태계 장벽 구축.</p>
+        <p class="benchmark-desc">한국어 맥락과 온/오프라인 생태계의 완결성으로 살아남았다. 글로벌 빅테크가 단기간 따라올 수 없는 로컬 생태계 장벽 구축이 핵심 전략.</p>
+      </div>
+      <div class="benchmark-card competitor">
+        <div class="benchmark-header">
+          <div class="benchmark-name">네이버쇼핑</div>
+          <span class="benchmark-badge competitor-badge">직접 경쟁자</span>
+        </div>
+        <div class="benchmark-strategy">검색-쇼핑-결제-물류 통합으로 이탈을 막다</div>
+        <p class="benchmark-desc">가격비교 영역에서 가장 큰 트래픽을 가져갔다. 다만 가격비교의 디테일과 깊이에서는 다나와가 앞선다. 규모는 네이버쇼핑이 크지만 정확성은 다나와가 앞선다. <strong>문제는 이 차이가 사용자에게 잘 보이지 않는다는 것이다.</strong></p>
       </div>
       <div class="benchmark-card">
         <div class="benchmark-header">
@@ -983,12 +1041,12 @@
           <span class="benchmark-badge">벤치마크 모델</span>
         </div>
         <div class="benchmark-strategy">신뢰도라는 무기로 살아남다</div>
-        <p class="benchmark-desc">글로벌 빅테크 공세 속에서도 검색 결과의 신뢰도를 지킨 것이 핵심. 신뢰감 → 트래픽 → 플랫폼 가치. 다나와가 가장 벤치마킹해야 할 모델.</p>
+        <p class="benchmark-desc">"카카쿠에서 찾으면 정확하다"는 평판을 지킨 것이 핵심. 가격 정확성, 제품 정보 디테일, 사용자가 납득할 수 있는 노출 순위 — 이 세 가지를 흔들리지 않게 유지했다. <strong>다나와도 같은 자산을 가지고 있다. 25년간 쌓아온 가격 정확성과 상품 데이터가 그것이다.</strong></p>
       </div>
     </div>
 
     <div class="connect-box">
-      <p>단, 이 기회를 잡으려면 <strong>지금 다나와 검색의 한계를 먼저 해결해야 한다.</strong><br>아무리 좋은 전략도 기초가 흔들리면 의미가 없다.</p>
+      <p><strong>공통점: 사용자가 신뢰하고 머물 이유를 만든다.</strong><br><br>지금 다나와 검색은 그동안 쌓아온 강점을 사용자에게 충분히 보여주지 못하고 있다. 사용자가 시스템에 맞춰야 하고, 정확한 가격 정보와 풍부한 상품 데이터가 결과 페이지에서 충분히 드러나지 않는다. 이 구조를 바꾸지 않으면 경쟁에서 뒤처질 수밖에 없다.</p>
     </div>
 
   </section>
@@ -1007,7 +1065,8 @@
           <li><span class="item-dot dot-red"></span><span>부정확한 검색 결과 — 원하는 상품을 못 찾고 이탈</span></li>
           <li><span class="item-dot dot-red"></span><span>카테고리별 상대점수 — 다중 카테고리/통검 활용 불가</span></li>
           <li><span class="item-dot dot-red"></span><span>키워드만 매칭 — 사용자 의도 이해 불가</span></li>
-          <li><span class="item-dot dot-red"></span><span>수동 개입으로 공정성 훼손 — 불투명한 기준</span></li>
+          <li><span class="item-dot dot-red"></span><span>수동 개입으로 일관성 저하 — 카테고리·시점 간 기준 불일치</span></li>
+          <li><span class="item-dot dot-red"></span><span>결정에 필요한 정보가 따로 돌아다님 — 답나와·가격 추이·리뷰 분리</span></li>
           <li><span class="item-dot dot-red"></span><span>모든 사용자 동일한 결과 — 개인화 없음</span></li>
         </ul>
       </div>
@@ -1020,10 +1079,11 @@
         </div>
         <ul class="item-list">
           <li><span class="item-dot dot-blue"></span><span>정확한 검색 결과 — 원하는 상품을 제대로 찾아줌</span></li>
-          <li><span class="item-dot dot-blue"></span><span>절대값 기반 공정한 인기점수 — 전 카테고리 동일 기준</span></li>
+          <li><span class="item-dot dot-blue"></span><span>절대값 기반 인기점수 — 전 카테고리 동일 기준</span></li>
           <li><span class="item-dot dot-blue"></span><span>의도를 이해하는 검색 — 시스템이 사용자에게 맞춰감</span></li>
-          <li><span class="item-dot dot-blue"></span><span>자동화된 공정한 구조 — 투명하고 지속 가능한 운영</span></li>
-          <li><span class="item-dot dot-blue"></span><span>이 사람이 누군지 아는 검색 — CRM + 구매이력 개인화</span></li>
+          <li><span class="item-dot dot-blue"></span><span>자동화된 운영 구조 — 일관성 있고 지속 가능한 운영</span></li>
+          <li><span class="item-dot dot-blue"></span><span>다나와 자산이 결과에서 드러남 — 답나와·가격 추이·리뷰 통합</span></li>
+          <li><span class="item-dot dot-blue"></span><span>이 사람이 누군지 아는 검색 — 행동 데이터 기반 개인화 (CRM 연동은 별도 검토)</span></li>
         </ul>
       </div>
     </div>
@@ -1046,7 +1106,7 @@
       <div class="axis-card fade-up delay-2">
         <div class="axis-num">02</div>
         <div class="axis-title">신뢰할 수 있는 결과</div>
-        <p class="axis-desc">절대값 기반 공정한 인기점수. 사람의 수동 개입 없이 시스템 자동 운영. "다나와 결과는 믿을 수 있다"는 신뢰감 형성.</p>
+        <p class="axis-desc">절대값 기반 인기점수로 전체 카테고리에 동일한 기준을 적용한다. 사람의 수동 개입 없이 시스템이 자동으로 운영되고, <strong>사용자 행동 데이터(클릭, 판매, 리뷰)가 점수의 중심</strong>이 된다. 광고 집행은 부수적 시그널로 보조한다.</p>
       </div>
       <div class="axis-card fade-up delay-3">
         <div class="axis-num">03</div>
@@ -1063,13 +1123,32 @@
   <!-- 광고/비즈니스 -->
   <section id="business">
     <div class="section-label">Business</div>
-    <h2>광고/비즈니스 — 함께 성장하는 구조</h2>
-    <p class="section-desc">신뢰할 수 있는 검색 결과가 트래픽을 키우고, 트래픽이 광고 가치를 키운다. 광고와 검색 품질은 경쟁 관계가 아니라 함께 성장하는 구조다.</p>
+    <h2>광고/비즈니스 — 행동 데이터가 주, 광고는 부수적</h2>
+    <p class="section-desc">광고 집행은 PS의 한 시그널로 작용한다. 광고를 집행하는 셀러에게 합당한 인센티브를 제공하기 위한 것이며, 가격비교 사이트의 비즈니스 모델 자체가 이 구조 위에 있다.</p>
+
     <div class="ad-box">
-      <div class="ad-icon">📌</div>
+      <div class="ad-icon">⚖️</div>
       <div>
-        <div class="ad-title">광고 집행 업체 인기점수 방침</div>
-        <div class="ad-desc">광고 집행 업체에 대한 인기점수 비중은 합리적인 선으로 유지하며, 운영자가 수동으로 개입할 수 없는 <strong>자동화된 구조</strong>로 <strong>본부 간 협의</strong>를 통해 조율한다.</div>
+        <div class="ad-title">PS의 중심은 사용자 행동 데이터</div>
+        <div class="ad-desc">PS의 중심은 <strong>사용자 행동 데이터(클릭, 판매, 리뷰 등)</strong>이고, 광고 집행은 <strong>부수적 시그널</strong>로 보조하는 역할이다. 이 순서가 바뀌면 인기점수는 "사용자가 좋아하는 상품"이 아니라 "광고를 많이 집행한 상품"이 되고, 사용자는 다나와 결과를 점점 덜 신뢰하게 된다. 결국 트래픽이 빠지면 광고 가치도 같이 빠진다 — 영업 측면에서도 손해다.<br><br>따라서 광고 집행 비중은 행동 데이터를 보조하는 수준에서 유지하며, 운영자가 수동으로 개입할 수 없는 자동화된 구조로 본부 간 협의를 통해 조율한다.</div>
+      </div>
+    </div>
+
+    <div class="three-roles">
+      <div class="role-card role-ps">
+        <div class="role-title">PS (인기점수)</div>
+        <div class="role-subtitle">검색팀 책임 · 자동화된 점수</div>
+        <div class="role-desc">사용자 행동 데이터 기반. 사람의 수동 개입 없이 자동 운영.</div>
+      </div>
+      <div class="role-card role-cm">
+        <div class="role-title">큐레이션</div>
+        <div class="role-subtitle">콘텐츠팀 책임 · 전문가 판단</div>
+        <div class="role-desc">CM의 전문가 큐레이션은 PS와 별개 영역. "기준상품 단위 큐레이션 콘텐츠"로 구분 노출.</div>
+      </div>
+      <div class="role-card role-ad">
+        <div class="role-title">광고</div>
+        <div class="role-subtitle">영업본부 책임 · 셀러의 의지</div>
+        <div class="role-desc">PS의 부수적 시그널로 보조. 본부 간 협의로 비중 조율.</div>
       </div>
     </div>
   </section>
@@ -1085,10 +1164,9 @@
         <div class="impact-title">사용자</div>
         <ul class="impact-list">
           <li>가격비교·상품검색이 더 정확하고 빠르게</li>
-          <li>"다나와 결과는 믿을 수 있다"는 신뢰감</li>
           <li>시스템이 나에게 맞춰주는 개인화 경험</li>
           <li>상품 + 서비스 연결된 원스톱 구매</li>
-          <li>재방문율 증가 → 충성 고객화</li>
+          <li>"다나와 가면 찾을 수 있다" → 재방문율 증가 → 충성 고객화</li>
         </ul>
       </div>
       <div class="impact-card">
@@ -1096,9 +1174,9 @@
         <div class="impact-title">광고/비즈니스</div>
         <ul class="impact-list">
           <li>검색 품질 상승 → 트래픽 증가 → 광고 노출 기회 증가</li>
-          <li>사용자 행동 데이터 기반 타겟팅 정밀화 → CTR 상승 → 광고 단가 상승 (고객 데이터 연동 시 고도화 가능)</li>
-          <li>상품 광고 + 서비스 광고 포트폴리오 확장 (아정당·보험·데스크테리어·다해줌 등 단가 높은 광고 상품 생김)</li>
-          <li>광고 효과 자동 반영 → 투명한 기준 → 광고주 신뢰</li>
+          <li>사용자 행동 데이터 기반 타겟팅 정밀화 → 광고 CTR 상승 (CRM 연동 시 고도화 가능)</li>
+          <li>상품 광고 + 서비스 광고 포트폴리오 확장 (아정당·보험·데스크테리어·다해줌 등)</li>
+          <li>PS와 광고 영역 분리 운영 → 광고 효과 측정의 baseline 확보</li>
         </ul>
       </div>
       <div class="impact-card">
@@ -1133,7 +1211,7 @@
         <div class="tl-dot-col"><div class="tl-dot tl-dot-1"></div></div>
         <div class="tl-card">
           <div class="tl-title">PS 재설계 — 인기점수 개편</div>
-          <div class="tl-desc">절대값 기반 공정한 인기점수 도입. 광고 성과 자동 반영. 전 카테고리 동일 기준 적용.</div>
+          <div class="tl-desc">절대값 기반 인기점수 도입. 사용자 행동 데이터(클릭·판매·리뷰)가 점수의 중심. 전 카테고리 동일 기준 적용.</div>
           <span class="tl-badge">사용자 체감: 실제 인기 상품이 상위 노출</span>
         </div>
       </div>
