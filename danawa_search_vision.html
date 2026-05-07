@@ -152,6 +152,7 @@
   /* 섹션 */
   section { padding: 64px 0; border-bottom: 1px solid var(--border); }
   section:last-child { border-bottom: none; }
+  section:last-child { border-bottom: none; }
 
   .section-label {
     font-size: 11px;
@@ -770,6 +771,70 @@
     line-height: 1.7;
   }
 
+  /* 비전 브리지 */
+  .vision-bridge {
+    margin-top: 28px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 32px;
+  }
+
+  .vision-bridge > p {
+    font-size: 14px;
+    color: var(--text2);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .bridge-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .bridge-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .bridge-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 2px 8px;
+    border-radius: 100px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* 섹션 연결 박스 */
+  .connect-box {
+    margin-top: 28px;
+    background: linear-gradient(135deg, #eff6ff, #f8faff);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-left: 3px solid var(--blue);
+    border-radius: 0 12px 12px 0;
+    padding: 20px 24px;
+  }
+
+  .connect-box p {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .connect-box strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
   /* 푸터 */
   footer {
     background: var(--bg2);
@@ -846,11 +911,12 @@
 <nav class="nav-bar">
   <div class="nav-inner">
     <a href="#vision" class="nav-item active">비전</a>
+    <a href="#market" class="nav-item">시장 변화</a>
     <a href="#premise" class="nav-item">핵심 전제</a>
     <a href="#positioning" class="nav-item">포지셔닝</a>
-    <a href="#market" class="nav-item">시장 분석</a>
-    <a href="#roadmap" class="nav-item">로드맵</a>
+    <a href="#business" class="nav-item">광고/비즈니스</a>
     <a href="#impact" class="nav-item">임팩트</a>
+    <a href="#roadmap" class="nav-item">로드맵</a>
     <a href="#council" class="nav-item">협의체</a>
     <a href="#agenda" class="nav-item">아젠다</a>
   </div>
@@ -868,8 +934,64 @@
       <div class="vision-quote">"다나와는 라이프 큐레이터다"</div>
       <p class="vision-desc-white">사용자의 생활 전반을 이해하고 필요한 것을 먼저 제안하는 플랫폼으로 도약한다.<br>검색은 이 비전을 실현하는 핵심 인프라다.</p>
     </div>
-  </section>
 
+    <div class="vision-bridge">
+      <p>이 비전을 실현하려면 두 가지 전제가 필요하다.</p>
+      <div class="bridge-items">
+        <div class="bridge-item">
+          <span class="bridge-num">01</span>
+          <span>검색 시장이 빠르게 변하고 있다 — 지금 움직이지 않으면 뒤처진다</span>
+        </div>
+        <div class="bridge-item">
+          <span class="bridge-num">02</span>
+          <span>아무리 좋은 비전도 가격비교·상품검색이라는 핵심 경쟁력이 탄탄해야 올라설 수 있다</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- 시장 벤치마크 -->
+  <section id="market">
+    <div class="section-label">Market Benchmark</div>
+    <h2>왜 지금인가 — 검색 시장의 변화</h2>
+    <p class="section-desc">키워드를 입력하고 결과를 고르는 시대에서, AI가 의도를 이해하고 실행까지 돕는 시대로 전환 중이다. 경쟁사들은 이미 빠르게 움직이고 있다.</p>
+
+    <div class="benchmark-grid">
+      <div class="benchmark-card">
+        <div class="benchmark-header">
+          <div class="benchmark-name">구글 / 빙</div>
+        </div>
+        <div class="benchmark-strategy">정보 독점에서 답변 독점으로</div>
+        <p class="benchmark-desc">AI가 수백만 개 문서를 실시간 분석해 결론을 직접 제공. 검색 광고 클릭 감소 위기를 AI 구독·답변 내 상품 추천으로 돌파 중.</p>
+      </div>
+      <div class="benchmark-card">
+        <div class="benchmark-header">
+          <div class="benchmark-name">네이버</div>
+        </div>
+        <div class="benchmark-strategy">한국형 생태계 완결성으로 빅테크에 맞서다</div>
+        <p class="benchmark-desc">검색-쇼핑-결제-물류를 하나로 묶어 사용자가 이탈할 이유를 없앴다. 글로벌 빅테크가 단기간 따라올 수 없는 로컬 생태계 장벽 구축.</p>
+      </div>
+      <div class="benchmark-card">
+        <div class="benchmark-header">
+          <div class="benchmark-name">아마존 / 쿠팡</div>
+        </div>
+        <div class="benchmark-strategy">검색창이 곧 구매의 입구</div>
+        <p class="benchmark-desc">AI가 리뷰, 반품률, 만족도를 종합해 최적 상품을 골라주고, 검색 데이터가 물류 예측·재고 배치에까지 연결. 검색이 커머스 운영의 핵심 인프라.</p>
+      </div>
+      <div class="benchmark-card featured">
+        <div class="benchmark-header">
+          <div class="benchmark-name">카카쿠닷컴</div>
+          <span class="benchmark-badge">벤치마크 모델</span>
+        </div>
+        <div class="benchmark-strategy">신뢰도라는 무기로 살아남다</div>
+        <p class="benchmark-desc">글로벌 빅테크 공세 속에서도 검색 결과의 신뢰도를 지킨 것이 핵심. 신뢰감 → 트래픽 → 플랫폼 가치. 다나와가 가장 벤치마킹해야 할 모델.</p>
+      </div>
+    </div>
+
+    <div class="connect-box">
+      <p>단, 이 기회를 잡으려면 <strong>지금 다나와 검색의 한계를 먼저 해결해야 한다.</strong><br>아무리 좋은 전략도 기초가 흔들리면 의미가 없다.</p>
+    </div>
+
+  </section>
   <!-- 핵심 전제 -->
   <section id="premise">
     <div class="section-label">Core Premise</div>
@@ -906,7 +1028,6 @@
       </div>
     </div>
   </section>
-
   <!-- 포지셔닝 -->
   <section id="positioning">
     <div class="section-label">Positioning</div>
@@ -935,50 +1056,71 @@
       <div class="axis-card fade-up" style="animation-delay:0.4s">
         <div class="axis-num">04</div>
         <div class="axis-title">생태계를 연결하는 허브</div>
-        <p class="axis-desc">생활결합서비스(아정당, 보험, 이사 등)가 검색 하나로 연결. CRM 데이터로 이 사람의 상황에 맞는 서비스를 자연스럽게 제안.</p>
+        <p class="axis-desc">생활결합서비스(아정당[인터넷·휴대폰·이사·상조 등], 보험, 다나와 스토어, 데스크테리어[설치], 다해줌[구매대행])가 검색 하나로 연결. 사용자 행동 데이터를 기반으로 이 사람의 상황에 맞는 서비스를 자연스럽게 제안. 고객 데이터 연동(CRM 등)은 별도 협의를 통해 단계적으로 검토한다.</p>
       </div>
     </div>
   </section>
-
-  <!-- 시장 벤치마크 -->
-  <section id="market">
-    <div class="section-label">Market Benchmark</div>
-    <h2>검색 시장의 변화 — 왜 지금인가</h2>
-    <p class="section-desc">키워드를 입력하고 결과를 고르는 시대에서, AI가 의도를 이해하고 실행까지 돕는 시대로 전환 중이다.</p>
-
-    <div class="benchmark-grid">
-      <div class="benchmark-card">
-        <div class="benchmark-header">
-          <div class="benchmark-name">구글 / 빙</div>
-        </div>
-        <div class="benchmark-strategy">정보 독점에서 답변 독점으로</div>
-        <p class="benchmark-desc">AI가 수백만 개 문서를 실시간 분석해 결론을 직접 제공. 검색 광고 클릭 감소 위기를 AI 구독·답변 내 상품 추천으로 돌파 중.</p>
-      </div>
-      <div class="benchmark-card">
-        <div class="benchmark-header">
-          <div class="benchmark-name">네이버</div>
-        </div>
-        <div class="benchmark-strategy">한국형 생태계 완결성으로 빅테크에 맞서다</div>
-        <p class="benchmark-desc">검색-쇼핑-결제-물류를 하나로 묶어 사용자가 이탈할 이유를 없앴다. 글로벌 빅테크가 단기간 따라올 수 없는 로컬 생태계 장벽 구축.</p>
-      </div>
-      <div class="benchmark-card">
-        <div class="benchmark-header">
-          <div class="benchmark-name">아마존 / 쿠팡</div>
-        </div>
-        <div class="benchmark-strategy">검색창이 곧 구매의 입구</div>
-        <p class="benchmark-desc">AI가 리뷰, 반품률, 만족도를 종합해 최적 상품을 골라주고, 검색 데이터가 물류 예측·재고 배치에까지 연결. 검색이 커머스 운영의 핵심 인프라.</p>
-      </div>
-      <div class="benchmark-card featured">
-        <div class="benchmark-header">
-          <div class="benchmark-name">카카쿠닷컴</div>
-          <span class="benchmark-badge">벤치마크 모델</span>
-        </div>
-        <div class="benchmark-strategy">신뢰도라는 무기로 살아남다</div>
-        <p class="benchmark-desc">글로벌 빅테크 공세 속에서도 검색 결과의 신뢰도를 지킨 것이 핵심. 신뢰감 → 트래픽 → 플랫폼 가치. 다나와가 가장 벤치마킹해야 할 모델.</p>
+  <!-- 광고/비즈니스 -->
+  <section id="business">
+    <div class="section-label">Business</div>
+    <h2>광고/비즈니스 — 함께 성장하는 구조</h2>
+    <p class="section-desc">신뢰할 수 있는 검색 결과가 트래픽을 키우고, 트래픽이 광고 가치를 키운다. 광고와 검색 품질은 경쟁 관계가 아니라 함께 성장하는 구조다.</p>
+    <div class="ad-box">
+      <div class="ad-icon">📌</div>
+      <div>
+        <div class="ad-title">광고 집행 업체 인기점수 방침</div>
+        <div class="ad-desc">광고 집행 업체에 대한 인기점수 비중은 합리적인 선으로 유지하며, 운영자가 수동으로 개입할 수 없는 <strong>자동화된 구조</strong>로 <strong>본부 간 협의</strong>를 통해 조율한다.</div>
       </div>
     </div>
   </section>
+  <!-- 임팩트 -->
+  <section id="impact">
+    <div class="section-label">Impact</div>
+    <h2>각 관점별 임팩트</h2>
+    <p class="section-desc">검색 비전이 실현됐을 때 각 이해관계자가 얻는 것.</p>
 
+    <div class="impact-grid">
+      <div class="impact-card">
+        <div class="impact-icon-wrap icon-blue">👤</div>
+        <div class="impact-title">사용자</div>
+        <ul class="impact-list">
+          <li>가격비교·상품검색이 더 정확하고 빠르게</li>
+          <li>"다나와 결과는 믿을 수 있다"는 신뢰감</li>
+          <li>시스템이 나에게 맞춰주는 개인화 경험</li>
+          <li>상품 + 서비스 연결된 원스톱 구매</li>
+          <li>재방문율 증가 → 충성 고객화</li>
+        </ul>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon-wrap icon-amber">📢</div>
+        <div class="impact-title">광고/비즈니스</div>
+        <ul class="impact-list">
+          <li>검색 품질 상승 → 트래픽 증가 → 광고 노출 기회 증가</li>
+          <li>사용자 행동 데이터 기반 타겟팅 정밀화 → CTR 상승 → 광고 단가 상승 (고객 데이터 연동 시 고도화 가능)</li>
+          <li>상품 광고 + 서비스 광고 포트폴리오 확장 (아정당·보험·데스크테리어·다해줌 등 단가 높은 광고 상품 생김)</li>
+          <li>광고 효과 자동 반영 → 투명한 기준 → 광고주 신뢰</li>
+        </ul>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon-wrap icon-green">🏢</div>
+        <div class="impact-title">다나와 플랫폼</div>
+        <ul class="impact-list">
+          <li>클릭아웃 전환율 상승 → 거래액 증가</li>
+          <li>생활결합서비스 교차 구매 증가 (아정당·보험·데스크테리어·다해줌·다나와 스토어)</li>
+          <li>"한 번 들어오면 나가지 않는 플랫폼" 실현</li>
+        </ul>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon-wrap icon-teal">🏆</div>
+        <div class="impact-title">경쟁력</div>
+        <ul class="impact-list">
+          <li>네이버/쿠팡: AI 검색은 있지만 생활결합서비스 없음</li>
+          <li>다나와: 가격비교 + 생활결합서비스 + 개인화가 하나로</li>
+          <li>단기간에 따라올 수 없는 차별화 영역</li>
+        </ul>
+      </div>
+    </div>
+  </section>
   <!-- 로드맵 -->
   <section id="roadmap">
     <div class="section-label">Roadmap</div>
@@ -1010,8 +1152,8 @@
         <div class="tl-date">2027</div>
         <div class="tl-dot-col"><div class="tl-dot tl-dot-3"></div></div>
         <div class="tl-card">
-          <div class="tl-title">LTR + CRM 개인화 검색</div>
-          <div class="tl-desc">AI팀 협업. 클릭·구매 데이터 학습 기반 랭킹. CRM 데이터 연동 맞춤 검색 결과 제공.</div>
+          <div class="tl-title">LTR + 개인화 검색</div>
+          <div class="tl-desc">클릭·구매 데이터 학습 기반 랭킹. 사용자 행동 데이터 기반 맞춤 검색 결과 제공. 고객 데이터 연동(CRM 등)은 별도 협의를 통해 단계적으로 검토.</div>
           <span class="tl-badge">사용자 체감: 내가 누군지 알고 맞춰줌</span>
         </div>
       </div>
@@ -1021,76 +1163,12 @@
         <div class="tl-dot-col"><div class="tl-dot tl-dot-4"></div></div>
         <div class="tl-card">
           <div class="tl-title">시맨틱 서치 + 생활서비스 연결</div>
-          <div class="tl-desc">벡터 색인 기반 시맨틱 서치 도입. 쿼리 의도 파악으로 생활결합서비스 자동 연결.</div>
+          <div class="tl-desc">벡터 색인 기반 시맨틱 서치 도입. 쿼리 의도 파악으로 생활결합서비스 자동 연결.<br>아정당(인터넷·휴대폰·이사·상조), 보험, 다나와 스토어, 데스크테리어(설치), 다해줌(구매대행)</div>
           <span class="tl-badge">사용자 체감: "이사 가는데 뭐 필요해?" 한 번에 해결</span>
         </div>
       </div>
     </div>
   </section>
-
-  <!-- 광고/비즈니스 -->
-  <section>
-    <div class="section-label">Business</div>
-    <h2>광고/비즈니스 — 함께 성장하는 구조</h2>
-    <p class="section-desc">신뢰할 수 있는 검색 결과가 트래픽을 키우고, 트래픽이 광고 가치를 키운다. 광고와 검색 품질은 경쟁 관계가 아니라 함께 성장하는 구조다.</p>
-    <div class="ad-box">
-      <div class="ad-icon">📌</div>
-      <div>
-        <div class="ad-title">광고 집행 업체 인기점수 방침</div>
-        <div class="ad-desc">광고 집행 업체에 대한 인기점수 비중은 합리적인 선으로 유지하며, 운영자가 수동으로 개입할 수 없는 <strong>자동화된 구조</strong>로 <strong>본부 간 협의</strong>를 통해 조율한다.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 임팩트 -->
-  <section id="impact">
-    <div class="section-label">Impact</div>
-    <h2>각 관점별 임팩트</h2>
-    <p class="section-desc">검색 비전이 실현됐을 때 각 이해관계자가 얻는 것.</p>
-
-    <div class="impact-grid">
-      <div class="impact-card">
-        <div class="impact-icon-wrap icon-blue">👤</div>
-        <div class="impact-title">사용자</div>
-        <ul class="impact-list">
-          <li>가격비교·상품검색이 더 정확하고 빠르게</li>
-          <li>"다나와 결과는 믿을 수 있다"는 신뢰감</li>
-          <li>시스템이 나에게 맞춰주는 개인화 경험</li>
-          <li>상품 + 서비스 연결된 원스톱 구매</li>
-          <li>재방문율 증가 → 충성 고객화</li>
-        </ul>
-      </div>
-      <div class="impact-card">
-        <div class="impact-icon-wrap icon-amber">📢</div>
-        <div class="impact-title">광고/비즈니스</div>
-        <ul class="impact-list">
-          <li>검색 품질 상승 → 트래픽 증가 → 광고 노출 기회 증가</li>
-          <li>CRM 타겟팅 정밀화 → CTR 상승 → 광고 단가 상승</li>
-          <li>상품 광고 + 서비스 광고 포트폴리오 확장</li>
-          <li>광고 효과 자동 반영 → 투명한 기준 → 광고주 신뢰</li>
-        </ul>
-      </div>
-      <div class="impact-card">
-        <div class="impact-icon-wrap icon-green">🏢</div>
-        <div class="impact-title">다나와 플랫폼</div>
-        <ul class="impact-list">
-          <li>클릭아웃 전환율 상승 → 거래액 증가</li>
-          <li>생활결합서비스 교차 구매 증가</li>
-          <li>"한 번 들어오면 나가지 않는 플랫폼" 실현</li>
-        </ul>
-      </div>
-      <div class="impact-card">
-        <div class="impact-icon-wrap icon-teal">🏆</div>
-        <div class="impact-title">경쟁력</div>
-        <ul class="impact-list">
-          <li>네이버/쿠팡: AI 검색은 있지만 생활결합서비스 없음</li>
-          <li>다나와: 가격비교 + 생활결합서비스 + 개인화가 하나로</li>
-          <li>단기간에 따라올 수 없는 차별화 영역</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
   <!-- 협의체 -->
   <section id="council">
     <div class="section-label">Collaboration</div>
@@ -1128,9 +1206,6 @@
       </div>
     </div>
   </section>
-
-</div>
-
   <!-- 협의체 아젠다 -->
   <section id="agenda">
     <div class="section-label">Agenda</div>
@@ -1163,7 +1238,7 @@
           <li>광고 집행 업체 인기점수 비중 합리적 수준 합의</li>
           <li>브랜드로그·이벤트·애드리더 연계 구조 논의</li>
           <li>생활결합서비스 광고 영역 확장 방향</li>
-          <li>CRM 데이터 활용 타겟팅 개인화 방향</li>
+          <li>고객 데이터 활용 개인화 방향 검토 (CRM 연동 포함)</li>
         </ul>
       </div>
 
@@ -1189,7 +1264,7 @@
         </div>
         <ul class="agenda-list">
           <li>데이터 정형화 범위 및 수집 기준 합의 — 어떤 데이터를 언제부터 어떻게</li>
-          <li>CRM 데이터 연동 범위 및 시점</li>
+          <li>고객 데이터 연동 범위 및 시점 검토 (CRM 등)</li>
           <li>AI 검색 진입점 구현 방향 (기존 검색창 유지 + 신규 진입점)</li>
           <li>SQI 지표 측정 기준 합의 — 검색 품질을 어떤 숫자로 볼 것인가</li>
         </ul>
@@ -1218,7 +1293,7 @@
           <div class="ops-value">매 미팅 후 합의 내용 노션에 기록</div>
         </div>
       </div>
-    </div>
+    </div><!-- ops-box -->
 
   </section>
 
