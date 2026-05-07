@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>다나와 검색 전략 비전</title>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gmarket+Sans:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f6f2;
+    --bg2: #ffffff;
+    --bg3: #f0ede6;
+    --surface: #ffffff;
+    --blue: #1a56db;
+    --blue-light: #e8effe;
+    --blue-mid: #3b82f6;
+    --teal: #0891b2;
+    --teal-light: #e0f7fa;
+    --amber: #d97706;
+    --amber-light: #fef3c7;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --green: #059669;
+    --green-light: #d1fae5;
+    --text: #1a1a2e;
+    --text2: #4b5563;
+    --text3: #9ca3af;
+    --border: #e5e7eb;
+    --border2: #d1d5db;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    font-weight: 400;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 0 32px; }
+
+  /* 헤더 */
+  header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 56px 0 48px;
+  }
+
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+  }
+
+  .tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--blue);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  h1 {
+    font-family: 'Gmarket Sans', 'Pretendard', sans-serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+
+  h1 .accent {
+    color: var(--blue);
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: var(--text2);
+    margin-bottom: 28px;
+    font-weight: 400;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* 네비 바 */
+  .nav-bar {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+
+  .nav-item {
+    padding: 14px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text3);
+    white-space: nowrap;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .nav-item:hover { color: var(--blue); border-bottom-color: var(--blue-light); }
+  .nav-item.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+  /* 섹션 */
+  section { padding: 64px 0; border-bottom: 1px solid var(--border); }
+  section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    max-width: 32px;
+    height: 1px;
+    background: var(--blue-mid);
+    opacity: 0.4;
+  }
+
+  h2 {
+    font-family: 'Gmarket Sans', 'Pretendard', sans-serif;
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+
+  .section-desc {
+    font-size: 15px;
+    color: var(--text2);
+    margin-bottom: 36px;
+    line-height: 1.8;
+  }
+
+  /* 비전 카드 */
+  .vision-card {
+    background: linear-gradient(135deg, #1a56db 0%, #0891b2 100%);
+    border-radius: 20px;
+    padding: 52px 48px;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vision-card::before {
+    content: '"';
+    position: absolute;
+    top: -20px; left: 24px;
+    font-size: 200px;
+    font-family: Georgia, serif;
+    color: rgba(255,255,255,0.06);
+    line-height: 1;
+  }
+
+  .vision-eng {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 16px;
+  }
+
+  .vision-quote {
+    font-family: 'Gmarket Sans', 'Pretendard', sans-serif;
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 20px;
+  }
+
+  .vision-desc-white {
+    font-size: 15px;
+    opacity: 0.85;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.8;
+  }
+
+  /* From → To */
+  .from-to {
+    display: grid;
+    grid-template-columns: 1fr 48px 1fr;
+    gap: 0;
+    align-items: start;
+    margin-top: 36px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--bg2);
+    box-shadow: var(--shadow);
+  }
+
+  .from-box, .to-box { padding: 32px; }
+
+  .from-box { background: #fffafa; border-right: 1px solid var(--border); }
+  .to-box { background: #f8fbff; }
+
+  .box-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .box-badge {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+
+  .badge-red { background: var(--red-light); color: var(--red); }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+
+  .arrow-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg2);
+    min-height: 200px;
+  }
+
+  .arrow-circle {
+    width: 36px; height: 36px;
+    background: var(--blue);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .item-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+  .item-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .item-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+
+  .dot-red { background: var(--red); }
+  .dot-blue { background: var(--blue); }
+
+  /* 3가지 축 */
+  .axes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .axis-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 24px;
+    transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+    cursor: default;
+  }
+
+  .axis-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--blue-mid);
+  }
+
+  .axis-num {
+    width: 32px; height: 32px;
+    background: var(--blue-light);
+    color: var(--blue);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+
+  .axis-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  .axis-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* 벤치마크 */
+  .benchmark-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .benchmark-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 24px;
+    transition: box-shadow 0.2s;
+  }
+
+  .benchmark-card:hover { box-shadow: var(--shadow); }
+
+  .benchmark-card.featured {
+    border-color: #f59e0b;
+    background: linear-gradient(135deg, #fffbeb, #fff);
+  }
+
+  .benchmark-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .benchmark-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .benchmark-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 100px;
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+  }
+
+  .benchmark-strategy {
+    font-size: 12px;
+    color: var(--text3);
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+
+  .benchmark-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* 타임라인 */
+  .timeline { position: relative; margin-top: 36px; }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 88px;
+    top: 20px; bottom: 20px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--blue-light), var(--blue), #0891b2, #7c3aed);
+    border-radius: 2px;
+  }
+
+  .tl-item {
+    display: grid;
+    grid-template-columns: 88px 28px 1fr;
+    gap: 0 20px;
+    margin-bottom: 28px;
+    align-items: start;
+  }
+
+  .tl-date {
+    text-align: right;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text3);
+    padding-top: 12px;
+    line-height: 1.4;
+  }
+
+  .tl-dot-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .tl-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2.5px solid;
+    background: white;
+    flex-shrink: 0;
+  }
+
+  .tl-dot-1 { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-light); }
+  .tl-dot-2 { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-light); }
+  .tl-dot-3 { border-color: #7c3aed; box-shadow: 0 0 0 3px #ede9fe; }
+  .tl-dot-4 { border-color: #059669; box-shadow: 0 0 0 3px #d1fae5; }
+
+  .tl-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    transition: box-shadow 0.2s;
+  }
+
+  .tl-card:hover { box-shadow: var(--shadow); }
+
+  .tl-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .tl-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+
+  .tl-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 100px;
+    background: var(--blue-light);
+    color: var(--blue);
+  }
+
+  /* 임팩트 */
+  .impact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .impact-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 24px;
+  }
+
+  .impact-icon-wrap {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+
+  .icon-blue { background: var(--blue-light); }
+  .icon-amber { background: var(--amber-light); }
+  .icon-green { background: var(--green-light); }
+  .icon-teal { background: var(--teal-light); }
+
+  .impact-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+
+  .impact-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+  .impact-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .impact-list li::before {
+    content: '→';
+    color: var(--blue);
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* 광고 박스 */
+  .ad-box {
+    background: #fffdf5;
+    border: 1px solid #fcd34d;
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-top: 32px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .ad-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .ad-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #92400e;
+    margin-bottom: 8px;
+  }
+
+  .ad-desc {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* 협의체 아젠다 */
+  .agenda-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .agenda-track {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+
+  .agenda-track:hover { box-shadow: var(--shadow); }
+
+  .track-header {
+    padding: 18px 22px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .track-1 { background: #eff6ff; }
+  .track-2 { background: #fef9ee; }
+  .track-3 { background: #f0fdf4; }
+  .track-4 { background: #faf5ff; }
+
+  .track-num {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 100px;
+    background: rgba(0,0,0,0.06);
+    color: var(--text2);
+  }
+
+  .track-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .track-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 100px;
+    background: #fee2e2;
+    color: #dc2626;
+  }
+
+  .track-dept {
+    font-size: 11px;
+    color: var(--text3);
+    font-weight: 400;
+  }
+
+  .agenda-list {
+    list-style: none;
+    padding: 16px 22px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .agenda-list li {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .agenda-list li::before {
+    content: '·';
+    color: var(--blue);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* 운영 방식 박스 */
+  .ops-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-top: 8px;
+  }
+
+  .ops-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  .ops-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .ops-item {}
+
+  .ops-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 4px;
+  }
+
+  .ops-value {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* 협의체 */
+  .council-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .council-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 24px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    transition: box-shadow 0.2s;
+  }
+
+  .council-card:hover { box-shadow: var(--shadow); }
+
+  .council-num {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: var(--blue);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .council-name {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text);
+  }
+
+  .council-role {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* 푸터 */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+  }
+
+  .footer-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-left {
+    font-size: 13px;
+    color: var(--text3);
+  }
+
+  .footer-right {
+    display: flex;
+    gap: 8px;
+  }
+
+  .footer-tag {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 100px;
+    background: var(--bg3);
+    color: var(--text3);
+    border: 1px solid var(--border);
+  }
+
+  /* 애니메이션 */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up { animation: fadeUp 0.5s ease both; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+
+  @media (max-width: 720px) {
+    .axes-grid, .benchmark-grid, .impact-grid, .council-grid { grid-template-columns: 1fr; }
+    .from-to { grid-template-columns: 1fr; }
+    .arrow-col { min-height: 40px; transform: rotate(90deg); }
+    .timeline::before { left: 70px; }
+    .tl-item { grid-template-columns: 70px 24px 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 헤더 -->
+<header>
+  <div class="header-inner">
+    <div class="tag">Search Strategy Vision · 2026.05</div>
+    <h1>다나와 검색의<br><span class="accent">새로운 비전</span></h1>
+    <p class="subtitle">가격비교 도구에서 생활 생태계를 연결하는 개인화된 구매 허브로</p>
+    <div class="meta">
+      <div class="meta-item">📋 서비스기획본부 검색서비스팀</div>
+      <div class="meta-item">🤝 큐레이션 · 비즈니스솔루션 · 개발본부</div>
+      <div class="meta-item">📅 2026.05.06 · 초안 v4</div>
+    </div>
+  </div>
+</header>
+
+<!-- 네비 -->
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <a href="#vision" class="nav-item active">비전</a>
+    <a href="#premise" class="nav-item">핵심 전제</a>
+    <a href="#positioning" class="nav-item">포지셔닝</a>
+    <a href="#market" class="nav-item">시장 분석</a>
+    <a href="#roadmap" class="nav-item">로드맵</a>
+    <a href="#impact" class="nav-item">임팩트</a>
+    <a href="#council" class="nav-item">협의체</a>
+    <a href="#agenda" class="nav-item">아젠다</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- 비전 -->
+  <section id="vision">
+    <div class="section-label">Vision</div>
+    <h2>우리의 비전</h2>
+    <p class="section-desc">다나와가 나아가야 할 방향을 정의합니다.</p>
+    <div class="vision-card fade-up">
+      <div class="vision-eng">Danawa Search Vision</div>
+      <div class="vision-quote">"다나와는 라이프 큐레이터다"</div>
+      <p class="vision-desc-white">사용자의 생활 전반을 이해하고 필요한 것을 먼저 제안하는 플랫폼으로 도약한다.<br>검색은 이 비전을 실현하는 핵심 인프라다.</p>
+    </div>
+  </section>
+
+  <!-- 핵심 전제 -->
+  <section id="premise">
+    <div class="section-label">Core Premise</div>
+    <h2>가격비교·상품검색이 엔진이다</h2>
+    <p class="section-desc">엔진이 탄탄해야 목적지에 갈 수 있다. 라이프 큐레이터 비전은 가격비교 경쟁력 위에 세워진다.</p>
+
+    <div class="from-to">
+      <div class="from-box">
+        <div class="box-header">
+          <span class="box-badge badge-red">현재의 한계</span>
+        </div>
+        <ul class="item-list">
+          <li><span class="item-dot dot-red"></span><span>카테고리별 상대점수 — 다중 카테고리/통검 활용 불가</span></li>
+          <li><span class="item-dot dot-red"></span><span>키워드만 매칭 — 사용자 의도 이해 불가</span></li>
+          <li><span class="item-dot dot-red"></span><span>수동 개입으로 공정성 훼손 — 불투명한 기준</span></li>
+          <li><span class="item-dot dot-red"></span><span>모든 사용자 동일한 결과 — 개인화 없음</span></li>
+        </ul>
+      </div>
+      <div class="arrow-col">
+        <div class="arrow-circle">→</div>
+      </div>
+      <div class="to-box">
+        <div class="box-header">
+          <span class="box-badge badge-blue">새로운 방향</span>
+        </div>
+        <ul class="item-list">
+          <li><span class="item-dot dot-blue"></span><span>절대값 기반 공정한 인기점수 — 전 카테고리 동일 기준</span></li>
+          <li><span class="item-dot dot-blue"></span><span>의도를 이해하는 검색 — 시스템이 사용자에게 맞춰감</span></li>
+          <li><span class="item-dot dot-blue"></span><span>자동화된 공정한 구조 — 투명하고 지속 가능한 운영</span></li>
+          <li><span class="item-dot dot-blue"></span><span>이 사람이 누군지 아는 검색 — CRM + 구매이력 개인화</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 포지셔닝 -->
+  <section id="positioning">
+    <div class="section-label">Positioning</div>
+    <h2>검색의 새로운 포지셔닝</h2>
+    <p class="section-desc">
+      <strong style="color:var(--text3); font-weight:500;">From</strong> 카테고리별 상대적 가격비교 도구&nbsp;&nbsp;
+      <strong style="color:var(--blue);">To</strong> 다나와 생활 생태계를 연결하는 개인화된 구매 허브
+    </p>
+
+    <div class="axes-grid">
+      <div class="axis-card fade-up delay-1">
+        <div class="axis-num">01</div>
+        <div class="axis-title">신뢰할 수 있는 결과</div>
+        <p class="axis-desc">절대값 기반 공정한 인기점수. 사람의 수동 개입 없이 시스템 자동 운영. "다나와 결과는 믿을 수 있다"는 신뢰감 형성.</p>
+      </div>
+      <div class="axis-card fade-up delay-2">
+        <div class="axis-num">02</div>
+        <div class="axis-title">의도를 이해하는 검색</div>
+        <p class="axis-desc">키워드가 아닌 구매 의도를 이해해서 원하는 상품을 더 빠르게 찾아준다. 시스템이 사용자에게 맞춰간다.</p>
+      </div>
+      <div class="axis-card fade-up delay-3">
+        <div class="axis-num">03</div>
+        <div class="axis-title">생태계를 연결하는 허브</div>
+        <p class="axis-desc">생활결합서비스(아정당, 보험, 이사 등)가 검색 하나로 연결. CRM 데이터로 이 사람의 상황에 맞는 서비스를 자연스럽게 제안.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 시장 벤치마크 -->
+  <section id="market">
+    <div class="section-label">Market Benchmark</div>
+    <h2>검색 시장의 변화 — 왜 지금인가</h2>
+    <p class="section-desc">키워드를 입력하고 결과를 고르는 시대에서, AI가 의도를 이해하고 실행까지 돕는 시대로 전환 중이다.</p>
+
+    <div class="benchmark-grid">
+      <div class="benchmark-card">
+        <div class="benchmark-header">
+          <div class="benchmark-name">구글 / 빙</div>
+        </div>
+        <div class="benchmark-strategy">정보 독점에서 답변 독점으로</div>
+        <p class="benchmark-desc">AI가 수백만 개 문서를 실시간 분석해 결론을 직접 제공. 검색 광고 클릭 감소 위기를 AI 구독·답변 내 상품 추천으로 돌파 중.</p>
+      </div>
+      <div class="benchmark-card">
+        <div class="benchmark-header">
+          <div class="benchmark-name">네이버</div>
+        </div>
+        <div class="benchmark-strategy">한국형 생태계 완결성으로 빅테크에 맞서다</div>
+        <p class="benchmark-desc">검색-쇼핑-결제-물류를 하나로 묶어 사용자가 이탈할 이유를 없앴다. 글로벌 빅테크가 단기간 따라올 수 없는 로컬 생태계 장벽 구축.</p>
+      </div>
+      <div class="benchmark-card">
+        <div class="benchmark-header">
+          <div class="benchmark-name">아마존 / 쿠팡</div>
+        </div>
+        <div class="benchmark-strategy">검색창이 곧 구매의 입구</div>
+        <p class="benchmark-desc">AI가 리뷰, 반품률, 만족도를 종합해 최적 상품을 골라주고, 검색 데이터가 물류 예측·재고 배치에까지 연결. 검색이 커머스 운영의 핵심 인프라.</p>
+      </div>
+      <div class="benchmark-card featured">
+        <div class="benchmark-header">
+          <div class="benchmark-name">카카쿠닷컴</div>
+          <span class="benchmark-badge">벤치마크 모델</span>
+        </div>
+        <div class="benchmark-strategy">신뢰도라는 무기로 살아남다</div>
+        <p class="benchmark-desc">글로벌 빅테크 공세 속에서도 검색 결과의 신뢰도를 지킨 것이 핵심. 신뢰감 → 트래픽 → 플랫폼 가치. 다나와가 가장 벤치마킹해야 할 모델.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 로드맵 -->
+  <section id="roadmap">
+    <div class="section-label">Roadmap</div>
+    <h2>기술은 전략에 따라온다</h2>
+    <p class="section-desc">각 단계에서 사용자가 실제로 체감하는 변화가 중요하다.</p>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">2026<br>상반기</div>
+        <div class="tl-dot-col"><div class="tl-dot tl-dot-1"></div></div>
+        <div class="tl-card">
+          <div class="tl-title">PS 재설계 — 인기점수 개편</div>
+          <div class="tl-desc">절대값 기반 공정한 인기점수 도입. 광고 성과 자동 반영. 전 카테고리 동일 기준 적용.</div>
+          <span class="tl-badge">사용자 체감: 실제 인기 상품이 상위 노출</span>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">2026<br>하반기</div>
+        <div class="tl-dot-col"><div class="tl-dot tl-dot-2"></div></div>
+        <div class="tl-card">
+          <div class="tl-title">RS 자동화 + 검색엔진 통합 (QIC)</div>
+          <div class="tl-desc">수동 카테고리 부스팅 → 자동화. 다나와·에누리 검색엔진 통합. 카테고리 통합 검색 구현.</div>
+          <span class="tl-badge">사용자 체감: 조건 말하면 자동 필터 적용</span>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">2027</div>
+        <div class="tl-dot-col"><div class="tl-dot tl-dot-3"></div></div>
+        <div class="tl-card">
+          <div class="tl-title">LTR + CRM 개인화 검색</div>
+          <div class="tl-desc">AI팀 협업. 클릭·구매 데이터 학습 기반 랭킹. CRM 데이터 연동 맞춤 검색 결과 제공.</div>
+          <span class="tl-badge">사용자 체감: 내가 누군지 알고 맞춰줌</span>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">2028~<br>(목표)</div>
+        <div class="tl-dot-col"><div class="tl-dot tl-dot-4"></div></div>
+        <div class="tl-card">
+          <div class="tl-title">시맨틱 서치 + 생활서비스 연결</div>
+          <div class="tl-desc">벡터 색인 기반 시맨틱 서치 도입. 쿼리 의도 파악으로 생활결합서비스 자동 연결.</div>
+          <span class="tl-badge">사용자 체감: "이사 가는데 뭐 필요해?" 한 번에 해결</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 광고/비즈니스 -->
+  <section>
+    <div class="section-label">Business</div>
+    <h2>광고/비즈니스 — 함께 성장하는 구조</h2>
+    <p class="section-desc">신뢰할 수 있는 검색 결과가 트래픽을 키우고, 트래픽이 광고 가치를 키운다. 광고와 검색 품질은 경쟁 관계가 아니라 함께 성장하는 구조다.</p>
+    <div class="ad-box">
+      <div class="ad-icon">📌</div>
+      <div>
+        <div class="ad-title">광고 집행 업체 인기점수 방침</div>
+        <div class="ad-desc">광고 집행 업체에 대한 인기점수 비중은 합리적인 선으로 유지하며, 운영자가 수동으로 개입할 수 없는 <strong>자동화된 구조</strong>로 <strong>본부 간 협의</strong>를 통해 조율한다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 임팩트 -->
+  <section id="impact">
+    <div class="section-label">Impact</div>
+    <h2>각 관점별 임팩트</h2>
+    <p class="section-desc">검색 비전이 실현됐을 때 각 이해관계자가 얻는 것.</p>
+
+    <div class="impact-grid">
+      <div class="impact-card">
+        <div class="impact-icon-wrap icon-blue">👤</div>
+        <div class="impact-title">사용자</div>
+        <ul class="impact-list">
+          <li>가격비교·상품검색이 더 정확하고 빠르게</li>
+          <li>"다나와 결과는 믿을 수 있다"는 신뢰감</li>
+          <li>시스템이 나에게 맞춰주는 개인화 경험</li>
+          <li>상품 + 서비스 연결된 원스톱 구매</li>
+          <li>재방문율 증가 → 충성 고객화</li>
+        </ul>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon-wrap icon-amber">📢</div>
+        <div class="impact-title">광고/비즈니스</div>
+        <ul class="impact-list">
+          <li>검색 품질 상승 → 트래픽 증가 → 광고 노출 기회 증가</li>
+          <li>CRM 타겟팅 정밀화 → CTR 상승 → 광고 단가 상승</li>
+          <li>상품 광고 + 서비스 광고 포트폴리오 확장</li>
+          <li>광고 효과 자동 반영 → 투명한 기준 → 광고주 신뢰</li>
+        </ul>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon-wrap icon-green">🏢</div>
+        <div class="impact-title">다나와 플랫폼</div>
+        <ul class="impact-list">
+          <li>클릭아웃 전환율 상승 → 거래액 증가</li>
+          <li>생활결합서비스 교차 구매 증가</li>
+          <li>"한 번 들어오면 나가지 않는 플랫폼" 실현</li>
+        </ul>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon-wrap icon-teal">🏆</div>
+        <div class="impact-title">경쟁력</div>
+        <ul class="impact-list">
+          <li>네이버/쿠팡: AI 검색은 있지만 생활결합서비스 없음</li>
+          <li>다나와: 가격비교 + 생활결합서비스 + 개인화가 하나로</li>
+          <li>단기간에 따라올 수 없는 차별화 영역</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 협의체 -->
+  <section id="council">
+    <div class="section-label">Collaboration</div>
+    <h2>전사 협의체 구성</h2>
+    <p class="section-desc">이 전략은 검색팀 혼자 만들 수 없다. 각 본부가 초기부터 함께 만들어가야 한다.</p>
+
+    <div class="council-grid">
+      <div class="council-card">
+        <div class="council-num">1</div>
+        <div>
+          <div class="council-name">서비스기획본부</div>
+          <div class="council-role">비전·전략 수립 주도, 협의체 운영, 초안 작성 및 의견 취합</div>
+        </div>
+      </div>
+      <div class="council-card">
+        <div class="council-num">2</div>
+        <div>
+          <div class="council-name">큐레이션본부</div>
+          <div class="council-role">카테고리별 검색 요구사항, 사용자 탐색 패턴, 품질 기준 합의</div>
+        </div>
+      </div>
+      <div class="council-card">
+        <div class="council-num">3</div>
+        <div>
+          <div class="council-name">비즈니스솔루션본부</div>
+          <div class="council-role">광고 구조, 인기점수 비중 합의, 서비스 연계 방식, 비즈니스 목표</div>
+        </div>
+      </div>
+      <div class="council-card">
+        <div class="council-num">4</div>
+        <div>
+          <div class="council-name">개발본부</div>
+          <div class="council-role">데이터 정형화 범위, 수집 기준 합의, 구현 방향성, CRM 연동 시점</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+  <!-- 협의체 아젠다 -->
+  <section id="agenda">
+    <div class="section-label">Agenda</div>
+    <h2>협의체 주요 논의 주제</h2>
+    <p class="section-desc">4개 트랙으로 나눠 단계적으로 협의를 진행한다. 오프라인 미팅 + 노션 비동기 의견 병행.</p>
+
+    <div class="agenda-grid">
+
+      <div class="agenda-track">
+        <div class="track-header track-1">
+          <div class="track-num">Track 1</div>
+          <div class="track-title">전략/비전 공유</div>
+          <div class="track-badge">최우선</div>
+        </div>
+        <ul class="agenda-list">
+          <li>검색 전략 비전 초안 공유 및 각 본부 의견 수렴</li>
+          <li>라이프 큐레이터 비전에서 검색의 역할 합의</li>
+          <li>각 본부가 검색에 기대하는 것 vs 우리가 줄 수 있는 것 간극 파악</li>
+          <li>단기/중기/장기 로드맵 방향 합의</li>
+        </ul>
+      </div>
+
+      <div class="agenda-track">
+        <div class="track-header track-2">
+          <div class="track-num">Track 2</div>
+          <div class="track-title">비즈니스/광고</div>
+          <div class="track-dept">비즈니스솔루션본부</div>
+        </div>
+        <ul class="agenda-list">
+          <li>광고 집행 업체 인기점수 비중 합리적 수준 합의</li>
+          <li>브랜드로그·이벤트·애드리더 연계 구조 논의</li>
+          <li>생활결합서비스 광고 영역 확장 방향</li>
+          <li>CRM 데이터 활용 타겟팅 개인화 방향</li>
+        </ul>
+      </div>
+
+      <div class="agenda-track">
+        <div class="track-header track-3">
+          <div class="track-num">Track 3</div>
+          <div class="track-title">카테고리/콘텐츠</div>
+          <div class="track-dept">큐레이션본부</div>
+        </div>
+        <ul class="agenda-list">
+          <li>카테고리별 검색 요구사항 수렴 (IT/가전/패션/스포츠/생활 등)</li>
+          <li>다중 카테고리 키워드 처리 방향 (슬리퍼, 샌들 등)</li>
+          <li>카테고리별 최적화된 뷰/탐색 경험 요구사항</li>
+          <li>검색 결과 품질 기준 합의 — 어떤 상품이 상위에 있어야 납득되는가</li>
+        </ul>
+      </div>
+
+      <div class="agenda-track">
+        <div class="track-header track-4">
+          <div class="track-num">Track 4</div>
+          <div class="track-title">데이터/기술</div>
+          <div class="track-dept">개발본부</div>
+        </div>
+        <ul class="agenda-list">
+          <li>데이터 정형화 범위 및 수집 기준 합의 — 어떤 데이터를 언제부터 어떻게</li>
+          <li>CRM 데이터 연동 범위 및 시점</li>
+          <li>AI 검색 진입점 구현 방향 (기존 검색창 유지 + 신규 진입점)</li>
+          <li>SQI 지표 측정 기준 합의 — 검색 품질을 어떤 숫자로 볼 것인가</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- 운영 방식 -->
+    <div class="ops-box">
+      <div class="ops-title">📅 협의체 운영 방식</div>
+      <div class="ops-grid">
+        <div class="ops-item">
+          <div class="ops-label">주기</div>
+          <div class="ops-value">격주 또는 월 1회 정기 미팅</div>
+        </div>
+        <div class="ops-item">
+          <div class="ops-label">형식</div>
+          <div class="ops-value">오프라인 대면 + 노션 비동기 의견 병행</div>
+        </div>
+        <div class="ops-item">
+          <div class="ops-label">의사결정</div>
+          <div class="ops-value">각 본부 담당자 의견 → 서비스기획본부 취합 → 안건 확정</div>
+        </div>
+        <div class="ops-item">
+          <div class="ops-label">결과물</div>
+          <div class="ops-value">매 미팅 후 합의 내용 노션에 기록</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</div>
+
+<!-- 푸터 -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">다나와 검색서비스팀 · 2026.05.06</div>
+    <div class="footer-right">
+      <span class="footer-tag">초안 v4</span>
+      <span class="footer-tag">내부 협의용</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // 네비 활성화
+  const sections = document.querySelectorAll('section[id]');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 100) current = s.id;
+    });
+    navItems.forEach(n => {
+      n.classList.remove('active');
+      if (n.getAttribute('href') === '#' + current) n.classList.add('active');
+    });
+  });
+
+  // 부드러운 스크롤
+  navItems.forEach(item => {
+    item.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(item.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+</body>
+</html>
