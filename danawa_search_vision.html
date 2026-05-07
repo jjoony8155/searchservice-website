@@ -366,6 +366,108 @@
     line-height: 1.7;
   }
 
+  /* 시대 흐름 도입 단락 */
+  .era-shift {
+    background: linear-gradient(135deg, #fafbff 0%, #fff 100%);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--blue);
+    border-radius: 16px;
+    padding: 32px 36px;
+    margin-bottom: 36px;
+  }
+
+  .era-shift-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+
+  .era-shift-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 4px 10px;
+    border-radius: 100px;
+  }
+
+  .era-shift-title {
+    font-family: 'Gmarket Sans', 'Pretendard', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .era-shift-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .era-shift-body p {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.8;
+    margin: 0;
+  }
+
+  .era-shift-body p strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* UCP 콜아웃 */
+  .ucp-callout {
+    background: #fffdf5;
+    border: 1px solid #fcd34d;
+    border-left: 3px solid #d97706;
+    border-radius: 0 12px 12px 0;
+    padding: 18px 22px;
+    margin: 6px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ucp-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #92400e;
+    background: #fef3c7;
+    padding: 3px 10px;
+    border-radius: 100px;
+    align-self: flex-start;
+  }
+
+  .ucp-content strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .ucp-content p {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .ucp-content p strong {
+    display: inline;
+    font-size: inherit;
+    margin-bottom: 0;
+  }
+
   /* 벤치마크 */
   .benchmark-grid {
     display: grid;
@@ -1004,6 +1106,25 @@
     <div class="section-label">Market Benchmark</div>
     <h2>왜 지금인가 — 검색 시장의 변화</h2>
     <p class="section-desc">키워드를 입력하고 결과를 고르는 시대에서, AI가 의도를 이해하고 실행까지 돕는 시대로 전환 중이다. 경쟁사들은 이미 빠르게 움직이고 있다.</p>
+
+    <div class="era-shift">
+      <div class="era-shift-header">
+        <span class="era-shift-tag">시대 흐름</span>
+        <h3 class="era-shift-title">독립 앱에서 통합 허브로</h3>
+      </div>
+      <div class="era-shift-body">
+        <p>지금까지 인터넷 서비스는 각자 자기 분야만 잘하면 됐다. 다나와는 가격비교를, 아정당은 통신·렌탈을, 보험은 보험사가, 설치는 설치업체가.</p>
+        <p>하지만 사용자는 한 가지 일을 해결하기 위해 여러 앱을 오가며 지친다. <strong>"이사 한 번 가는데 가전 비교, 통신 이전, 보험 변경, 설치 예약을 다 따로 해야 하는가?"</strong> 이 피로감이 누적되면서, 시장은 한 곳에서 모든 일이 풀리는 플랫폼 쪽으로 옮겨가고 있다.</p>
+        <div class="ucp-callout">
+          <div class="ucp-tag">2026.01 · 구글 발표</div>
+          <div class="ucp-content">
+            <strong>UCP (Universal Commerce Protocol)</strong>
+            <p>구글이 Shopify, Walmart, Target, Stripe, Visa 등 20여 개 글로벌 기업과 함께 만든 새로운 쇼핑 표준. <strong>사용자가 검색하다가 마음에 드는 상품을 찾으면 그 자리에서 바로 구매까지 끝낼 수 있게 한다.</strong></p>
+          </div>
+        </div>
+        <p>이 흐름이 한국에 오면 가장 영향받는 것은 가격비교 사이트다. 사용자가 검색 결과 페이지를 떠나지 않고 바로 구매한다면, '클릭아웃' 모델 자체가 흔들린다. 다나와에게는 위협이자 동시에 기회다. <strong>가격비교의 깊이라는 다나와 강점을 이 새 흐름 위에서 작동하도록 만들면, 오히려 다나와가 한국형 통합 허브가 될 수 있다.</strong></p>
+      </div>
+    </div>
 
     <div class="benchmark-grid">
       <div class="benchmark-card">
