@@ -191,15 +191,376 @@
     line-height: 1.8;
   }
 
+  /* 함께 만들어가는 비전 (의견 요청) */
+  .invitation-intro {
+    background: linear-gradient(135deg, #fff7ed 0%, #fff 100%);
+    border: 1px solid #fdba74;
+    border-left: 3px solid #ea580c;
+    border-radius: 0 14px 14px 0;
+    padding: 22px 26px;
+    margin-bottom: 28px;
+  }
+
+  .invitation-intro p {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.8;
+    margin: 0 0 10px 0;
+  }
+
+  .invitation-intro p:last-child {
+    margin-bottom: 0;
+  }
+
+  .invitation-intro strong {
+    color: var(--text);
+    font-weight: 600;
+    background: rgba(234, 88, 12, 0.1);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  .invitation-blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .invitation-block {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 26px;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+
+  .invitation-block:hover {
+    box-shadow: var(--shadow);
+    border-color: var(--blue-mid);
+  }
+
+  .invitation-block-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+  }
+
+  .invitation-block ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .invitation-block li {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.7;
+    padding-left: 18px;
+    position: relative;
+  }
+
+  .invitation-block li::before {
+    content: '·';
+    position: absolute;
+    left: 6px;
+    top: 0;
+    color: var(--blue);
+    font-weight: 700;
+  }
+
+  .invitation-block li strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .invitation-note {
+    margin-top: 18px;
+    background: var(--bg3);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+    text-align: center;
+  }
+
+  /* 한 장 요약 */
+  .summary-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .summary-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 26px;
+    transition: box-shadow 0.2s;
+  }
+
+  .summary-card:hover {
+    box-shadow: var(--shadow);
+  }
+
+  .summary-card.summary-vision {
+    border-left: 3px solid var(--blue);
+  }
+
+  .summary-card.summary-flow {
+    border-left: 3px solid var(--teal);
+  }
+
+  .summary-card.summary-why {
+    border-left: 3px solid #d97706;
+  }
+
+  .summary-card.summary-together {
+    border-left: 3px solid var(--green);
+    background: linear-gradient(135deg, #f0fdf4 0%, #fff 100%);
+  }
+
+  .summary-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text2);
+    background: var(--bg3);
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+  }
+
+  .summary-card.summary-vision .summary-tag {
+    color: var(--blue);
+    background: var(--blue-light);
+  }
+
+  .summary-card.summary-flow .summary-tag {
+    color: var(--teal);
+    background: var(--teal-light);
+  }
+
+  .summary-card.summary-why .summary-tag {
+    color: #b45309;
+    background: #fef3c7;
+  }
+
+  .summary-card.summary-together .summary-tag {
+    color: #15803d;
+    background: var(--green-light);
+  }
+
+  .summary-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .summary-row {
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+    font-size: 14px;
+    line-height: 1.7;
+    flex-wrap: wrap;
+  }
+
+  .summary-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text3);
+    background: var(--bg3);
+    padding: 3px 10px;
+    border-radius: 100px;
+    flex-shrink: 0;
+  }
+
+  .summary-value {
+    color: var(--text);
+    font-weight: 600;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .summary-value em {
+    font-style: normal;
+    color: var(--text3);
+    font-weight: 400;
+    font-size: 13px;
+  }
+
+  .summary-flow-chain {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .summary-flow-item {
+    flex: 1;
+    min-width: 110px;
+    background: var(--bg3);
+    border-radius: 10px;
+    padding: 12px 14px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+    font-weight: 500;
+  }
+
+  .summary-flow-item.summary-flow-goal {
+    background: linear-gradient(135deg, var(--blue-light), #fff);
+    border: 1px solid var(--blue-mid);
+    color: var(--blue);
+    font-weight: 700;
+  }
+
+  .summary-flow-arrow {
+    font-size: 16px;
+    color: var(--text3);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .summary-why-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .summary-why-item {
+    background: var(--bg3);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .summary-why-item strong {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .summary-why-item span {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .summary-why-item code {
+    font-family: 'SF Mono', 'Menlo', monospace;
+    font-size: 11px;
+    background: var(--bg2);
+    color: var(--text2);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  .summary-why-item.summary-why-highlight {
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .summary-why-item.summary-why-highlight strong {
+    color: #92400e;
+  }
+
+  .summary-why-item.summary-why-highlight span {
+    color: var(--text);
+  }
+
+  .summary-together-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .summary-together-body p {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .summary-together-body p strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .summary-together-link {
+    font-size: 13px !important;
+    color: var(--text3) !important;
+    padding-top: 6px;
+    border-top: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .summary-note {
+    margin-top: 18px;
+    background: linear-gradient(135deg, #eff6ff, #f8faff);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-left: 3px solid var(--blue);
+    border-radius: 0 12px 12px 0;
+    padding: 14px 22px;
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 500;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 720px) {
+    .summary-flow-chain { flex-direction: column; align-items: stretch; }
+    .summary-flow-arrow { transform: rotate(90deg); align-self: center; }
+    .summary-flow-item { min-width: 0; }
+  }
+
   /* 비전 카드 */
+  .vision-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
   .vision-card {
+    width: 100%;
     background: linear-gradient(135deg, #1a56db 0%, #0891b2 100%);
     border-radius: 20px;
-    padding: 52px 48px;
+    padding: 44px 48px;
     text-align: center;
     color: white;
     position: relative;
     overflow: hidden;
+  }
+
+  .vision-card.vision-corp {
+    background: linear-gradient(135deg, #4b5563 0%, #1f2937 100%);
+    padding: 36px 48px;
+  }
+
+  .vision-card.vision-search {
+    background: linear-gradient(135deg, #1a56db 0%, #0891b2 100%);
+    box-shadow: 0 8px 32px rgba(26, 86, 219, 0.18);
   }
 
   .vision-card::before {
@@ -210,6 +571,19 @@
     font-family: Georgia, serif;
     color: rgba(255,255,255,0.06);
     line-height: 1;
+  }
+
+  .vision-tier {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 14px;
   }
 
   .vision-eng {
@@ -223,18 +597,141 @@
 
   .vision-quote {
     font-family: 'Gmarket Sans', 'Pretendard', sans-serif;
-    font-size: clamp(22px, 3vw, 32px);
+    font-size: clamp(20px, 2.8vw, 30px);
     font-weight: 700;
     line-height: 1.3;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
+  }
+
+  .vision-card.vision-corp .vision-quote {
+    font-size: clamp(18px, 2.4vw, 26px);
   }
 
   .vision-desc-white {
-    font-size: 15px;
-    opacity: 0.85;
-    max-width: 500px;
+    font-size: 14px;
+    opacity: 0.9;
+    max-width: 540px;
     margin: 0 auto;
     line-height: 1.8;
+  }
+
+  .vision-desc-white strong {
+    color: white;
+    font-weight: 700;
+    background: rgba(255,255,255,0.12);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  .vision-connector {
+    position: relative;
+    width: 2px;
+    height: 56px;
+    background: linear-gradient(to bottom, rgba(31, 41, 55, 0.5), var(--blue));
+    margin: 0 auto;
+  }
+
+  .vision-connector span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg);
+    padding: 4px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text2);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+  }
+
+  .vision-agenda-note {
+    margin-top: 20px;
+    background: linear-gradient(135deg, #fff7ed, #fff);
+    border: 1px solid #fdba74;
+    border-left: 3px solid #ea580c;
+    border-radius: 0 12px 12px 0;
+    padding: 16px 22px;
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  .vision-agenda-note strong {
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  /* Premise Flow */
+  .premise-flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  .premise-step {
+    width: 100%;
+    max-width: 560px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .premise-step.premise-step-goal {
+    background: linear-gradient(135deg, #eff6ff, #fff);
+    border: 2px solid var(--blue);
+    box-shadow: 0 4px 16px rgba(26, 86, 219, 0.1);
+  }
+
+  .premise-step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--blue-light);
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .premise-step.premise-step-goal .premise-step-num {
+    background: var(--blue);
+    color: white;
+  }
+
+  .premise-step-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .premise-step-desc {
+    font-size: 12px;
+    color: var(--text3);
+    text-align: right;
+  }
+
+  .premise-arrow {
+    font-size: 18px;
+    color: var(--text3);
+    opacity: 0.5;
+  }
+
+  @media (max-width: 720px) {
+    .premise-step { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .premise-step-desc { text-align: left; }
   }
 
   /* From → To */
@@ -537,6 +1034,305 @@
     line-height: 1.7;
   }
 
+  /* MCP 콜아웃 (시장 분석 안에 위치) */
+  .mcp-callout {
+    background: linear-gradient(135deg, #fdf4ff 0%, #fff 100%);
+    border: 1px solid #e9d5ff;
+    border-left: 3px solid #7c3aed;
+    border-radius: 0 12px 12px 0;
+    padding: 18px 22px;
+    margin: 6px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mcp-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6d28d9;
+    background: #f3e8ff;
+    padding: 3px 10px;
+    border-radius: 100px;
+    align-self: flex-start;
+  }
+
+  .mcp-content strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .mcp-content p {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+    margin: 0 0 12px 0;
+  }
+
+  .mcp-content p strong {
+    display: inline;
+    font-size: inherit;
+    margin-bottom: 0;
+  }
+
+  .mcp-content em {
+    font-style: normal;
+    color: #6d28d9;
+    background: #f3e8ff;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  .mcp-content code {
+    font-family: 'SF Mono', 'Menlo', monospace;
+    font-size: 12px;
+    background: #f3e8ff;
+    color: #6d28d9;
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  .mcp-flow {
+    background: #fafafa;
+    border: 1px dashed #e5e7eb;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 8px 0 12px;
+  }
+
+  .mcp-flow code {
+    display: block;
+    font-family: 'SF Mono', 'Menlo', monospace;
+    font-size: 13px;
+    color: var(--text);
+    background: none;
+    padding: 0;
+    margin-bottom: 6px;
+  }
+
+  .mcp-flow-note {
+    font-size: 11px !important;
+    color: var(--text3) !important;
+    margin: 0 !important;
+    font-style: italic;
+  }
+
+  .mcp-meaning {
+    background: rgba(124, 58, 237, 0.05);
+    border-left: 2px solid #7c3aed;
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    margin-top: 4px;
+  }
+
+  .mcp-meaning strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #6d28d9;
+    margin-bottom: 6px;
+  }
+
+  .mcp-meaning p {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .mcp-meaning p strong {
+    display: inline;
+    font-size: inherit;
+    color: var(--text);
+    margin-bottom: 0;
+    background: rgba(124, 58, 237, 0.12);
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+
+  .mcp-meaning.mcp-meaning-2 {
+    background: rgba(217, 119, 6, 0.06);
+    border-left: 2px solid #d97706;
+    margin-top: 10px;
+  }
+
+  .mcp-meaning.mcp-meaning-2 strong {
+    color: #b45309;
+  }
+
+  .mcp-meaning.mcp-meaning-2 p strong {
+    color: var(--text);
+    background: rgba(217, 119, 6, 0.12);
+  }
+
+  .mcp-meaning.mcp-meaning-2 em {
+    font-style: normal;
+    background: #fef3c7;
+    color: #92400e;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  /* 용어 정리 박스 */
+  .term-glossary {
+    background: #fafafa;
+    border: 1px dashed #d1d5db;
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-top: 14px;
+  }
+
+  .term-glossary-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text2);
+    margin-bottom: 8px;
+  }
+
+  .term-glossary-intro {
+    font-size: 12px;
+    color: var(--text3);
+    line-height: 1.6;
+    margin: 0 0 14px 0;
+  }
+
+  .term-glossary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .term-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+
+  .term-card-external {
+    border-top: 2px solid #94a3b8;
+  }
+
+  .term-card-internal {
+    border-top: 2px solid #7c3aed;
+  }
+
+  .term-card-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .term-card-external .term-card-label {
+    color: #475569;
+  }
+
+  .term-card-internal .term-card-label {
+    color: #6d28d9;
+  }
+
+  .term-card p {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .term-card p strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .term-glossary-note {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.7;
+    margin: 0;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .term-glossary-note strong {
+    color: var(--text);
+    font-weight: 600;
+    background: #fef3c7;
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+
+  @media (max-width: 720px) {
+    .term-glossary-grid { grid-template-columns: 1fr; }
+  }
+
+  /* MCP Asset Box (로드맵용 - 제거됨, CSS는 호환성을 위해 유지) */
+  .mcp-asset-box {
+    background: linear-gradient(135deg, #fdf4ff 0%, #fff 100%);
+    border: 1px solid #e9d5ff;
+    border-left: 3px solid #7c3aed;
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+  }
+
+  .mcp-asset-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7c3aed;
+    background: #f3e8ff;
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 10px;
+  }
+
+  .mcp-asset-title {
+    font-family: 'Gmarket Sans', 'Pretendard', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 14px;
+    letter-spacing: -0.02em;
+  }
+
+  .mcp-asset-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mcp-asset-body p {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.8;
+    margin: 0;
+  }
+
+  .mcp-asset-body p strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .mcp-asset-body code {
+    font-family: 'SF Mono', 'Menlo', monospace;
+    font-size: 12px;
+    background: #f3e8ff;
+    color: #6d28d9;
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
   /* 타임라인 */
   .timeline { position: relative; margin-top: 36px; }
 
@@ -598,6 +1394,33 @@
   }
 
   .tl-card:hover { box-shadow: var(--shadow); }
+
+  .tl-vision-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 12px;
+  }
+
+  .tl-item:nth-child(2) .tl-vision-tag {
+    color: var(--teal);
+    background: var(--teal-light);
+  }
+
+  .tl-item:nth-child(3) .tl-vision-tag {
+    color: #7c3aed;
+    background: #ede9fe;
+  }
+
+  .tl-item:nth-child(4) .tl-vision-tag {
+    color: var(--green);
+    background: var(--green-light);
+  }
 
   .tl-title {
     font-size: 14px;
@@ -676,6 +1499,185 @@
     font-size: 12px;
     flex-shrink: 0;
     margin-top: 1px;
+  }
+
+  /* 카카쿠 보강 박스 - 다나와 +α 노력 */
+  .kakaku-lesson {
+    margin-top: 18px;
+    background: linear-gradient(135deg, #fef9c3 0%, #fff 100%);
+    border: 1px solid #fde047;
+    border-left: 3px solid #ca8a04;
+    border-radius: 0 12px 12px 0;
+    padding: 20px 24px;
+  }
+
+  .kakaku-lesson-tag {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #854d0e;
+    background: #fef08a;
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+  }
+
+  .kakaku-lesson p {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.8;
+    margin: 0 0 10px 0;
+  }
+
+  .kakaku-lesson p:last-child {
+    margin-bottom: 0;
+  }
+
+  .kakaku-lesson p strong {
+    color: var(--text);
+    font-weight: 600;
+    background: rgba(202, 138, 4, 0.12);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  .kakaku-lesson p em {
+    font-style: normal;
+    color: var(--text3);
+    font-size: 13px;
+    display: block;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(202, 138, 4, 0.3);
+  }
+
+  /* 통합 허브 숙제 박스 */
+  .hub-homework {
+    margin-top: 28px;
+    background: linear-gradient(135deg, #fffbeb 0%, #fff 100%);
+    border: 1px solid #fcd34d;
+    border-left: 3px solid #d97706;
+    border-radius: 0 14px 14px 0;
+    padding: 24px 28px;
+  }
+
+  .hub-homework-tag {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #92400e;
+    background: #fef3c7;
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+  }
+
+  .hub-homework-intro {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.8;
+    margin: 0 0 20px 0;
+  }
+
+  .hub-homework-intro strong {
+    color: var(--text);
+    font-weight: 600;
+    background: rgba(217, 119, 6, 0.12);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  .hub-homework-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .hub-homework-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+
+  .hub-homework-card.hub-homework-search {
+    border-top: 2px solid var(--blue);
+  }
+
+  .hub-homework-card.hub-homework-together {
+    border-top: 2px solid #d97706;
+  }
+
+  .hub-homework-card-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .hub-homework-search .hub-homework-card-label {
+    color: var(--blue);
+  }
+
+  .hub-homework-together .hub-homework-card-label {
+    color: #b45309;
+  }
+
+  .hub-homework-card-meta {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text3);
+    margin-left: 4px;
+  }
+
+  .hub-homework-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .hub-homework-card li {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.6;
+    padding-left: 14px;
+    position: relative;
+  }
+
+  .hub-homework-card li::before {
+    content: '·';
+    position: absolute;
+    left: 4px;
+    color: var(--text3);
+    font-weight: 700;
+  }
+
+  .hub-homework-card em {
+    font-style: normal;
+    color: var(--text3);
+    font-size: 11px;
+  }
+
+  .hub-homework-link {
+    font-size: 12px;
+    color: var(--text3);
+    margin: 0;
+    padding-top: 12px;
+    border-top: 1px solid rgba(217, 119, 6, 0.2);
+    line-height: 1.6;
+  }
+
+  .hub-homework-link strong {
+    color: #92400e;
+    font-weight: 600;
+  }
+
+  @media (max-width: 720px) {
+    .hub-homework-grid { grid-template-columns: 1fr; }
   }
 
   /* 광고 박스 */
@@ -986,6 +1988,233 @@
     font-weight: 600;
   }
 
+  /* 결정이 필요한 사항 */
+  .decisions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .decision-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 26px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+
+  .decision-card.decision-card-priority {
+    background: linear-gradient(135deg, #fff7ed 0%, #fff 100%);
+    border-color: #fdba74;
+    border-left: 3px solid #ea580c;
+  }
+
+  .decision-priority-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #c2410c;
+    background: #fed7aa;
+    padding: 3px 9px;
+    border-radius: 100px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .decision-card:hover {
+    box-shadow: var(--shadow);
+    border-color: var(--blue-mid);
+  }
+
+  .decision-num {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: var(--blue);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .decision-body {
+    flex: 1;
+  }
+
+  .decision-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .decision-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+
+  .decision-meta {
+    background: var(--bg3);
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .decision-meta-row {
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.6;
+    align-items: flex-start;
+  }
+
+  .decision-meta-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text3);
+    background: var(--bg2);
+    padding: 2px 8px;
+    border-radius: 100px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .decisions-note {
+    margin-top: 24px;
+    background: linear-gradient(135deg, #eff6ff, #f8faff);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-left: 3px solid var(--blue);
+    border-radius: 0 12px 12px 0;
+    padding: 18px 22px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* 세 가지 검색의 길 */
+  .three-paths {
+    margin-top: 28px;
+    background: linear-gradient(135deg, #f8fbff 0%, #fff 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 36px;
+  }
+
+  .three-paths-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .three-paths-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--blue);
+    background: var(--blue-light);
+    padding: 4px 10px;
+    border-radius: 100px;
+  }
+
+  .three-paths-title {
+    font-family: 'Gmarket Sans', 'Pretendard', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .three-paths-intro {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.7;
+    margin-bottom: 22px;
+  }
+
+  .three-paths-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+
+  .path-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 18px;
+    text-align: center;
+  }
+
+  .path-naver { border-top: 3px solid #03c75a; }
+  .path-google { border-top: 3px solid #4285f4; }
+  .path-danawa {
+    border: 2px solid var(--blue);
+    background: linear-gradient(135deg, #fff, #eff6ff);
+    box-shadow: 0 4px 16px rgba(26, 86, 219, 0.08);
+  }
+
+  .path-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+
+  .path-danawa .path-label {
+    color: var(--blue);
+  }
+
+  .path-value {
+    font-family: 'Gmarket Sans', 'Pretendard', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .path-detail {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  .three-paths-body {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.8;
+    margin: 0;
+  }
+
+  .three-paths-body strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  @media (max-width: 720px) {
+    .three-paths-grid { grid-template-columns: 1fr; }
+  }
+
   /* 푸터 */
   footer {
     background: var(--bg2);
@@ -1050,7 +2279,7 @@
   <div class="header-inner">
     <div class="tag">Search Strategy Vision · 2026.05</div>
     <h1>다나와 검색의<br><span class="accent">새로운 비전</span></h1>
-    <p class="subtitle">가격비교 도구에서 생활 생태계를 연결하는 개인화된 구매 허브로</p>
+    <p class="subtitle">전사 비전 라이프 큐레이터를 향한 검색의 통합 허브 — 가장 신뢰할 수 있는 선택, 다나와 디시전 엔진</p>
     <div class="meta">
       <div class="meta-item">📋 서비스기획본부 검색서비스팀</div>
       <div class="meta-item">🤝 큐레이션 · 비즈니스솔루션 · 개발본부</div>
@@ -1062,7 +2291,9 @@
 <!-- 네비 -->
 <nav class="nav-bar">
   <div class="nav-inner">
-    <a href="#vision" class="nav-item active">비전</a>
+    <a href="#invitation" class="nav-item active">의견 요청</a>
+    <a href="#summary" class="nav-item">한 장 요약</a>
+    <a href="#vision" class="nav-item">비전</a>
     <a href="#market" class="nav-item">시장 변화</a>
     <a href="#premise" class="nav-item">핵심 전제</a>
     <a href="#positioning" class="nav-item">포지셔닝</a>
@@ -1071,20 +2302,149 @@
     <a href="#roadmap" class="nav-item">로드맵</a>
     <a href="#council" class="nav-item">협의체</a>
     <a href="#agenda" class="nav-item">아젠다</a>
+    <a href="#decisions" class="nav-item">결정 사항</a>
   </div>
 </nav>
 
 <div class="container">
 
+  <!-- 함께 만들어가는 비전 -->
+  <section id="invitation">
+    <div class="section-label">Open Invitation</div>
+    <h2>함께 만들어가는 비전 — 의견을 부탁드립니다</h2>
+
+    <div class="invitation-intro">
+      <p>이 문서는 검색팀이 정리한 <strong>초안</strong>입니다. 확정된 비전 전략이 아니라, <strong>4본부가 함께 다듬어 갈 출발점</strong>입니다.</p>
+      <p>각 본부의 현장 감각과 시각이 비전을 단단하게 만듭니다. 정답이 있는 질문이 아니라, 함께 그려갈 그림에 대한 본부별 한 조각입니다. <strong>노션 댓글로 부담 없이 남겨주세요.</strong></p>
+    </div>
+
+    <div class="invitation-blocks">
+      <div class="invitation-block">
+        <div class="invitation-block-tag">검색의 방향성에 대해</div>
+        <ul>
+          <li>본인 본부 입장에서 다나와 검색은 어떤 방향으로 발전해야 한다고 보시나요?</li>
+          <li>본인 본부 업무에서 다나와 검색이 어떤 모습이면 가장 도움이 될까요?</li>
+          <li>"다나와 검색이라면 이래야 한다"는 본부 차원의 기대치가 있으신가요?</li>
+          <li>"가장 신뢰할 수 있는 선택" 방향성이 본부 입장에서 어떻게 느껴지나요?</li>
+          <li>본부 영역에서 이 방향성을 표현할 더 적절한 단어가 있나요?</li>
+        </ul>
+      </div>
+
+      <div class="invitation-block">
+        <div class="invitation-block-tag">현장의 답답함</div>
+        <ul>
+          <li>본인 본부 관점에서 지금 다나와 검색이 가장 답답한 지점은 무엇인가요?</li>
+          <li>사용자나 광고주, CM 분들이 평소에 검색에 대해 가장 자주 하는 불만은?</li>
+          <li>본인 업무에서 검색 때문에 우회하거나 포기한 일이 있다면?</li>
+        </ul>
+      </div>
+
+      <div class="invitation-block">
+        <div class="invitation-block-tag">본부별 영역에 대해</div>
+        <ul>
+          <li><strong>큐레이션본부</strong> — 카테고리별로 사용자가 진짜 답답해하는 검색은?</li>
+          <li><strong>비즈니스솔루션본부</strong> — 광고주가 PS 변화에 가장 민감해할 지점은?</li>
+          <li><strong>개발본부</strong> — 우리가 놓치고 있는 기술 제약이 있다면?</li>
+          <li><strong>모두</strong> — 라이프 큐레이터 비전에서 본인 본부가 기여할 수 있는 영역은?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="invitation-note">
+      답변은 짧아도 됩니다. 한 줄도 좋습니다. 다 답하지 않으셔도 됩니다. 마음에 걸리는 것 한 가지부터 시작하셔도 됩니다.
+    </div>
+  </section>
+
+  <!-- 한 장 요약 -->
+  <section id="summary">
+    <div class="section-label">One-Page Summary</div>
+    <h2>한 장 요약 — 검색팀이 그리는 그림</h2>
+    <p class="section-desc">자료 전체를 한 페이지로 압축한 것입니다. 디테일은 각 섹션에서 살펴보실 수 있습니다.</p>
+
+    <div class="summary-grid">
+      <div class="summary-card summary-vision">
+        <div class="summary-tag">비전 한 줄</div>
+        <div class="summary-content">
+          <div class="summary-row">
+            <span class="summary-label">검색 비전</span>
+            <span class="summary-value">"가장 신뢰할 수 있는 선택 — 다나와 디시전 엔진"</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">전사 비전</span>
+            <span class="summary-value">"다나와는 라이프 큐레이터다" <em>— 검색은 이를 실현하는 통합 허브</em></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-card summary-flow">
+        <div class="summary-tag">핵심 흐름</div>
+        <div class="summary-flow-chain">
+          <div class="summary-flow-item">사용자 데이터로<br>만든 신뢰</div>
+          <div class="summary-flow-arrow">→</div>
+          <div class="summary-flow-item">의미를 이해하는<br>정확함</div>
+          <div class="summary-flow-arrow">→</div>
+          <div class="summary-flow-item">사용자별<br>라이프 큐레이션 출발</div>
+          <div class="summary-flow-arrow">→</div>
+          <div class="summary-flow-item summary-flow-goal">라이프 큐레이션의<br>통합 허브</div>
+        </div>
+      </div>
+
+      <div class="summary-card summary-why">
+        <div class="summary-tag">왜 지금</div>
+        <div class="summary-why-items">
+          <div class="summary-why-item">
+            <strong>UCP 시대 진입</strong>
+            <span>외부 시대 흐름 (구글 발표, 2026.01)</span>
+          </div>
+          <div class="summary-why-item">
+            <strong>MCP 운영 중</strong>
+            <span>다나와의 현실 (<code>api.mcp.ai.cowave.kr</code>)</span>
+          </div>
+          <div class="summary-why-item summary-why-highlight">
+            <strong>검색 신뢰성 = 외부 평판</strong>
+            <span>다나와 답이 외부 AI에 전달되는 시대. "가장 신뢰할 수 있는 선택"은 다짐이 아닌 외부 환경의 요구.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-card summary-together">
+        <div class="summary-tag">함께 다듬어 갈 것</div>
+        <div class="summary-together-body">
+          <p>4본부 협의체에서 <strong>방향성 공감을 확인하고</strong>, 본부 영역에 어떻게 적용할지 함께 정합니다.</p>
+          <p class="summary-together-link">구체적 안건은 본문 끝의 <strong>"결정이 필요한 사항 5가지"</strong> 참조.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-note">
+      ▶ 이 그림에 대한 의견을 노션 댓글로 부탁드립니다.
+    </div>
+  </section>
+
   <!-- 비전 -->
   <section id="vision">
     <div class="section-label">Vision</div>
     <h2>우리의 비전</h2>
-    <p class="section-desc">다나와가 나아가야 할 방향을 정의합니다.</p>
-    <div class="vision-card fade-up">
-      <div class="vision-eng">Danawa Search Vision</div>
-      <div class="vision-quote">"다나와는 라이프 큐레이터다"</div>
-      <p class="vision-desc-white">사용자의 생활 전반을 이해하고 필요한 것을 먼저 제안하는 플랫폼으로 도약한다.<br>검색은 이 비전을 실현하는 핵심 인프라다.</p>
+    <p class="section-desc">전사 비전과 검색이 책임지는 역할을 명확히 구분한다.</p>
+
+    <div class="vision-stack">
+      <div class="vision-card vision-corp fade-up">
+        <div class="vision-tier">전사 비전</div>
+        <div class="vision-eng">Corporate Vision</div>
+        <div class="vision-quote">"다나와는 라이프 큐레이터다"</div>
+        <p class="vision-desc-white">사용자의 생활 전반을 이해하고 필요한 것을 먼저 제안하는 플랫폼으로 도약한다.</p>
+      </div>
+
+      <div class="vision-connector">
+        <span>검색의 역할</span>
+      </div>
+
+      <div class="vision-card vision-search fade-up delay-1">
+        <div class="vision-tier">검색 비전</div>
+        <div class="vision-eng">Search Vision</div>
+        <div class="vision-quote">"가장 신뢰할 수 있는 선택<br>— 다나와 디시전 엔진"</div>
+        <p class="vision-desc-white">검색은 전사 비전을 실현하는 통합 허브다. 사용자가 다나와에서 찾으면 후회 없는 선택을 할 수 있도록, <strong>가격·스펙 데이터로 검증된 객관적 근거</strong>를 제공하는 다나와의 디시전 엔진으로 진화한다.</p>
+      </div>
     </div>
 
     <div class="vision-bridge">
@@ -1099,6 +2459,10 @@
           <span>아무리 좋은 비전도 가격비교·상품검색이라는 핵심 경쟁력이 탄탄해야 올라설 수 있다</span>
         </div>
       </div>
+    </div>
+
+    <div class="vision-agenda-note">
+      ▶ <strong>이 방향성에 대한 4본부의 공감을 확인하는 것</strong>이 협의체 1차 미팅의 핵심 안건입니다.
     </div>
   </section>
   <!-- 시장 벤치마크 -->
@@ -1122,7 +2486,46 @@
             <p>구글이 Shopify, Walmart, Target, Stripe, Visa 등 20여 개 글로벌 기업과 함께 만든 새로운 쇼핑 표준. <strong>사용자가 검색하다가 마음에 드는 상품을 찾으면 그 자리에서 바로 구매까지 끝낼 수 있게 한다.</strong></p>
           </div>
         </div>
-        <p>이 흐름이 한국에 오면 가장 영향받는 것은 가격비교 사이트다. 사용자가 검색 결과 페이지를 떠나지 않고 바로 구매한다면, '클릭아웃' 모델 자체가 흔들린다. 다나와에게는 위협이자 동시에 기회다. <strong>가격비교의 깊이라는 다나와 강점을 이 새 흐름 위에서 작동하도록 만들면, 오히려 다나와가 한국형 통합 허브가 될 수 있다.</strong></p>
+        <p>이 흐름이 한국에 오면 가장 영향받는 것은 가격비교 사이트다. 사용자가 검색 결과 페이지를 떠나지 않고 바로 구매한다면, '클릭아웃' 모델 자체가 흔들린다.</p>
+
+        <div class="mcp-callout">
+          <div class="mcp-tag">다나와의 현실 · 진행 중</div>
+          <div class="mcp-content">
+            <strong>MCP (Model Context Protocol) — 이미 운영 중</strong>
+            <p>다나와는 이미 이 흐름에 대응하고 있다. 상품 검색 MCP(<code>api.mcp.ai.cowave.kr</code>)가 운영 중이고, 카카오 카나나 제휴도 협의 단계에 있다. AI 에이전트(ChatGPT, Claude, 퍼플렉시티 등)가 <em>"아이폰16 최저가"</em> 같은 질문을 받으면 다나와 MCP를 호출해서 답을 가져간다.</p>
+            <div class="mcp-flow">
+              <code>사용자 → AI 에이전트 → 다나와 MCP → 답</code>
+              <p class="mcp-flow-note">여기서 다나와가 권장한 상품이 곧 사용자에게 전달됨</p>
+            </div>
+            <div class="mcp-meaning">
+              <strong>▶ MCP가 검색팀에 의미하는 것</strong>
+              <p>사용자는 이제 다나와 UI를 거치지 않고 AI 답을 그대로 받는다. 다나와 답이 부정확하면 AI는 다음부터 다나와를 안 부른다. 검색 결과의 신뢰성이 다나와의 외부 평판을 결정한다. <strong>이것이 "가장 신뢰할 수 있는 선택"이 단순 슬로건이 아닌 이유다.</strong></p>
+            </div>
+
+            <div class="mcp-meaning mcp-meaning-2">
+              <strong>▶ MCP는 자연어 의도를 받는다 — 다나와가 자연어 검색을 갖춰야 하는 이유</strong>
+              <p>AI 에이전트가 던지는 쿼리는 <em>"아이폰16 최저가"</em> 같은 키워드부터 <em>"가성비 좋은 14인치 노트북"</em>이나 <em>"여름에 시원한 베이지 슬리퍼"</em> 같은 자연어 의도까지 다양하다.</p>
+              <p>키워드 매칭만으로는 자연어 의도에 정확한 답을 줄 수 없다. MCP를 통해 외부 AI에 의미 있는 답을 주려면, <strong>다나와 검색도 어느 정도 자연어 의도를 이해할 수 있어야 한다.</strong></p>
+              <p>이것이 <strong>자연어 검색 (의도 분석 · 시맨틱 서치)</strong>이 다나와에게 선택이 아닌 필수가 되는 이유다.</p>
+            </div>
+
+            <div class="term-glossary">
+              <div class="term-glossary-title">〔 자료 안 용어 정리 〕</div>
+              <p class="term-glossary-intro">외부에서 "AI 검색"이라는 표현이 혼용되는데, 이 자료에서는 다음과 같이 구분합니다.</p>
+              <div class="term-glossary-grid">
+                <div class="term-card term-card-external">
+                  <div class="term-card-label">외부 AI 검색</div>
+                  <p>AI 에이전트(ChatGPT, Gemini, Claude, 카나나 등)가 사용자에게 답하는 것. 다나와 MCP를 호출함.</p>
+                </div>
+                <div class="term-card term-card-internal">
+                  <div class="term-card-label">다나와 자연어 검색</div>
+                  <p>다나와가 자연어 쿼리의 의도를 이해하고 정확한 답을 주는 검색 능력.</p>
+                </div>
+              </div>
+              <p class="term-glossary-note">이 둘은 다른 영역이지만 서로 연결되어 있다. <strong>다나와가 자연어 검색을 갖추지 않으면, 외부 AI 검색도 다나와에서 의미 있는 답을 가져갈 수 없다.</strong></p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1162,20 +2565,78 @@
           <span class="benchmark-badge">벤치마크 모델</span>
         </div>
         <div class="benchmark-strategy">신뢰도라는 무기로 살아남다</div>
-        <p class="benchmark-desc">"카카쿠에서 찾으면 정확하다"는 평판을 지킨 것이 핵심. 가격 정확성, 제품 정보 디테일, 사용자가 납득할 수 있는 노출 순위 — 이 세 가지를 흔들리지 않게 유지했다. <strong>다나와도 같은 자산을 가지고 있다. 25년간 쌓아온 가격 정확성과 상품 데이터가 그것이다.</strong></p>
+        <p class="benchmark-desc">"카카쿠에서 찾으면 정확하다"는 평판을 지킨 것이 핵심. 가격 정확성, 제품 정보 디테일, 사용자가 납득할 수 있는 노출 순위 — 세 가지를 흔들리지 않게 유지했다. 더해 <strong>"카카쿠 리뷰어"라는 자긍심을 가진 사용자들이 한 편 한 편 장인의 손길 같은 리뷰</strong>를 남긴다. "리뷰가 곧 신뢰"가 되고, 그게 카카쿠 검색의 <strong>+α</strong>다.</p>
       </div>
+    </div>
+
+    <div class="kakaku-lesson">
+      <div class="kakaku-lesson-tag">▶ 다나와가 마저 채워야 할 +α</div>
+      <p>다나와도 25년치 가격 정확성·상품 데이터, 그리고 답나와·리뷰 같은 결정 지원 자산을 가지고 있다. 다만 노출 순위(인기점수)가 사용자가 납득할 수준에서 운영되어야 자산이 가치를 갖는다.</p>
+      <p>"가장 신뢰할 수 있는 선택"을 제공하는 디시전 엔진이 되려면 검색의 정확성·신뢰성만으로는 부족하다. <strong>답나와·가격 추이·리뷰 같은 결정 지원 자산이 결정의 무기로 작동하기 위한 노력</strong>이 함께 필요하다. 답나와가 모든 것을 해결해주지는 않지만, 다나와 자산을 결정 지원 인프라로 만들어가는 것이 디시전 엔진의 방향이다. <em>이는 검색팀 단독으로 풀 수 없는 영역이며, 콘텐츠팀·큐레이션본부와 함께 그려갈 숙제다.</em></p>
     </div>
 
     <div class="connect-box">
       <p><strong>공통점: 사용자가 신뢰하고 머물 이유를 만든다.</strong><br><br>지금 다나와 검색은 그동안 쌓아온 강점을 사용자에게 충분히 보여주지 못하고 있다. 사용자가 시스템에 맞춰야 하고, 정확한 가격 정보와 풍부한 상품 데이터가 결과 페이지에서 충분히 드러나지 않는다. 이 구조를 바꾸지 않으면 경쟁에서 뒤처질 수밖에 없다.</p>
     </div>
 
+    <div class="three-paths">
+      <div class="three-paths-header">
+        <span class="three-paths-tag">다나와가 선 자리</span>
+        <h3 class="three-paths-title">세 가지 검색의 길</h3>
+      </div>
+      <p class="three-paths-intro">검색이 AI 시대로 옮겨가면서, 각 플랫폼이 제공하는 가치가 분명해지고 있다.</p>
+      <div class="three-paths-grid">
+        <div class="path-card path-naver">
+          <div class="path-label">네이버</div>
+          <div class="path-value">취향</div>
+          <div class="path-detail">콘텐츠 큐레이션, 친밀함</div>
+        </div>
+        <div class="path-card path-google">
+          <div class="path-label">구글</div>
+          <div class="path-value">정보 요약</div>
+          <div class="path-detail">AI Overview, 증감형 답변</div>
+        </div>
+        <div class="path-card path-danawa">
+          <div class="path-label">다나와</div>
+          <div class="path-value">객관적 확신</div>
+          <div class="path-detail">가격·스펙 데이터로 검증된 근거</div>
+        </div>
+      </div>
+      <p class="three-paths-body">AI가 더 많은 정답을 줄수록, 사용자는 <strong>근거</strong>를 더 원한다. 큰돈을 쓰는 결정에는 항상 객관적 검증이 필요하고, 다나와는 국내 유일하게 <strong>25년치 표준화된 스펙·가격 데이터</strong>를 보유하고 있다. 이 데이터 자산은 네이버·쿠팡·AI 어느 쪽도 단기간에 복제 불가능하다.</p>
+    </div>
+
   </section>
   <!-- 핵심 전제 -->
   <section id="premise">
     <div class="section-label">Core Premise</div>
-    <h2>가격비교·상품검색이 엔진이다</h2>
-    <p class="section-desc">엔진이 탄탄해야 목적지에 갈 수 있다. 라이프 큐레이터 비전은 가격비교 경쟁력 위에 세워진다.</p>
+    <h2>가격비교·상품검색이 디시전 엔진의 핵심이다</h2>
+    <p class="section-desc">다나와 디시전 엔진의 핵심은 25년간 쌓아온 가격·스펙 데이터다. 이 자산을 검색 자체의 경쟁력으로 제대로 구현해야 다나와의 신뢰가 지켜지고, 나아가 전사 비전(라이프 큐레이터)을 향한 통합 허브로 확장될 수 있다.</p>
+
+    <div class="premise-flow">
+      <div class="premise-step">
+        <div class="premise-step-num">1</div>
+        <div class="premise-step-title">가격비교·상품검색 경쟁력</div>
+        <div class="premise-step-desc">디시전 엔진의 핵심 — 25년 가격·스펙 데이터</div>
+      </div>
+      <div class="premise-arrow">↓</div>
+      <div class="premise-step">
+        <div class="premise-step-num">2</div>
+        <div class="premise-step-title">사용자가 신뢰하고 찾아온다</div>
+        <div class="premise-step-desc">"다나와에서 찾으면 후회 없다" 평판</div>
+      </div>
+      <div class="premise-arrow">↓</div>
+      <div class="premise-step">
+        <div class="premise-step-num">3</div>
+        <div class="premise-step-title">생활결합서비스로 자연스레 이어진다</div>
+        <div class="premise-step-desc">신뢰와 트래픽 기반의 자연스러운 확장</div>
+      </div>
+      <div class="premise-arrow">↓</div>
+      <div class="premise-step premise-step-goal">
+        <div class="premise-step-num">4</div>
+        <div class="premise-step-title">전사 비전 — 라이프 큐레이터</div>
+        <div class="premise-step-desc">검색이 통합 허브 역할을 완수한 결과</div>
+      </div>
+    </div>
 
     <div class="from-to">
       <div class="from-box">
@@ -1196,7 +2657,7 @@
       </div>
       <div class="to-box">
         <div class="box-header">
-          <span class="box-badge badge-blue">새로운 방향</span>
+          <span class="box-badge badge-blue">디시전 엔진의 방향</span>
         </div>
         <ul class="item-list">
           <li><span class="item-dot dot-blue"></span><span>정확한 검색 결과 — 원하는 상품을 제대로 찾아줌</span></li>
@@ -1214,20 +2675,20 @@
     <div class="section-label">Positioning</div>
     <h2>검색의 새로운 포지셔닝</h2>
     <p class="section-desc">
-      <strong style="color:var(--text3); font-weight:500;">From</strong> 부정확하고 카테고리별로 다른 기준의 가격비교 도구&nbsp;&nbsp;
-      <strong style="color:var(--blue);">To</strong> 정확하고 신뢰할 수 있으며 생활 생태계를 연결하는 개인화된 구매 허브
+      <strong style="color:var(--text3); font-weight:500;">From</strong> 카테고리별 상대적 가격비교 도구&nbsp;&nbsp;
+      <strong style="color:var(--blue);">To</strong> 가장 신뢰할 수 있는 선택을 제공하는 다나와 디시전 엔진
     </p>
 
     <div class="axes-grid">
       <div class="axis-card fade-up delay-1">
         <div class="axis-num">01</div>
         <div class="axis-title">정확한 결과</div>
-        <p class="axis-desc">원하는 걸 제대로 찾아준다. 모델명 매칭, 형태소 분석, 카테고리 통합 검색이 정확하게 작동해야 가격비교 자체가 의미 있다. 검색에서 못 찾으면 이탈이 발생한다.</p>
+        <p class="axis-desc">원하는 것을 제대로 찾아준다. 모델명 매칭, 형태소 분석, 카테고리 통합 검색이 정확하게 작동해야 가격비교 자체가 의미 있다. 검색에서 원하는 상품을 못 찾으면 이탈이 발생한다.</p>
       </div>
       <div class="axis-card fade-up delay-2">
         <div class="axis-num">02</div>
-        <div class="axis-title">신뢰할 수 있는 결과</div>
-        <p class="axis-desc">절대값 기반 인기점수로 전체 카테고리에 동일한 기준을 적용한다. 사람의 수동 개입 없이 시스템이 자동으로 운영되고, <strong>사용자 행동 데이터(클릭, 판매, 리뷰)가 점수의 중심</strong>이 된다. 광고 집행은 부수적 시그널로 보조한다.</p>
+        <div class="axis-title">신뢰할 수 있는 결과 — 객관적 근거 기반</div>
+        <p class="axis-desc">다나와 디시전 엔진의 핵심. <strong>25년치 표준화된 스펙·가격 데이터</strong>를 검색 결과의 근거로 제시한다. 절대값 기반 인기점수로 전 카테고리에 동일한 기준을 적용하고, 사람의 수동 개입 없이 시스템이 자동으로 운영된다. <strong>사용자 행동 데이터(클릭, 판매, 리뷰)가 점수의 중심</strong>이 되고, 광고 집행은 부수적 시그널로 보조한다.</p>
       </div>
       <div class="axis-card fade-up delay-3">
         <div class="axis-num">03</div>
@@ -1236,9 +2697,35 @@
       </div>
       <div class="axis-card fade-up" style="animation-delay:0.4s">
         <div class="axis-num">04</div>
-        <div class="axis-title">생태계를 연결하는 허브</div>
-        <p class="axis-desc">생활결합서비스(아정당[인터넷·휴대폰·이사·상조 등], 보험, 다나와 스토어, 데스크테리어[설치], 다해줌[구매대행])가 검색 하나로 연결. 사용자 행동 데이터를 기반으로 이 사람의 상황에 맞는 서비스를 자연스럽게 제안. 고객 데이터 연동(CRM 등)은 별도 협의를 통해 단계적으로 검토한다.</p>
+        <div class="axis-title">전사 비전을 실현하는 통합 허브</div>
+        <p class="axis-desc">검색이 신뢰를 확보한 이후, 그 신뢰를 기반으로 생활결합서비스(아정당, 보험, 다나와 스토어, 데스크테리어, 다해줌 등)를 자연스레 연결하는 통합 허브로 진화한다. 사용자의 구매 이력과 행동 데이터를 기반으로 이 사람의 상황에 맞는 서비스를 자연스레 제안한다. <strong>이것이 전사 비전인 라이프 큐레이터를 검색이 실현하는 방식이다.</strong> 고객 데이터 연동(CRM 등)은 별도 협의를 통해 단계적으로 검토한다.</p>
       </div>
+    </div>
+
+    <div class="hub-homework">
+      <div class="hub-homework-tag">▶ 그러나 "어떻게 풀어낼 것인가"는 숙제다</div>
+      <p class="hub-homework-intro">각 생활인프라 서비스는 이미 <strong>버티컬 서비스로 독립 운영</strong>되고 있다. 검색이 단순히 "노출"만 함께 한다고 "통합 허브"가 되는 것은 아니다. 검색팀 단독으로 답할 수 없는 접점이다.</p>
+      <div class="hub-homework-grid">
+        <div class="hub-homework-card hub-homework-search">
+          <div class="hub-homework-card-label">검색팀이 책임지는 영역</div>
+          <ul>
+            <li>사용자 의도를 자연어로 받아내기 <em>("이사 준비")</em></li>
+            <li>의도에 맞는 다나와 자산(상품·서비스) 매칭</li>
+            <li>검색 결과에서 관련 서비스 진입점 자연스레 제공</li>
+          </ul>
+        </div>
+        <div class="hub-homework-card hub-homework-together">
+          <div class="hub-homework-card-label">함께 정해야 할 영역 <span class="hub-homework-card-meta">(협의체 숙제)</span></div>
+          <ul>
+            <li>우선 통합 대상 서비스는 무엇인가</li>
+            <li>각 서비스와의 연결 깊이 (단순 링크 / 진입점 연동 / 결제 통합)</li>
+            <li>각 서비스 사업부와의 데이터 연동 범위</li>
+            <li>사용자 여정의 단일성 수준 (어디까지 다나와 안에서)</li>
+            <li>회원·포인트 통합 시점</li>
+          </ul>
+        </div>
+      </div>
+      <p class="hub-homework-link">구체적인 논의는 본문 끝 <strong>"결정이 필요한 사항 06"</strong>으로 이어진다.</p>
     </div>
   </section>
   <!-- 광고/비즈니스 -->
@@ -1254,24 +2741,6 @@
         <div class="ad-desc">PS의 중심은 <strong>사용자 행동 데이터(클릭, 판매, 리뷰 등)</strong>이고, 광고 집행은 <strong>부수적 시그널</strong>로 보조하는 역할이다. 이 순서가 바뀌면 인기점수는 "사용자가 좋아하는 상품"이 아니라 "광고를 많이 집행한 상품"이 되고, 사용자는 다나와 결과를 점점 덜 신뢰하게 된다. 결국 트래픽이 빠지면 광고 가치도 같이 빠진다 — 영업 측면에서도 손해다.<br><br>따라서 광고 집행 비중은 행동 데이터를 보조하는 수준에서 유지하며, 운영자가 수동으로 개입할 수 없는 자동화된 구조로 본부 간 협의를 통해 조율한다.</div>
       </div>
     </div>
-
-    <div class="three-roles">
-      <div class="role-card role-ps">
-        <div class="role-title">PS (인기점수)</div>
-        <div class="role-subtitle">검색팀 책임 · 자동화된 점수</div>
-        <div class="role-desc">사용자 행동 데이터 기반. 사람의 수동 개입 없이 자동 운영.</div>
-      </div>
-      <div class="role-card role-cm">
-        <div class="role-title">큐레이션</div>
-        <div class="role-subtitle">콘텐츠팀 책임 · 전문가 판단</div>
-        <div class="role-desc">CM의 전문가 큐레이션은 PS와 별개 영역. "기준상품 단위 큐레이션 콘텐츠"로 구분 노출.</div>
-      </div>
-      <div class="role-card role-ad">
-        <div class="role-title">광고</div>
-        <div class="role-subtitle">영업본부 책임 · 셀러의 의지</div>
-        <div class="role-desc">PS의 부수적 시그널로 보조. 본부 간 협의로 비중 조율.</div>
-      </div>
-    </div>
   </section>
   <!-- 임팩트 -->
   <section id="impact">
@@ -1285,6 +2754,7 @@
         <div class="impact-title">사용자</div>
         <ul class="impact-list">
           <li>가격비교·상품검색이 더 정확하고 빠르게</li>
+          <li>"다나와에서 찾으면 후회 없는 선택을 할 수 있다" — 객관적 근거에 기반한 신뢰</li>
           <li>시스템이 나에게 맞춰주는 개인화 경험</li>
           <li>상품 + 서비스 연결된 원스톱 구매</li>
           <li>"다나와 가면 찾을 수 있다" → 재방문율 증가 → 충성 고객화</li>
@@ -1331,6 +2801,7 @@
         <div class="tl-date">2026<br>상반기</div>
         <div class="tl-dot-col"><div class="tl-dot tl-dot-1"></div></div>
         <div class="tl-card">
+          <div class="tl-vision-tag">사용자 데이터에 근거한 신뢰 점수</div>
           <div class="tl-title">PS 재설계 — 인기점수 개편</div>
           <div class="tl-desc">절대값 기반 인기점수 도입. 사용자 행동 데이터(클릭·판매·리뷰)가 점수의 중심. 전 카테고리 동일 기준 적용.</div>
           <span class="tl-badge">사용자 체감: 실제 인기 상품이 상위 노출</span>
@@ -1341,6 +2812,7 @@
         <div class="tl-date">2026<br>하반기</div>
         <div class="tl-dot-col"><div class="tl-dot tl-dot-2"></div></div>
         <div class="tl-card">
+          <div class="tl-vision-tag">사용자 의미분석을 통한 정확한 검색</div>
           <div class="tl-title">RS 자동화 + 검색엔진 통합 (QIC)</div>
           <div class="tl-desc">수동 카테고리 부스팅 → 자동화. 다나와·에누리 검색엔진 통합. 카테고리 통합 검색 구현.</div>
           <span class="tl-badge">사용자 체감: 조건 말하면 자동 필터 적용</span>
@@ -1351,6 +2823,7 @@
         <div class="tl-date">2027</div>
         <div class="tl-dot-col"><div class="tl-dot tl-dot-3"></div></div>
         <div class="tl-card">
+          <div class="tl-vision-tag">사용자별 라이프 큐레이션의 출발</div>
           <div class="tl-title">LTR + 개인화 검색</div>
           <div class="tl-desc">클릭·구매 데이터 학습 기반 랭킹. 사용자 행동 데이터 기반 맞춤 검색 결과 제공. 고객 데이터 연동(CRM 등)은 별도 협의를 통해 단계적으로 검토.</div>
           <span class="tl-badge">사용자 체감: 내가 누군지 알고 맞춰줌</span>
@@ -1361,6 +2834,7 @@
         <div class="tl-date">2028~<br>(목표)</div>
         <div class="tl-dot-col"><div class="tl-dot tl-dot-4"></div></div>
         <div class="tl-card">
+          <div class="tl-vision-tag">검색이 라이프 큐레이션의 통합 허브로</div>
           <div class="tl-title">시맨틱 서치 + 생활서비스 연결</div>
           <div class="tl-desc">벡터 색인 기반 시맨틱 서치 도입. 쿼리 의도 파악으로 생활결합서비스 자동 연결.<br>아정당(인터넷·휴대폰·이사·상조), 보험, 다나와 스토어, 데스크테리어(설치), 다해줌(구매대행)</div>
           <span class="tl-badge">사용자 체감: "이사 가는데 뭐 필요해?" 한 번에 해결</span>
@@ -1421,7 +2895,7 @@
         </div>
         <ul class="agenda-list">
           <li>검색 전략 비전 초안 공유 및 각 본부 의견 수렴</li>
-          <li>라이프 큐레이터 비전에서 검색의 역할 합의</li>
+          <li>"다나와 디시전 엔진" 검색 비전과 "라이프 큐레이터" 전사 비전의 관계 합의</li>
           <li>각 본부가 검색에 기대하는 것 vs 우리가 줄 수 있는 것 간극 파악</li>
           <li>단기/중기/장기 로드맵 방향 합의</li>
         </ul>
@@ -1476,12 +2950,12 @@
       <div class="ops-title">📅 협의체 운영 방식</div>
       <div class="ops-grid">
         <div class="ops-item">
-          <div class="ops-label">주기</div>
-          <div class="ops-value">격주 또는 월 1회 정기 미팅</div>
+          <div class="ops-label">기본</div>
+          <div class="ops-value"><strong>노션을 통한 비정기 의견 수렴</strong></div>
         </div>
         <div class="ops-item">
-          <div class="ops-label">형식</div>
-          <div class="ops-value">오프라인 대면 + 노션 비동기 의견 병행</div>
+          <div class="ops-label">필요 시</div>
+          <div class="ops-value">정기 미팅으로 조율 (안건 무게에 따라)</div>
         </div>
         <div class="ops-item">
           <div class="ops-label">의사결정</div>
@@ -1489,10 +2963,96 @@
         </div>
         <div class="ops-item">
           <div class="ops-label">결과물</div>
-          <div class="ops-value">매 미팅 후 합의 내용 노션에 기록</div>
+          <div class="ops-value">합의 내용 노션에 기록</div>
         </div>
       </div>
     </div><!-- ops-box -->
+
+  </section>
+
+  <!-- 결정이 필요한 사항 -->
+  <section id="decisions">
+    <div class="section-label">Decisions Needed</div>
+    <h2>결정이 필요한 사항</h2>
+    <p class="section-desc">협의체 1차 미팅에서 공동으로 논의하고 합의해야 할 핵심 안건들이다. 단순 의견 수렴이 아니라, 합의가 이루어져야 다음 단계로 나아갈 수 있는 사항들이다.</p>
+
+    <div class="decisions-list">
+      <div class="decision-card decision-card-priority">
+        <div class="decision-num">01</div>
+        <div class="decision-body">
+          <div class="decision-title">비전 방향성 합의 <span class="decision-priority-tag">협의체 최우선 안건</span></div>
+          <p class="decision-desc">검색 비전("가장 신뢰할 수 있는 선택 — 다나와 디시전 엔진")과 전사 비전("라이프 큐레이터")의 방향성에 대한 4본부의 공감을 확인합니다.</p>
+          <div class="decision-meta">
+            <div class="decision-meta-row"><span class="decision-meta-label">확인할 것</span><span>이 방향성이 본부 영역에서 수용 가능한가 / 본부 입장에서 표현을 다듬어야 할 부분이 있는가 / 이 비전이 본부 업무에서 의미를 갖는가</span></div>
+            <div class="decision-meta-row"><span class="decision-meta-label">채택 시</span><span>모든 후속 의사결정의 준거가 됨</span></div>
+            <div class="decision-meta-row"><span class="decision-meta-label">조정 시</span><span>본부 의견을 반영한 방향성 수정 논의</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="decision-card">
+        <div class="decision-num">02</div>
+        <div class="decision-body">
+          <div class="decision-title">PS 재설계 광고 비중 합의</div>
+          <p class="decision-desc">광고 집행이 PS에 미치는 영향의 합리적 선을 합의한다. 행동 데이터(클릭·판매·리뷰)가 주, 광고는 부수적이라는 원칙에 대한 3본부의 의견 조율.</p>
+          <div class="decision-meta">
+            <div class="decision-meta-row"><span class="decision-meta-label">참여</span><span>비즈니스솔루션본부 + 서비스기획본부(검색팀) + 큐레이션본부</span></div>
+            <div class="decision-meta-row"><span class="decision-meta-label">함께 정할 것</span><span>행동 데이터 중심 원칙 수용 / 광고 비중의 구체적 선 / 본부 간 조율 방식</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="decision-card">
+        <div class="decision-num">03</div>
+        <div class="decision-body">
+          <div class="decision-title">카테고리별 검색 요구사항 우선순위</div>
+          <p class="decision-desc">카테고리별 검색 요구사항을 수집하고 도입 순서를 합의한다.</p>
+          <div class="decision-meta">
+            <div class="decision-meta-row"><span class="decision-meta-label">주관</span><span>큐레이션본부</span></div>
+            <div class="decision-meta-row"><span class="decision-meta-label">함께 정할 것</span><span>다중 카테고리 키워드(슬리퍼·샌들 등) 처리 방식 / 카테고리별 최적화 뷰 도입 순서 / 검색 결과 품질 기준</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="decision-card">
+        <div class="decision-num">04</div>
+        <div class="decision-body">
+          <div class="decision-title">데이터 수집 범위 합의</div>
+          <p class="decision-desc">개인화·의도 이해·생태계 연결을 위한 데이터 수집과 정형화 범위를 합의한다.</p>
+          <div class="decision-meta">
+            <div class="decision-meta-row"><span class="decision-meta-label">주관</span><span>개발본부 + 서비스기획본부(검색팀)</span></div>
+            <div class="decision-meta-row"><span class="decision-meta-label">함께 정할 것</span><span>모바일 행동 데이터 수집 / 회원통합·통합포인트 연동 시점 / CRM 연동 범위</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="decision-card">
+        <div class="decision-num">05</div>
+        <div class="decision-body">
+          <div class="decision-title">협의체 운영 체계 확정</div>
+          <p class="decision-desc">협의체가 지속 가능하게 굴러가도록 운영 체계를 고정한다. <strong>노션을 통한 비정기 의견 수렴 + 필요 시 정기 미팅으로 조율</strong>을 기본 틀로 한다.</p>
+          <div class="decision-meta">
+            <div class="decision-meta-row"><span class="decision-meta-label">함께 정할 것</span><span>노션 비동기 의견 수렴 방식 / 정기 미팅 소집 기준 (안건 무게, 합의 필요성) / 합의 내용 기록 책임자 / 본부 간 의견 충돌 시 조율 방식</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="decision-card">
+        <div class="decision-num">06</div>
+        <div class="decision-body">
+          <div class="decision-title">통합 허브 — 생활결합서비스 연결 방식 합의</div>
+          <p class="decision-desc">검색이 생활인프라 서비스(아정당·보험·데스크테리어·다해줌·스토어)를 어떻게 연결할지 함께 정의한다. 각 서비스가 버티컬로 운영되고 있어 단순 노출 통합만으로는 "통합 허브"가 되지 않는다. 검색팀 단독으로 답할 수 없는 접점이다.</p>
+          <div class="decision-meta">
+            <div class="decision-meta-row"><span class="decision-meta-label">주관</span><span>각 버티컬 서비스 담당자 + 서비스기획본부(검색팀)</span></div>
+            <div class="decision-meta-row"><span class="decision-meta-label">함께 정할 것</span><span>우선 통합 대상 서비스 / 연결 깊이(단순 링크 → 진입점 연동 → 결제 통합) / 각 서비스 사업부와의 데이터 연동 범위 / 사용자 여정의 단일성 수준 / 회원·포인트 통합 시점</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="decisions-note">
+      이 안건들은 검색팀이 일방적으로 제시하는 결론이 아니라, 4본부가 함께 구체화해갈 사항들이다. 각 본부의 관점과 현장 상황이 반영되어야 실제로 굴러갈 수 있다.
+    </div>
 
   </section>
 
