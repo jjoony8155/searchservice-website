@@ -1257,6 +1257,167 @@
     font-style: italic;
   }
 
+  /* 벤치마크 "왜" 한 줄 */
+  .benchmark-why {
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  .benchmark-why .why-label {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text3);
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 100px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  .benchmark-why strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .benchmark-card.featured .benchmark-why {
+    background: rgba(202, 138, 4, 0.08);
+  }
+
+  .benchmark-card.featured .benchmark-why .why-label {
+    color: #854d0e;
+    background: #fef3c7;
+    border-color: #fde047;
+  }
+
+  .benchmark-card.competitor .benchmark-why {
+    background: rgba(220, 38, 38, 0.04);
+  }
+
+  .benchmark-card.competitor .benchmark-why .why-label {
+    color: #991b1b;
+    background: #fee2e2;
+    border-color: #fecaca;
+  }
+
+  /* 패턴 정리 박스 */
+  .patterns-box {
+    margin: 28px 0 18px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 26px 28px;
+  }
+
+  .patterns-title {
+    font-family: 'Gmarket Sans', 'Pretendard', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 18px;
+    letter-spacing: -0.02em;
+  }
+
+  .patterns-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .pattern-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    border-top: 3px solid var(--text3);
+  }
+
+  .pattern-card.pattern-bigtech {
+    border-top-color: #94a3b8;
+  }
+
+  .pattern-card.pattern-defense {
+    border-top-color: #06b6d4;
+  }
+
+  .pattern-card.pattern-differentiation {
+    border-top-color: #d97706;
+    background: linear-gradient(135deg, #fef9c3 0%, #fff 100%);
+  }
+
+  .pattern-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .pattern-card.pattern-bigtech .pattern-label { color: #475569; }
+  .pattern-card.pattern-defense .pattern-label { color: #0e7490; }
+  .pattern-card.pattern-differentiation .pattern-label { color: #b45309; }
+
+  .pattern-companies {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .pattern-desc {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .pattern-desc strong {
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .pattern-card.pattern-differentiation .pattern-desc strong {
+    color: #92400e;
+  }
+
+  .patterns-conclusion {
+    background: linear-gradient(135deg, #fff7ed, #fff);
+    border: 1px solid #fdba74;
+    border-left: 3px solid #ea580c;
+    border-radius: 0 12px 12px 0;
+    padding: 16px 20px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.8;
+  }
+
+  .patterns-conclusion strong {
+    color: #c2410c;
+    font-weight: 700;
+  }
+
+  .patterns-link {
+    display: block;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(234, 88, 12, 0.3);
+    font-size: 12px;
+    color: var(--text3);
+    font-style: italic;
+  }
+
+  @media (max-width: 720px) {
+    .patterns-grid { grid-template-columns: 1fr; }
+  }
+
   .benchmark-desc {
     font-size: 13px;
     color: var(--text2);
@@ -3027,6 +3188,7 @@
           <div class="benchmark-name">구글 / 빙</div>
         </div>
         <div class="benchmark-strategy">정보 독점에서 답변 독점으로</div>
+        <div class="benchmark-why"><span class="why-label">왜</span> ChatGPT 등장으로 검색 광고 매출이 흔들리는 위협 — 사용자가 AI 답변만 보면 광고 클릭이 사라진다. 그래서 AI 답변 안에 광고를 녹여 매출 모델 자체를 재정의.</div>
         <p class="benchmark-desc">AI가 수백만 개 문서를 실시간 분석해 결론을 직접 제공. 검색 광고 클릭 감소 위기를 AI 구독·답변 내 상품 추천으로 돌파 중.</p>
       </div>
       <div class="benchmark-card">
@@ -3034,6 +3196,7 @@
           <div class="benchmark-name">네이버 검색</div>
         </div>
         <div class="benchmark-strategy">한국형 생태계 완결성으로 빅테크에 맞서다</div>
+        <div class="benchmark-why"><span class="why-label">왜</span> 검색이 카페·블로그·쇼핑·뉴스 트래픽을 분배하는 입구 — 검색이 흔들리면 네이버 전체가 흔들린다. 검색의 입구 위치를 어떻게든 지키는 방어 전략.</div>
         <p class="benchmark-desc">한국어 맥락과 온/오프라인 생태계의 완결성으로 살아남았다. 글로벌 빅테크가 단기간 따라올 수 없는 로컬 생태계 장벽 구축이 핵심 전략.</p>
       </div>
       <div class="benchmark-card competitor">
@@ -3042,6 +3205,7 @@
           <span class="benchmark-badge competitor-badge">직접 경쟁자</span>
         </div>
         <div class="benchmark-strategy">검색-쇼핑-결제-물류 통합으로 이탈을 막다</div>
+        <div class="benchmark-why"><span class="why-label">왜</span> 가격비교만 하면 사용자가 외부 쇼핑몰로 빠진다 (다나와 클릭아웃 모델과 같음). 결제·페이까지 흡수해서 사용자·매출·데이터를 네이버 안에 가두는 수직 통합 전략.</div>
         <p class="benchmark-desc">가격비교 영역에서 가장 큰 트래픽을 가져갔다. 다만 가격비교의 디테일과 깊이에서는 다나와가 앞선다. 규모는 네이버쇼핑이 크지만 정확성은 다나와가 앞선다. <strong>문제는 이 차이가 사용자에게 잘 보이지 않는다는 것이다.</strong></p>
       </div>
       <div class="benchmark-card">
@@ -3049,6 +3213,7 @@
           <div class="benchmark-name">아마존 / 쿠팡</div>
         </div>
         <div class="benchmark-strategy">검색창이 곧 구매의 입구</div>
+        <div class="benchmark-why"><span class="why-label">왜</span> 자체 물류·결제·멤버십 보유. 사용자가 가격을 비교할 이유 자체를 없앤다 ("쿠팡이면 어차피 싸/빠르다"). 가격비교 단계가 사라지면 중간 매개자(다나와 같은)도 사라지는 수직 통합 전략.</div>
         <p class="benchmark-desc">AI가 리뷰, 반품률, 만족도를 종합해 최적 상품을 골라주고, 검색 데이터가 물류 예측·재고 배치에까지 연결. 검색이 커머스 운영의 핵심 인프라.</p>
       </div>
       <div class="benchmark-card featured">
@@ -3057,7 +3222,37 @@
           <span class="benchmark-badge">벤치마크 모델</span>
         </div>
         <div class="benchmark-strategy">신뢰도라는 무기로 살아남다</div>
+        <div class="benchmark-why"><span class="why-label">왜</span> 일본에서 빅테크와 자본·물류·기술로 정면 경쟁 불가능. 그래서 빅테크가 못 따라 하는 영역 = <strong>객관적 비교의 깊이</strong>에 집중하는 차별화 전략. <strong>이 길이 다나와에도 적용된다.</strong></div>
         <p class="benchmark-desc">"카카쿠에서 찾으면 정확하다"는 평판을 지킨 것이 핵심. 가격 정확성, 제품 정보 디테일, 사용자가 납득할 수 있는 노출 순위 — 세 가지를 흔들리지 않게 유지했다. 더해 <strong>"카카쿠 리뷰어"라는 자긍심을 가진 사용자들이 한 편 한 편 장인의 손길 같은 리뷰</strong>를 남긴다. "리뷰가 곧 신뢰"가 되고, 그게 카카쿠 검색의 <strong>+α</strong>다.</p>
+      </div>
+    </div>
+
+    <!-- 글로벌 검색의 세 가지 길 - 패턴 정리 -->
+    <div class="patterns-box">
+      <div class="patterns-title">▶ 글로벌 검색의 세 가지 길 — 다나와는 어디로 가야 하나</div>
+
+      <div class="patterns-grid">
+        <div class="pattern-card pattern-bigtech">
+          <div class="pattern-label">빅테크 패턴</div>
+          <div class="pattern-companies">구글 · 아마존 · 쿠팡</div>
+          <div class="pattern-desc">자본·기술·생태계로 검색의 모든 단계 흡수<br><strong>→ 사용자 가두기</strong></div>
+        </div>
+        <div class="pattern-card pattern-defense">
+          <div class="pattern-label">방어 패턴</div>
+          <div class="pattern-companies">네이버</div>
+          <div class="pattern-desc">기존 입구 위치 사수<br><strong>→ 트래픽 분배자 유지</strong></div>
+        </div>
+        <div class="pattern-card pattern-differentiation">
+          <div class="pattern-label">차별화 패턴</div>
+          <div class="pattern-companies">카카쿠닷컴</div>
+          <div class="pattern-desc">빅테크가 못 하는 영역에 깊이 박기<br><strong>→ 신뢰의 깊이로 차별화</strong></div>
+        </div>
+      </div>
+
+      <div class="patterns-conclusion">
+        <strong>▶ 다나와는 한국에서 빅테크가 아니다.</strong>
+        자본·물류·기술로 정면 경쟁은 어렵다. 그래서 빅테크 패턴(구글·쿠팡)도, 네이버처럼 거대한 입구 위치도 다나와의 길이 아니다. <strong>카카쿠가 보여준 차별화 패턴 — "객관적 비교의 깊이"로 신뢰를 쌓는 길 — 이 다나와에 현실적인 선택지다.</strong>
+        <span class="patterns-link">"가장 신뢰할 수 있는 선택"이라는 비전이 그 차별화의 방향이다.</span>
       </div>
     </div>
 
