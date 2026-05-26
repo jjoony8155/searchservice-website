@@ -2113,6 +2113,111 @@
     border-top: 1px dashed rgba(202, 138, 4, 0.3);
   }
 
+  /* 이데알로 카드 - 파란 톤 (AI 시대 모델) */
+  .benchmark-card.featured.idealo {
+    background: linear-gradient(135deg, #eff6ff 0%, #fff 100%);
+    border: 1px solid #93c5fd;
+    border-top: 3px solid #2563eb;
+  }
+
+  .benchmark-card.idealo-badge,
+  .benchmark-badge.idealo-badge {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+  }
+
+  .benchmark-card.featured.idealo .benchmark-why {
+    background: rgba(37, 99, 235, 0.06);
+  }
+
+  .benchmark-card.featured.idealo .benchmark-why .why-label {
+    color: #1e40af;
+    background: #dbeafe;
+    border-color: #93c5fd;
+  }
+
+  .benchmark-card.featured.idealo .benchmark-why strong {
+    color: #1e40af;
+  }
+
+  .idealo-points {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .idealo-point {
+    background: rgba(37, 99, 235, 0.05);
+    border-left: 2px solid #2563eb;
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  .idealo-point strong {
+    color: #1e40af;
+    font-weight: 700;
+  }
+
+  /* 듀얼 축 박스 - 카카쿠 + 이데알로 결론 */
+  .dual-axis-box {
+    margin: 28px 0 18px;
+    background: linear-gradient(135deg, #fefce8 0%, #eff6ff 100%);
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 26px 28px;
+    position: relative;
+  }
+
+  .dual-axis-box::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #d97706 0%, #2563eb 100%);
+    border-radius: 14px 0 0 14px;
+  }
+
+  .dual-axis-title {
+    font-family: 'Gmarket Sans', 'Pretendard', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 14px;
+    letter-spacing: -0.02em;
+  }
+
+  .dual-axis-content {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.8;
+  }
+
+  .dual-axis-content strong {
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .dual-axis-conclusion {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed rgba(0, 0, 0, 0.1);
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.8;
+  }
+
+  .dual-axis-conclusion strong {
+    color: #c2410c;
+    font-weight: 700;
+  }
+
   /* 통합 허브 숙제 박스 */
   .hub-homework {
     margin-top: 28px;
@@ -2907,6 +3012,7 @@
           <li><strong>큐레이션본부</strong> — 카테고리별로 사용자가 진짜 답답해하는 검색은?</li>
           <li><strong>비즈니스솔루션본부</strong> — 광고주가 PS 변화에 가장 민감해할 지점은?</li>
           <li><strong>개발본부</strong> — 우리가 놓치고 있는 기술 제약이 있다면?</li>
+          <li><strong>모두</strong> — UI/UX 관점에서 검색 결과·상품 페이지가 어떤 모습이면 좋을지 의견이 있으신가요?</li>
           <li><strong>모두</strong> — 라이프 큐레이터 비전에서 본인 본부가 기여할 수 있는 영역은?</li>
         </ul>
       </div>
@@ -3219,11 +3325,36 @@
       <div class="benchmark-card featured">
         <div class="benchmark-header">
           <div class="benchmark-name">카카쿠닷컴</div>
-          <span class="benchmark-badge">벤치마크 모델</span>
+          <span class="benchmark-badge">차별화 패턴</span>
         </div>
-        <div class="benchmark-strategy">신뢰도라는 무기로 살아남다</div>
+        <div class="benchmark-strategy">신뢰 자산으로 살아남은 모델</div>
         <div class="benchmark-why"><span class="why-label">왜</span> 일본에서 빅테크와 자본·물류·기술로 정면 경쟁 불가능. 그래서 빅테크가 못 따라 하는 영역 = <strong>객관적 비교의 깊이</strong>에 집중하는 차별화 전략. <strong>이 길이 다나와에도 적용된다.</strong></div>
         <p class="benchmark-desc">"카카쿠에서 찾으면 정확하다"는 평판을 지킨 것이 핵심. 가격 정확성, 제품 정보 디테일, 사용자가 납득할 수 있는 노출 순위 — 세 가지를 흔들리지 않게 유지했다. 더해 <strong>"카카쿠 리뷰어"라는 자긍심을 가진 사용자들이 한 편 한 편 장인의 손길 같은 리뷰</strong>를 남긴다. "리뷰가 곧 신뢰"가 되고, 그게 카카쿠 검색의 <strong>+α</strong>다.</p>
+      </div>
+      <div class="benchmark-card featured idealo">
+        <div class="benchmark-header">
+          <div class="benchmark-name">이데알로 (Idealo)</div>
+          <span class="benchmark-badge idealo-badge">AI 시대 모델</span>
+        </div>
+        <div class="benchmark-strategy">같은 위치에서 AI 시대 대응</div>
+        <div class="benchmark-why"><span class="why-label">왜</span> 다나와와 같은 위치(<strong>2000년 설립, 클릭아웃 모델, 25년 자산</strong>)의 유럽 가격비교 사이트가, 카카쿠가 보여주지 못한 "AI 시대 어떻게 가야 하나"를 실제로 답하고 있다.</div>
+        <p class="benchmark-desc">독일·유럽 가격비교 사이트. 다나와와 같은 시기(2000년 설립)에 같은 모델(클릭아웃)로 시작했다. 카카쿠가 "신뢰 자산으로 살아남는 법"을 보여줬다면, 이데알로는 "그 자산을 AI 시대에 어떻게 자산화할 것인가"를 보여준다.</p>
+        <div class="idealo-points">
+          <div class="idealo-point"><strong>ChatGPT 앱 출시 (2026.03)</strong> — MCP가 API가 아닌 사용자 경험으로. 6억 개 실시간 가격 데이터를 ChatGPT 안에 연동하여 할루시네이션을 원천 봉쇄.</div>
+          <div class="idealo-point"><strong>"디시전 미디어(Decision Media)" 광고 모델 (2025)</strong> — 가격 중립성(최저가 정렬 그대로)과 광고 효과를 양립시키는 구조. 다나와 "디시전 엔진"과 같은 단어, 같은 구조.</div>
+          <div class="idealo-point"><strong>구글 4.65억 유로 배상 승소 (2025.11)</strong> — 25년 자산이 법적 권리로 인정받음.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 카카쿠 + 이데알로 = 다나와가 가야 할 길의 두 축 -->
+    <div class="dual-axis-box">
+      <div class="dual-axis-title">▶ 카카쿠 + 이데알로 = 다나와가 가야 할 길의 두 축</div>
+      <div class="dual-axis-content">
+        카카쿠의 <strong>신뢰 자산</strong>(차별화의 토대) + 이데알로의 <strong>AI 시대 대응</strong>(MCP·디시전 미디어). 두 모델이 합쳐져야 다나와가 가야 할 길이 완성된다.
+        <div class="dual-axis-conclusion">
+          다나와가 "가장 신뢰할 수 있는 선택"을 제공하는 디시전 엔진이 되려면, 검색의 정확성·신뢰성만으로는 부족하다. 상품 콘텐츠·가격 추이·리뷰 같은 결정 지원 자산이 결정의 무기로 작동하기 위한 노력이 함께 필요하다. 다나와 자산을 결정 지원 인프라로 만들어가는 것이 디시전 엔진의 방향이다. 이는 검색팀 단독으로 풀 수 없는 영역이며, <strong>콘텐츠팀·큐레이션본부와 함께 그려갈 숙제다.</strong>
+        </div>
       </div>
     </div>
 
@@ -3254,12 +3385,6 @@
         자본·물류·기술로 정면 경쟁은 어렵다. 그래서 빅테크 패턴(구글·쿠팡)도, 네이버처럼 거대한 입구 위치도 다나와의 길이 아니다. <strong>카카쿠가 보여준 차별화 패턴 — "객관적 비교의 깊이"로 신뢰를 쌓는 길 — 이 다나와에 현실적인 선택지다.</strong>
         <span class="patterns-link">"가장 신뢰할 수 있는 선택"이라는 비전이 그 차별화의 방향이다.</span>
       </div>
-    </div>
-
-    <div class="kakaku-lesson">
-      <div class="kakaku-lesson-tag">▶ 다나와가 마저 채워야 할 +α</div>
-      <p>다나와도 25년치 가격 정확성·상품 데이터, 그리고 상품 콘텐츠·리뷰 같은 결정 지원 자산을 가지고 있다. 다만 노출 순위(인기점수)가 사용자가 납득할 수준에서 운영되어야 자산이 가치를 갖는다.</p>
-      <p>"가장 신뢰할 수 있는 선택"을 제공하는 디시전 엔진이 되려면 검색의 정확성·신뢰성만으로는 부족하다. <strong>상품 콘텐츠·가격 추이·리뷰 같은 결정 지원 자산이 결정의 무기로 작동하기 위한 노력</strong>이 함께 필요하다. 다나와 자산을 결정 지원 인프라로 만들어가는 것이 디시전 엔진의 방향이다. <em>이는 검색팀 단독으로 풀 수 없는 영역이며, 콘텐츠팀·큐레이션본부와 함께 그려갈 숙제다.</em></p>
     </div>
 
     <div class="connect-box">
@@ -3737,6 +3862,28 @@
           <div class="decision-meta">
             <div class="decision-meta-row"><span class="decision-meta-label">주관</span><span>각 버티컬 서비스 담당자 + 서비스기획본부(검색팀)</span></div>
             <div class="decision-meta-row"><span class="decision-meta-label">함께 정할 것</span><span>우선 통합 대상 서비스 / 연결 깊이(단순 링크 → 진입점 연동 → 결제 통합) / 각 서비스 사업부와의 데이터 연동 범위 / 사용자 여정의 단일성 수준 / 회원·포인트 통합 시점</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="decision-card">
+        <div class="decision-num">07</div>
+        <div class="decision-body">
+          <div class="decision-title">상품 자산을 결정 순간에 닿게 하는 방식 합의</div>
+          <p class="decision-desc">다나와가 25년간 쌓아온 상품 자산(구매가이드·기획전·리뷰·가격 추이)이 검색 결과·상품 페이지에서 잘 보이지 않는다. 자산이 결정 순간에 닿아야 "가장 신뢰할 수 있는 선택"이 완성된다. 06번이 "서비스 영역 통합 허브"라면, 07번은 <strong>"상품 영역의 통합 허브"</strong>다.</p>
+          <div class="decision-meta">
+            <div class="decision-meta-row"><span class="decision-meta-label">주관</span><span>콘텐츠팀 + 큐레이션본부 + 서비스기획본부(검색팀)</span></div>
+            <div class="decision-meta-row"><span class="decision-meta-label">함께 정할 것</span><span>검색 결과 리스트에 자산 노출 방식 / 상품 카드 자산 신호의 종류와 우선순위 / PDP 자산 통합 형태 / 각 자산의 업데이트 주체와 책임</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="decision-card">
+        <div class="decision-num">08</div>
+        <div class="decision-body">
+          <div class="decision-title">UI/UX 방향 의견 수렴</div>
+          <p class="decision-desc">검색 결과·상품 페이지의 UI/UX는 지금 확정하기 어렵다. 각 본부가 명확한 의견을 가지고 있을 가능성이 높고, 함께 논의해야 다나와다운 모습이 나온다. <strong>별도 트랙으로 의견 수렴 → 단계적 반영</strong>이 다나와에 맞는 방식.</p>
+          <div class="decision-meta">
+            <div class="decision-meta-row"><span class="decision-meta-label">주관</span><span>서비스기획본부(검색팀) + 전 본부</span></div>
+            <div class="decision-meta-row"><span class="decision-meta-label">함께 정할 것</span><span>의견 수렴 방식(노션 비동기 / 별도 세션) / 현재 UI의 불편한 지점 / 각 본부가 그리는 이상적 모습 / 반영 우선순위</span></div>
           </div>
         </div>
       </div>
