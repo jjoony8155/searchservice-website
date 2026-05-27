@@ -734,6 +734,24 @@
     font-weight: 700;
   }
 
+  /* 두 청중(사용자 + AI) 한 줄 박스 */
+  .dual-audience-note {
+    margin-top: 20px;
+    background: linear-gradient(135deg, #eff6ff, #fff);
+    border: 1px solid #93c5fd;
+    border-left: 3px solid #2563eb;
+    border-radius: 0 12px 12px 0;
+    padding: 16px 22px;
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  .dual-audience-note strong {
+    color: #1e40af;
+    font-weight: 700;
+  }
+
   /* 디시전 엔진 구조도 */
   .decision-engine-diagram {
     margin-top: 24px;
@@ -3145,6 +3163,10 @@
       </div>
     </div>
 
+    <div class="dual-audience-note">
+      ▶ <strong>검색 결과의 신뢰성은 사용자에게도, 그 결과를 가져가는 AI에게도 같은 가치를 만든다.</strong> 다나와는 두 청중 모두에게 같은 품질의 결과를 제공하는 것이 디시전 엔진의 본질이다.
+    </div>
+
     <div class="vision-agenda-note">
       ▶ <strong>이 방향성에 대한 4본부의 공감을 확인하는 것</strong>이 협의체 1차 미팅의 핵심 안건입니다.
     </div>
@@ -3228,10 +3250,10 @@
             </div>
 
             <div class="mcp-meaning mcp-meaning-2">
-              <strong>▶ MCP는 자연어 의도를 받는다 — 다나와가 자연어 검색을 갖춰야 하는 이유</strong>
-              <p>AI 에이전트가 던지는 쿼리는 <em>"아이폰16 최저가"</em> 같은 키워드부터 <em>"가성비 좋은 14인치 노트북"</em>이나 <em>"여름에 시원한 베이지 슬리퍼"</em> 같은 자연어 의도까지 다양하다.</p>
-              <p>키워드 매칭만으로는 자연어 의도에 정확한 답을 줄 수 없다. MCP를 통해 외부 AI에 의미 있는 답을 주려면, <strong>다나와 검색도 어느 정도 자연어 의도를 이해할 수 있어야 한다.</strong></p>
-              <p>이것이 <strong>자연어 검색 (의도 분석 · 시맨틱 서치)</strong>이 다나와에게 선택이 아닌 필수가 되는 이유다.</p>
+              <strong>▶ 외부 AI가 던지는 쿼리를 정확히 매칭하는 것 — 다나와 의미 인프라</strong>
+              <p>외부 AI가 사용자 의도(<em>"가성비 좋은 14인치 노트북"</em>, <em>"여름에 시원한 베이지 슬리퍼"</em>)를 분해해서 다나와에 쿼리를 던지면, 다나와는 그 쿼리에 정확히 매칭해야 한다.</p>
+              <p>AI가 던진 쿼리가 다나와 데이터의 어떤 상품·태그·속성·리뷰와 연결되는지가 검색 품질을 결정한다.</p>
+              <p>즉, 다나와가 사용자 자연어를 직접 받지 않더라도, <strong>데이터 자체에 의미 구조(태그·동의어·카탈로그 정합성)가 박혀 있어야</strong> 외부 AI가 정확한 답을 가져갈 수 있다. 이것이 다나와의 의미 인프라가 필요한 이유다.</p>
             </div>
 
             <div class="term-glossary">
@@ -3240,14 +3262,14 @@
               <div class="term-glossary-grid">
                 <div class="term-card term-card-external">
                   <div class="term-card-label">외부 AI 검색</div>
-                  <p>AI 에이전트(ChatGPT, Gemini, Claude, 카나나 등)가 사용자에게 답하는 것. 다나와 MCP를 호출함.</p>
+                  <p>AI 에이전트(ChatGPT, Gemini, Claude, 카나나 등)가 사용자 의도를 받아 다나와 같은 데이터 소스에 쿼리를 던지고, 그 결과를 사용자에게 답하는 것.</p>
                 </div>
                 <div class="term-card term-card-internal">
-                  <div class="term-card-label">다나와 자연어 검색</div>
-                  <p>다나와가 자연어 쿼리의 의도를 이해하고 정확한 답을 주는 검색 능력.</p>
+                  <div class="term-card-label">다나와 의미 인프라</div>
+                  <p>외부 AI가 던지는 쿼리를 다나와 데이터(상품·태그·속성)와 정확히 매칭하는 능력.</p>
                 </div>
               </div>
-              <p class="term-glossary-note">이 둘은 다른 영역이지만 서로 연결되어 있다. <strong>다나와가 자연어 검색을 갖추지 않으면, 외부 AI 검색도 다나와에서 의미 있는 답을 가져갈 수 없다.</strong></p>
+              <p class="term-glossary-note">다나와가 사용자 자연어를 직접 받지 않더라도, <strong>외부 AI가 정확한 답을 가져가려면 다나와 데이터에 의미 구조가 박혀 있어야 한다.</strong></p>
             </div>
           </div>
         </div>
@@ -3479,7 +3501,7 @@
         <ul class="item-list">
           <li><span class="item-dot dot-blue"></span><span>정확한 검색 결과 — 원하는 상품을 제대로 찾아줌</span></li>
           <li><span class="item-dot dot-blue"></span><span>절대값 기반 인기점수 — 전 카테고리 동일 기준</span></li>
-          <li><span class="item-dot dot-blue"></span><span>의도를 이해하는 검색 — 시스템이 사용자에게 맞춰감</span></li>
+          <li><span class="item-dot dot-blue"></span><span>정확하게 매칭하는 검색 — 시스템이 사용자에게 맞춰감</span></li>
           <li><span class="item-dot dot-blue"></span><span>자동화된 운영 구조 — 일관성 있고 지속 가능한 운영</span></li>
           <li><span class="item-dot dot-blue"></span><span>다나와 자산이 결과에서 드러남 — 상품 콘텐츠·가격 추이·리뷰 통합</span></li>
           <li><span class="item-dot dot-blue"></span><span>이 사람이 누군지 아는 검색 — 행동 데이터 기반 개인화 (CRM 연동은 별도 검토)</span></li>
@@ -3509,8 +3531,8 @@
       </div>
       <div class="axis-card fade-up delay-3">
         <div class="axis-num">03</div>
-        <div class="axis-title">의도를 이해하는 검색</div>
-        <p class="axis-desc">키워드가 아닌 구매 의도를 이해해서 원하는 상품을 더 빠르게 찾아준다. 시스템이 사용자에게 맞춰간다.</p>
+        <div class="axis-title">정확하게 매칭하는 검색</div>
+        <p class="axis-desc">외부 AI나 사용자가 던지는 다양한 표현을 다나와 데이터와 정확히 연결한다. <em>"가벼운 노트북"</em>·<em>"시원한 슬리퍼"</em> 같은 표현이 어떤 상품·속성과 매칭되는지가 <strong>다나와 데이터의 의미 구조</strong>로 결정된다. 시스템이 사용자에게 맞춰간다.</p>
       </div>
       <div class="axis-card fade-up" style="animation-delay:0.4s">
         <div class="axis-num">04</div>
@@ -3629,9 +3651,9 @@
         <div class="tl-date">2026<br>하반기</div>
         <div class="tl-dot-col"><div class="tl-dot tl-dot-2"></div></div>
         <div class="tl-card">
-          <div class="tl-vision-tag">사용자 의미분석을 통한 정확한 검색</div>
+          <div class="tl-vision-tag">데이터 의미 구조 강화를 통한 정확한 매칭</div>
           <div class="tl-title">RS 자동화 + 검색엔진 통합 (QIC)</div>
-          <div class="tl-desc">수동 카테고리 부스팅 → 자동화. 다나와·에누리 검색엔진 통합. 카테고리 통합 검색 구현.</div>
+          <div class="tl-desc">태그·동의어·카탈로그 정합성 강화로 다양한 표현 매칭. 수동 카테고리 부스팅 → 자동화. 다나와·에누리 검색엔진 통합. 카테고리 통합 검색 구현.</div>
           <span class="tl-badge">사용자 체감: 조건 말하면 자동 필터 적용</span>
         </div>
       </div>
