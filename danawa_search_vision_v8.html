@@ -3749,6 +3749,24 @@
     margin-bottom: 8px;
   }
 
+
+  /* === market 섹션 통합 - 경쟁 구도 + 아직 닿지 않은 영역 === */
+  .market-deep {
+    margin-top: 48px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+  .market-deep-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 24px 0 8px;
+  }
+  .market-deep-desc {
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+
 </style>
 </head>
 <body>
@@ -3774,7 +3792,6 @@
     <a href="#summary" class="nav-item">한 장 요약</a>
     <a href="#vision" class="nav-item">비전</a>
     <a href="#market" class="nav-item">시장 변화</a>
-    <a href="#situation" class="nav-item">현황 진단</a>
     <a href="#premise" class="nav-item">핵심 전제</a>
     <a href="#positioning" class="nav-item">포지셔닝</a>
     <a href="#strategy" class="nav-item">전략</a>
@@ -4272,129 +4289,64 @@
       <p class="three-paths-body">AI가 더 많은 정답을 줄수록, 사용자는 <strong>근거</strong>를 더 원한다. 큰돈을 쓰는 결정에는 항상 객관적 검증이 필요하고, 다나와는 국내 유일하게 <strong>축적된 표준화된 스펙·가격 데이터</strong>를 보유하고 있다. 이 데이터 자산은 네이버·쿠팡·AI 어느 쪽도 단기간에 복제 불가능하다.</p>
     </div>
 
+    <!-- 통합: 경쟁 구도 + 아직 닿지 않은 영역 (현황 진단 흡수) -->
+    <div class="market-deep">
+      <h3 class="market-deep-title">경쟁 구도 — 다나와의 자리</h3>
+      <p class="market-deep-desc">글로벌 검색 플레이어들을 패턴으로 정리하면 다나와가 갈 길이 명확하게 드러난다.</p>
+      
+      <table class="situation-table">
+        <thead>
+          <tr>
+            <th>플레이어</th>
+            <th>전략 패턴</th>
+            <th>다나와 시사점</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>구글·쿠팡·아마존</td>
+            <td>자본·물류·기술로 검색의 모든 단계 흡수 (빅테크 패턴)</td>
+            <td>정면 경쟁 불가. 가야 할 길이 아니다.</td>
+          </tr>
+          <tr>
+            <td>네이버</td>
+            <td>한국형 생태계 완결성으로 기존 입구 위치 사수 (방어 패턴)</td>
+            <td>다나와는 거대한 입구가 아니다. 다른 길.</td>
+          </tr>
+          <tr class="highlight-row">
+            <td>카카쿠닷컴 (일본)</td>
+            <td>객관적 비교의 깊이로 신뢰 누적 (차별화 패턴)</td>
+            <td>오랜 시간 쌓아온 데이터 자산을 결정 지원 인프라로.</td>
+          </tr>
+          <tr class="highlight-row">
+            <td>이데알로 (유럽)</td>
+            <td>같은 위치(2000년 클릭아웃 모델)에서 AI 시대 대응 — ChatGPT 앱, 디시전 미디어 광고</td>
+            <td>MCP + 광고 정보화로 자산을 비즈니스 모델로 연결.</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <div class="situation-conclusion">
+        <strong>▶ 다나와의 길 = 카카쿠의 신뢰 깊이 + 이데알로의 AI 시대 자산화</strong>
+        <p>빅테크 패턴(쿠팡·구글)도 거대 입구 방어(네이버)도 아니다. 두 모델을 합쳐 "디시전 엔진"이라는 단일 포지셔닝으로 간다.</p>
+      </div>
+
+      <h3 class="market-deep-title" style="margin-top:48px;">아직 닿지 않은 영역</h3>
+      <p class="market-deep-desc">위 흐름과 경쟁 구도를 고려할 때, 다나와가 추가로 더 풀어볼 만한 영역들.</p>
+      
+      <div class="asset-box asset-future" style="max-width:none;">
+        <div class="asset-label">함께 그려갈 새로운 영역</div>
+        <ul>
+          <li>GEO (AI 인용 최적화) 영역</li>
+          <li>MCP가 자산으로만 인식되는 구조 — 비즈니스 모델로 연결</li>
+          <li>무형 서비스 도메인 미진입</li>
+          <li>자산을 비즈니스 모델로 연결하는 구조</li>
+        </ul>
+      </div>
+    </div>
+
   </section>
   
-  <!-- 현황 진단 (상무님 자료 흡수) -->
-  <section id="situation">
-    <div class="section-label">Situation</div>
-    <h2>현황 진단 — 왜 지금 움직여야 하는가</h2>
-    <p class="section-desc">지금 다나와가 서 있는 자리를 세 가지 관점으로 정리하면 아래와 같다. 이 세 가지가 결정 순간에 닿아야 "검색이 결정이 됩니다"가 완성된다.</p>
-
-    <div class="situation-grid">
-      <!-- 1. 검색 패러다임 전환 -->
-      <div class="situation-block">
-        <div class="situation-num">01</div>
-        <div class="situation-title">검색 패러다임 전환 — UCP와 MCP의 시대</div>
-        <p class="situation-body">키워드를 입력하고 결과를 고르는 시대에서, AI가 의도를 이해하고 실행까지 돕는 시대로 변하고 있다.</p>
-        
-        <div class="situation-flows">
-          <div class="situation-flow">
-            <div class="flow-tag">외부 흐름 1</div>
-            <div class="flow-title">구글 UCP 발표 (2026.01)</div>
-            <p>Shopify, Walmart, Target, Stripe, Visa 등 20여 개 글로벌 기업이 참여하는 쇼핑 표준. 사용자가 검색 결과 페이지를 떠나지 않고 바로 구매한다. 가격비교의 클릭아웃 모델 자체가 흔들릴 수 있다.</p>
-          </div>
-          <div class="situation-flow">
-            <div class="flow-tag">외부 흐름 2</div>
-            <div class="flow-title">AI 에이전트의 MCP 호출</div>
-            <p>ChatGPT, Claude, 카카오 카나나 같은 AI 에이전트가 MCP를 통해 가격·스펙 데이터를 직접 호출하는 구조가 빠르게 자리잡고 있다. 다나와는 이미 MCP 운영 중(<code>api.mcp.ai.cowave.kr</code>).</p>
-          </div>
-        </div>
-        
-        <div class="situation-conclusion">
-          <strong>▶ 이 두 흐름이 다나와에 만들어내는 점</strong>
-          <p>위협으로는 클릭아웃 모델이 흔들리는 구조, 기회로는 AI가 근거를 더 원하는 시대에 다나와의 축적된 스펙·가격 데이터가 더 강력한 자산이 된다. 다나와는 이 흐름의 한복판에 있다.</p>
-        </div>
-      </div>
-
-      <!-- 2. 경쟁 구도 -->
-      <div class="situation-block">
-        <div class="situation-num">02</div>
-        <div class="situation-title">경쟁 구도 — 다나와의 자리</div>
-        <p class="situation-body">글로벌 검색 플레이어들을 세 패턴으로 정리하면 다나와가 갈 길이 명확하게 드러난다.</p>
-        
-        <table class="situation-table">
-          <thead>
-            <tr>
-              <th>플레이어</th>
-              <th>전략 패턴</th>
-              <th>다나와 시사점</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>구글·쿠팡·아마존</td>
-              <td>자본·물류·기술로 검색의 모든 단계 흡수 (빅테크 패턴)</td>
-              <td>정면 경쟁 불가. 가야 할 길이 아니다.</td>
-            </tr>
-            <tr>
-              <td>네이버</td>
-              <td>한국형 생태계 완결성으로 기존 입구 위치 사수 (방어 패턴)</td>
-              <td>다나와는 거대한 입구가 아니다. 다른 길.</td>
-            </tr>
-            <tr class="highlight-row">
-              <td>카카쿠닷컴 (일본)</td>
-              <td>객관적 비교의 깊이로 신뢰 누적 (차별화 패턴)</td>
-              <td>오랜 시간 쌓아온 데이터 자산을 결정 지원 인프라로 격상.</td>
-            </tr>
-            <tr class="highlight-row">
-              <td>이데알로 (유럽)</td>
-              <td>같은 위치(2000년 클릭아웃 모델)에서 AI 시대 대응 — ChatGPT 앱, 디시전 미디어 광고</td>
-              <td>MCP + 광고 정보화로 자산을 비즈니스 모델로 연결.</td>
-            </tr>
-          </tbody>
-        </table>
-        
-        <div class="situation-conclusion">
-          <strong>▶ 다나와의 길 = 카카쿠의 신뢰 깊이 + 이데알로의 AI 시대 자산화</strong>
-          <p>빅테크 패턴(쿠팡·구글)도 거대 입구 방어(네이버)도 아니다. 두 모델을 합쳐 "디시전 엔진"이라는 단일 포지셔닝으로 간다.</p>
-        </div>
-      </div>
-
-      <!-- 3. 다나와 — 자산은 있으나 결정 순간에 닿지 않는다 -->
-      <div class="situation-block">
-        <div class="situation-num">03</div>
-        <div class="situation-title">다나와 — 자산은 있으나 결정 순간에 닿지 않는다</div>
-        <p class="situation-body">다나와는 이미 강력한 자산을 보유하고 있지만, 그 자산이 사용자의 결정 순간에 무기로 작동하지 못하는 구조이다.</p>
-        
-        <div class="asset-grid">
-          <div class="asset-box asset-strong">
-            <div class="asset-label">강점 자산</div>
-            <ul>
-              <li>축적된 표준화 가격·스펙 데이터</li>
-              <li>QIC 인텐트 분석 역량</li>
-              <li>운영 중인 MCP 서버</li>
-              <li>카카오 카나나 파트너십 협의 중</li>
-              <li>구매가이드·리뷰·가격추이 콘텐츠</li>
-            </ul>
-          </div>
-          <div class="asset-box asset-todo">
-            <div class="asset-label">더 풀어야 할 영역</div>
-            <ul>
-              <li>카테고리별 상대 점수 — 통합 검색 불일관</li>
-              <li>키워드 매칭만, 의도 미반영</li>
-              <li>수동 점수 조정 — 일관성 저하</li>
-              <li>자산이 결정 순간에 흩어져 있음</li>
-              <li>광고와 랭킹 시그널이 혼재</li>
-            </ul>
-          </div>
-          <div class="asset-box asset-future">
-            <div class="asset-label">아직 닿지 않은 영역</div>
-            <ul>
-              <li>GEO (AI 인용 최적화) 영역</li>
-              <li>MCP가 자산으로만 인식되는 구조</li>
-              <li>무형 서비스 도메인 미진입</li>
-              <li>자산을 비즈니스 모델로 연결하는 구조</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="situation-note">
-      이 현황을 함께 짚고, 해소해갈 방향을 다음 단락들(<strong>더 풀어야 할 영역 · 포지셔닝 · 전략</strong>)에서 함께 그려 간다.
-    </div>
-  </section>
-
   <!-- 핵심 전제 -->
   <section id="premise">
     <div class="section-label">Core Premise</div>
@@ -4529,14 +4481,9 @@
             <span class="callout-expected">갤럭시S25가 정확히 나와야 함</span>
           </div>
           <div class="callout-example-item">
-            <span class="callout-query">"가벼운 노트북"</span>
+            <span class="callout-query">"아이폰17 프로"</span>
             <span class="callout-arrow">→</span>
-            <span class="callout-expected">실제로 가벼운 노트북이 나와야 함</span>
-          </div>
-          <div class="callout-example-item">
-            <span class="callout-query">"슬리퍼"</span>
-            <span class="callout-arrow">→</span>
-            <span class="callout-expected">여러 카테고리에 걸쳐 일관된 결과</span>
+            <span class="callout-expected">정확한 모델명에 일치하는 상품 노출</span>
           </div>
         </div>
       </div>
@@ -4544,11 +4491,30 @@
         <div class="axis-num">02</div>
         <div class="axis-title">신뢰할 수 있는 결과 — 객관적 근거 기반</div>
         <p class="axis-desc">다나와 디시전 엔진의 핵심. <strong>축적된 표준화된 스펙·가격 데이터</strong>를 검색 결과의 근거로 제시한다. 일관된 기준의 랭킹으로 전 카테고리에 동일한 기준을 적용하고, 사람의 수동 개입 없이 시스템이 자동으로 운영된다. <strong>오가닉 상품과 광고 상품이 각자 역할을 명확히 유지</strong>하며, 광고는 일부 포션으로 랭킹에 반영되는 시그널로 작동한다.</p>
+        <div class="callout-examples">
+          <div class="callout-example-item">
+            <span class="callout-query">"슬리퍼"</span>
+            <span class="callout-arrow">→</span>
+            <span class="callout-expected">여러 카테고리에 걸쳐 일관된 결과</span>
+          </div>
+        </div>
       </div>
       <div class="axis-card fade-up delay-3">
         <div class="axis-num">03</div>
         <div class="axis-title">정확하게 매칭하는 검색</div>
         <p class="axis-desc">외부 AI나 사용자가 던지는 다양한 표현을 다나와 데이터와 정확히 연결한다. <em>"가벼운 노트북"</em>·<em>"시원한 슬리퍼"</em> 같은 표현이 어떤 상품·속성과 매칭되는지가 <strong>다나와 데이터의 의미 구조</strong>로 결정된다. 시스템이 사용자에게 맞춰간다.</p>
+        <div class="callout-examples">
+          <div class="callout-example-item">
+            <span class="callout-query">"가벼운 노트북"</span>
+            <span class="callout-arrow">→</span>
+            <span class="callout-expected">실제로 가벼운 노트북이 나와야 함</span>
+          </div>
+          <div class="callout-example-item">
+            <span class="callout-query">"시원한 슬리퍼"</span>
+            <span class="callout-arrow">→</span>
+            <span class="callout-expected">색·계절·통기성 의미 매칭</span>
+          </div>
+        </div>
       </div>
       <div class="axis-card fade-up" style="animation-delay:0.4s">
         <div class="axis-num">04</div>
@@ -4906,10 +4872,10 @@
 
             <!-- 미니 가격추이 차트 -->
             <text x="24" y="234" font-family="Pretendard, sans-serif" font-size="9" font-weight="600" fill="#6b7280">12개월 가격추이</text>
-            <polyline points="24,260 50,255 76,258 102,252 128,250 154,253 180,248 206,245 232,242 258,240 284,238" 
+            <polyline points="24,240 50,243 76,242 102,247 128,250 154,252 180,255 206,256 232,258 258,259 284,260" 
                       fill="none" stroke="#0056e3" stroke-width="1.5"/>
-            <circle cx="284" cy="238" r="3" fill="#dc2626"/>
-            <text x="284" y="225" font-family="Pretendard, sans-serif" font-size="8" font-weight="700" fill="#dc2626" text-anchor="end">최저가</text>
+            <circle cx="284" cy="260" r="3" fill="#16a34a"/>
+            <text x="284" y="225" font-family="Pretendard, sans-serif" font-size="8" font-weight="700" fill="#16a34a" text-anchor="end">최저가 ↓</text>
             
             <!-- AI 평가 + 리뷰 한 줄 -->
             <rect x="24" y="278" width="264" height="20" rx="4" fill="#f0f4ff"/>
