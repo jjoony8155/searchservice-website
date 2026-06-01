@@ -3722,6 +3722,7 @@
     color: var(--blue);
   }
   
+  
   @media (max-width: 768px) {
     .wf-item-body {
       grid-template-columns: 1fr;
@@ -4535,6 +4536,7 @@
         <div class="strategy-content">
           <div class="strategy-title">새로운 검색 진입점 — 통합 허브 단계에 검토</div>
           <p class="strategy-body">기존 검색창은 그대로 유지하면서, 데이터의 의미 구조를 단계적으로 풍부하게 만든다. 사용자가 자연어로 검색하는 진입점은 통합 허브 단계에서 본부 의견과 함께 검토한다.</p>
+          <p class="strategy-body">이 자연어 진입점은 <strong>자체 LLM 구축이 아니다.</strong> 외부 LLM(OpenAI·Anthropic·네이버 클로바 등)을 활용하되, <strong>다나와 내부 MCP·데이터와 결합</strong>하는 방식이다. 자체 모델 학습 부담을 줄이면서, 외부 AI가 흉내 낼 수 없는 다나와 데이터 결합이 차별점이 된다. 구체적 구현 방향은 개발본부와 함께 검토한다.</p>
           <p class="strategy-ref">▶ 구체적 논의: <strong>결정이 필요한 사항 08번</strong></p>
         </div>
       </div>
@@ -4707,8 +4709,8 @@
         <div class="tl-dot-col"><div class="tl-dot tl-dot-4"></div></div>
         <div class="tl-card">
           <div class="tl-vision-tag">검색이 라이프 큐레이션의 통합 허브로</div>
-          <div class="tl-title">시맨틱 서치 + 생활서비스 연결</div>
-          <div class="tl-desc">벡터 색인 기반 시맨틱 서치 도입. 쿼리 의도 파악으로 생활결합서비스 자동 연결.<br>아정당(인터넷·휴대폰·이사·상조), 보험, 다나와 스토어, 데스크테리어(설치), 다해줌(구매대행)</div>
+          <div class="tl-title">사용자 의도·의미 분석 자연어 검색</div>
+          <div class="tl-desc">외부 LLM(OpenAI·Anthropic·네이버 클로바 등)을 활용하되 다나와 내부 MCP·데이터와 결합. 자체 LLM 학습 불필요. 사용자가 자연어로 묻고, 다나와 데이터를 근거로 답변. 쿼리 의도 파악으로 생활결합서비스 자동 연결.<br>아정당(인터넷·휴대폰·이사·상조), 보험, 다나와 스토어, 데스크테리어(설치), 다해줌(구매대행)</div>
           <span class="tl-badge">사용자 체감: "이사 가는데 뭐 필요해?" 한 번에 해결</span>
         </div>
       </div>
@@ -4952,6 +4954,7 @@
           </svg>
         </div>
         <div class="wf-item-points">
+          <div class="wf-point"><span class="wf-dot wf-dot-green"></span><span><strong>기존 검색창과는 별도</strong>의 새 AI 검색 씬으로 작동</span></div>
           <div class="wf-point"><span class="wf-dot wf-dot-green"></span><span>"무엇이든 물어보세요" <strong>자연어로 시작</strong></span></div>
           <div class="wf-point"><span class="wf-dot wf-dot-green"></span><span>인사·안내가 밝고 친밀한 톤</span></div>
           <div class="wf-point"><span class="wf-dot wf-dot-green"></span><span>추천 질문이 다나와 영역(상품·서비스)과 연결</span></div>
