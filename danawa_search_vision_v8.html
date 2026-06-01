@@ -1605,6 +1605,72 @@
     font-size: 12px;
   }
 
+  /* 내부 AI 채널 callout (MCP 외부 채널과 짝) */
+  .internal-ai-callout {
+    background: linear-gradient(135deg, #f0fdfa 0%, #fff 100%);
+    border: 1px solid #99f6e4;
+    border-left: 3px solid #0d9488;
+    border-radius: 0 12px 12px 0;
+    padding: 18px 22px;
+    margin: 6px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .internal-ai-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #0f766e;
+    background: #ccfbf1;
+    padding: 3px 10px;
+    border-radius: 100px;
+    align-self: flex-start;
+  }
+  .internal-ai-content strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .internal-ai-content p {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+    margin: 0 0 12px 0;
+  }
+  .internal-ai-content p strong {
+    display: inline;
+    font-size: inherit;
+    margin-bottom: 0;
+  }
+  .internal-ai-content em {
+    font-style: normal;
+    color: #0f766e;
+    background: #ccfbf1;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .internal-ai-meaning {
+    background: #fff;
+    border: 1px solid #99f6e4;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 6px;
+  }
+  .internal-ai-meaning strong {
+    color: #0f766e;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+  .internal-ai-meaning p {
+    margin-bottom: 0;
+    font-size: 13px;
+  }
+
   /* 용어 정리 박스 */
   .term-glossary {
     background: #fafafa;
@@ -4081,6 +4147,20 @@
               <p class="term-glossary-note">다나와가 사용자 자연어를 직접 받지 않더라도, <strong>외부 AI가 정확한 답을 가져가려면 다나와 데이터에 의미 구조가 박혀 있어야 한다.</strong></p>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 내부 AI 채널 — 다나와 자체 모바일 AI (MCP 외부 채널과 짝) -->
+    <div class="internal-ai-callout">
+      <div class="internal-ai-tag">다나와 자체 모바일 AI · 내부 채널</div>
+      <div class="internal-ai-content">
+        <strong>다나와 모바일 안의 자연어 검색 진입점 — 내부 AI 채널</strong>
+        <p>외부 AI 채널(MCP)이 있다면, 다나와 모바일 안에도 사용자가 자연어로 직접 묻는 AI 검색 진입점이 필요하다. 외부 AI가 다나와 데이터를 가져가는 흐름과 별개로, 사용자가 <strong>다나와에 직접 들어와 묻는 별도 흐름</strong>이다.</p>
+        <p>두 채널이 같은 다나와 데이터를 근거로 답해야, 외부 AI를 통해 보든 다나와 모바일에서 직접 보든 <strong>사용자에게 일관된 신뢰</strong>가 만들어진다. 이것이 외부 채널과 내부 채널이 양면으로 굴러가야 하는 이유다.</p>
+        <div class="internal-ai-meaning">
+          <strong>▶ 구체적 구현 방식은 협의체에서 함께 정한다</strong>
+          <p>자체 LLM 여부, 외부 LLM 활용, 데이터 결합 형태 같은 <em>방법(how)</em>은 협의체 트랙 4(개발본부)에서 본부 의견과 함께 정하는 영역이다. 검색팀이 지금 단계에서 정해 두는 것이 아니다.</p>
         </div>
       </div>
     </div>
