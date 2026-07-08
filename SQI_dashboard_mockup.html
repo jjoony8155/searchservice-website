@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>검색 품질 모니터링 (SQI) — 목업</title>
+<style>
+  :root{
+    --ok:#16a34a; --warn:#d97706; --bad:#dc2626; --mute:#94a3b8;
+    --bg:#f1f5f9; --panel:#ffffff; --panel2:#f1f5f9; --line:#e2e8f0;
+    --text:#1e293b; --sub:#64748b; --accent:#0284c7;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,'Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+    background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+  .wrap{max-width:1200px;margin:0 auto;padding:16px}
+  header,.kpi,.panel,.mcard,.sumhead{box-shadow:0 1px 3px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04)}
+  /* header */
+  header{display:flex;align-items:center;justify-content:space-between;
+    padding:14px 18px;background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;margin-bottom:14px}
+  header h1{font-size:17px;font-weight:700}
+  .tabs{display:flex;gap:6px;margin-top:8px}
+  .tab{padding:7px 16px;border-radius:8px;background:var(--panel2);color:var(--sub);
+    cursor:pointer;border:1px solid transparent;font-weight:600;font-size:13px}
+  .tab.active{background:var(--accent);color:#04283a;border-color:var(--accent)}
+  .meta{text-align:right;color:var(--sub);font-size:12px}
+  .periodsel{display:flex;align-items:center;justify-content:flex-end;gap:6px}
+  #datePick{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:5px 8px;font-size:12px}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .pbtn{background:var(--panel2);color:var(--sub);border:none;padding:5px 13px;cursor:pointer;font-size:12px;font-weight:700}
+  .pbtn.active{background:var(--accent);color:#04283a}
+  .scopebar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+  .sbtn{background:var(--panel);color:var(--sub);border:1px solid var(--line);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;font-weight:700}
+  .sbtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:700}
+  .b-ok{background:rgba(34,197,94,.15);color:var(--ok)}
+  .b-warn{background:rgba(245,158,11,.15);color:var(--warn)}
+  .b-bad{background:rgba(239,68,68,.15);color:var(--bad)}
+  .b-mute{background:rgba(148,163,184,.15);color:var(--mute)}
+  .b-pat{background:var(--panel2);color:var(--text);border:1px solid var(--line);font-weight:700}
+  /* cards */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .kpi .label{color:var(--sub);font-size:12px;margin-bottom:6px}
+  .kpi .val{font-size:28px;font-weight:800}
+  .kpi .delta{font-size:12px;margin-top:4px}
+  .up{color:var(--ok)} .down{color:var(--bad)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .panel h3{font-size:13px;color:var(--sub);font-weight:700;margin-bottom:14px;
+    text-transform:uppercase;letter-spacing:.4px}
+  /* bars */
+  .bar-row{display:grid;grid-template-columns:96px 1fr 74px;align-items:center;gap:10px;margin-bottom:11px}
+  .bar-row .name{font-size:13px;color:var(--sub)}
+  .track{height:10px;background:var(--panel2);border-radius:6px;overflow:hidden}
+  .fill{height:100%;border-radius:6px}
+  .bar-row .num{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;font-size:13px}
+  /* line chart */
+  svg .thr{stroke:var(--bad);stroke-dasharray:4 4;stroke-width:1}
+  svg .ln{fill:none;stroke:var(--accent);stroke-width:2.5}
+  svg .dot{fill:var(--accent)}
+  svg text{fill:var(--sub);font-size:10px}
+  /* table */
+  table{width:100%;border-collapse:collapse}
+  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);font-size:13px}
+  th{color:var(--sub);font-size:11px;text-transform:uppercase;letter-spacing:.4px;cursor:pointer;user-select:none}
+  tbody tr{cursor:pointer}
+  tbody tr:hover{background:var(--panel2)}
+  .num-c{text-align:right;font-variant-numeric:tabular-nums}
+  .filters{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+  select{background:var(--panel2);color:var(--text);border:1px solid var(--line);
+    border-radius:8px;padding:6px 10px;font-size:13px}
+  .hidden{display:none}
+  /* detail */
+  .back{color:var(--accent);cursor:pointer;font-weight:600;font-size:13px;margin-bottom:12px;display:inline-block}
+  .sumhead{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:14px}
+  .sumhead .big{font-size:26px;font-weight:800;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .sumhead .sub{color:var(--sub);margin-top:8px;font-size:13px}
+  .mcards{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:14px}
+  .mcard{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center}
+  .mcard .mn{color:var(--sub);font-size:11px}
+  .mcard .mv{font-size:20px;font-weight:800;margin:4px 0}
+  .mcard .mr{font-size:10px;color:var(--sub)}
+  .stack{display:flex;height:26px;border-radius:6px;overflow:hidden;margin:10px 0 6px}
+  .stack div{height:100%}
+  .legend{display:flex;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--sub)}
+  .legend span i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:middle}
+  .posbars{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;align-items:end;height:120px;margin-top:8px}
+  .posbars .pb{background:var(--accent);border-radius:4px 4px 0 0;position:relative}
+  .posbars .pb.tail{background:var(--warn)}
+  .posbars .pb span{position:absolute;top:-16px;left:0;right:0;text-align:center;font-size:10px;color:var(--sub)}
+  .posbars .pl{text-align:center;font-size:10px;color:var(--sub);margin-top:4px}
+  .snap{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+  .snap .s{background:var(--panel2);border-radius:8px;padding:12px;font-size:12px}
+  .note{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);
+    border-radius:8px;padding:10px 12px;font-size:13px;color:#fca5a5}
+  .disclaimer{color:var(--mute);font-size:11px;text-align:center;margin:18px 0 6px}
+  @media(max-width:900px){.kpis,.mcards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>🔍 검색 품질 모니터링 <span style="color:var(--sub);font-weight:400;font-size:13px">SQI</span></h1>
+      <div class="tabs">
+        <div class="tab active" data-view="overview" onclick="switchView('overview')">전체 개요</div>
+        <div class="tab" data-view="all" onclick="switchView('all')">전체 키워드</div>
+        <div class="tab" data-view="detail" onclick="openDetailTab()">키워드 상세</div>
+      </div>
+    </div>
+    <div class="meta">
+      <div class="periodsel">
+        <input type="date" id="datePick" value="2026-04-27" onchange="renderPeriod()">
+        <span class="seg">
+          <button class="pbtn active" data-p="day" onclick="setPeriod('day',this)">일</button>
+          <button class="pbtn" data-p="week" onclick="setPeriod('week',this)">주</button>
+          <button class="pbtn" data-p="month" onclick="setPeriod('month',this)">월</button>
+          <button class="pbtn" data-p="year" onclick="setPeriod('year',this)">년</button>
+        </span>
+      </div>
+      <div id="periodLbl" style="margin-top:6px">기간: 2026-04-27 (일간)</div>
+      마지막 산출: 09:03 KST · <span class="pill b-mute">샘플 데이터</span>
+    </div>
+  </header>
+
+  <!-- ===== OVERVIEW ===== -->
+  <section id="overview">
+    <div class="panel" style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+        <h3 style="margin:0">검색 품질 지표 <span id="scopeTag" style="color:var(--accent);text-transform:none;letter-spacing:0">· 전체</span></h3>
+        <div class="scopebar" style="margin:0">
+          <span style="color:var(--sub);font-size:13px">집계 범위</span>
+          <button class="sbtn active" onclick="setScope('all',this)">전체</button>
+          <button class="sbtn" onclick="setScope('top100',this)">상위 100</button>
+          <button class="sbtn" onclick="setScope('top1k',this)">상위 1천</button>
+          <button class="sbtn" onclick="setScope('top5k',this)">상위 5천</button>
+          <button class="sbtn" onclick="setScope('top10k',this)">상위 1만</button>
+        </div>
+      </div>
+      <div class="kpis" style="margin:0">
+        <div class="kpi"><div class="label">평균 SQS</div><div class="val" id="kSqs">0.68</div><div class="delta" style="color:var(--sub)">범위 평균</div></div>
+        <div class="kpi"><div class="label">이상 키워드 (SQS&lt;0.4)</div><div class="val" style="color:var(--bad)" id="kBad">37</div><div class="delta" style="color:var(--sub)">범위 내 건수</div></div>
+        <div class="kpi"><div class="label">급락 키워드 (▼20%↓)</div><div class="val" style="color:var(--warn)" id="kDrop">12</div><div class="delta" style="color:var(--sub)">전일 대비</div></div>
+        <div class="kpi"><div class="label">평균 ZCR</div><div class="val" id="kZcr">24%</div><div class="delta" id="kZcrNote">정상 (≤25%)</div></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-bottom:14px">
+      <h3 id="aggTitle">전체 집계</h3>
+      <table>
+        <thead><tr><th>구분</th><th class="num-c">합산</th><th class="num-c">PC</th><th class="num-c">Mobile</th></tr></thead>
+        <tbody id="aggBody"></tbody>
+      </table>
+    </div>
+
+    <div class="grid2">
+      <div class="panel">
+        <h3 id="trendTitle">② 평균 SQS 추이 (최근 30일)</h3>
+        <div id="trend"></div>
+      </div>
+      <div class="panel">
+        <h3>④ 카테고리별 SQS</h3>
+        <div id="catbars"></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-bottom:14px">
+      <h3 id="metTitle">③ 지표별 현황 (전체 평균)</h3>
+      <div id="metbars" style="display:grid;grid-template-columns:1fr 1fr;gap:0 28px"></div>
+    </div>
+
+    <div class="panel">
+      <h3>⑤ 이상 키워드 TOP (SQS 낮은 순)</h3>
+      <div class="filters">
+        <select id="fCat" onchange="renderTable()"><option value="">전체 카테고리</option></select>
+        <select id="fPat" onchange="renderTable()"><option value="">전체 패턴</option>
+          <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select>
+      </div>
+      <table>
+        <thead><tr>
+          <th onclick="sortBy('kw')">키워드</th>
+          <th class="num-c" onclick="sortBy('sqs')">SQS ▲</th>
+          <th class="num-c" onclick="sortBy('delta')">전일비</th>
+          <th onclick="sortBy('pat')">패턴</th>
+          <th class="num-c" onclick="sortBy('ctr1')">CTR@1</th>
+          <th class="num-c" onclick="sortBy('zcr')">ZCR</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== ALL KEYWORDS ===== -->
+  <section id="all" class="hidden">
+    <div class="panel">
+      <h3>전체 키워드 — 아무 키워드나 검색해서 확인</h3>
+      <div class="filters">
+        <input id="aSearch" placeholder="🔍 키워드 검색 (예: 갤럭시)" oninput="renderAll()"
+          style="flex:1;min-width:220px;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:13px">
+        <select id="aCat" onchange="renderAll()"><option value="">전체 카테고리</option></select>
+        <select id="aStat" onchange="renderAll()">
+          <option value="">전체 상태</option><option value="bad">이상 (&lt;0.4)</option>
+          <option value="warn">주의 (0.4~0.5)</option><option value="ok">정상 (≥0.5)</option></select>
+        <button onclick="downloadAllCSV()" style="margin-left:auto;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer">⬇ CSV 다운로드</button>
+      </div>
+      <table>
+        <thead><tr>
+          <th class="num-c">순위</th>
+          <th onclick="sortAll('kw')">키워드</th>
+          <th onclick="sortAll('cat')">카테고리</th>
+          <th class="num-c" onclick="sortAll('_sc')">검색횟수</th>
+          <th class="num-c" onclick="sortAll('_cp')">상품클릭<br>가격비교</th>
+          <th class="num-c" onclick="sortAll('_cs')">상품클릭<br>검색상품</th>
+          <th class="num-c" onclick="sortAll('cor')">COR</th>
+          <th class="num-c" onclick="sortAll('sqs')">SQS</th>
+          <th class="num-c" onclick="sortAll('delta')">전일비</th>
+          <th onclick="sortAll('pat')">상태/패턴</th>
+        </tr></thead>
+        <tbody id="aBody"></tbody>
+      </table>
+      <p style="color:var(--sub);font-size:12px;margin-top:10px">행을 클릭하면 해당 키워드 상세로 이동합니다. 이상 키워드뿐 아니라 정상·중위 키워드까지 전부 조회 가능합니다.</p>
+    </div>
+  </section>
+
+  <!-- ===== DETAIL ===== -->
+  <section id="detail" class="hidden">
+    <span class="back" onclick="switchView('overview')">◀ 전체 개요로</span>
+    <div class="panel" style="margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <span style="color:var(--sub);font-size:13px">키워드 검색:</span>
+      <input id="dSearch" list="kwList" placeholder="키워드 입력 후 Enter (예: 아이폰16)"
+        onkeydown="if(event.key==='Enter')jumpKeyword()"
+        style="flex:1;min-width:220px;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:13px">
+      <datalist id="kwList"></datalist>
+      <button onclick="jumpKeyword()" style="background:var(--accent);color:#04283a;border:none;border-radius:8px;padding:8px 16px;font-weight:700;cursor:pointer">조회</button>
+    </div>
+    <div class="sumhead">
+      <div class="big" id="dTitle"></div>
+      <div class="sub" id="dSub"></div>
+    </div>
+
+    <div class="panel" style="margin-bottom:14px">
+      <h3>① 원천 지표 (검색·상품클릭 집계, 전일 기준)</h3>
+      <table>
+        <thead><tr><th>구분</th><th class="num-c">합산</th><th class="num-c">PC</th><th class="num-c">Mobile</th></tr></thead>
+        <tbody id="dRaw"></tbody>
+      </table>
+    </div>
+
+    <div class="grid2">
+      <div class="panel">
+        <h3>② SQS 기여도 분해 (가중치 × 정규화값)</h3>
+        <div class="stack" id="dStack"></div>
+        <div class="legend" id="dLegend"></div>
+        <div id="dContrib" style="margin-top:14px"></div>
+      </div>
+      <div class="panel">
+        <h3>③ SQS 추이 (30일)</h3>
+        <div id="dTrend"></div>
+      </div>
+    </div>
+
+    <div class="mcards" id="dMcards"></div>
+
+    <div class="panel" style="margin-bottom:14px">
+      <h3>⑤ 위치별 클릭 분포 (1~10위)</h3>
+      <div class="posbars" id="dPos"></div>
+      <p style="color:var(--sub);font-size:12px;margin-top:22px">주황 막대(4~10위)로 클릭이 분산될수록 사용자가 원하는 걸 못 찾고 헤매는 신호 (Click Spread ↓, ACP ↑)</p>
+    </div>
+
+    <div class="panel">
+      <h3>⑥ 상위 결과 스냅샷</h3>
+      <div class="snap" id="dSnap"></div>
+    </div>
+
+    <div class="panel">
+      <h3>⑦ 클릭 상품 카테고리 (물리 대분류 › 중분류, 클릭수 순)</h3>
+      <table>
+        <thead><tr><th>1위</th><th>2위</th><th>3위</th><th>4위</th><th>5위</th><th>기타</th></tr></thead>
+        <tbody id="dCatRank"></tbody>
+      </table>
+      <p style="color:var(--sub);font-size:12px;margin-top:10px">검색 결과에서 클릭된 상품이 실제로 속한 물리 카테고리 분포. 의도한 카테고리에 집중될수록 좋고, 여러 카테고리로 흩어지면 키워드-카테고리 매핑 문제(패턴 C) 신호입니다.</p>
+    </div>
+  </section>
+
+  <p class="disclaimer">※ 본 화면은 기획 검토용 목업이며 모든 수치는 임의의 샘플 데이터입니다. 실제 산출값 아님.</p>
+</div>
+
+<script>
+/* ---------- sample data ---------- */
+const statusOf = (metric,v)=>{ // returns ok/warn/bad
+  const R={ctr1:[.30,.20,'hi'],ctr3:[.55,.40,'hi'],spread:[.65,.50,'hi'],
+    zcr:[.25,.35,'lo'],cor:[.40,.25,'hi'],qrr:[.15,.25,'lo'],acp:[2.5,4.0,'loA']};
+  const r=R[metric]; if(!r) return 'mute';
+  if(r[2]==='hi') return v>=r[0]?'ok':(v>=r[1]?'warn':'bad');
+  if(r[2]==='lo') return v<=r[0]?'ok':(v<=r[1]?'warn':'bad');
+  if(r[2]==='loA')return v<=r[0]?'ok':(v<=r[1]?'warn':'bad');
+};
+const col={ok:'var(--ok)',warn:'var(--warn)',bad:'var(--bad)',mute:'var(--mute)'};
+const badge={ok:'b-ok',warn:'b-warn',bad:'b-bad',mute:'b-mute'};
+
+const keywords=[
+  {kw:'방한화',cat:'패션',sqs:.31,delta:-24,pat:'A',ctr1:.12,ctr3:.34,spread:.44,zcr:.41,cor:.28,qrr:.19,acp:4.6,
+    reason:'1위 상품 랭킹 오염',owner:'검색서비스팀 → PS 확인'},
+  {kw:'겨울패딩',cat:'패션',sqs:.36,delta:-21,pat:'B',ctr1:.24,ctr3:.42,spread:.48,zcr:.37,cor:.30,qrr:.27,acp:3.9,
+    reason:'결과 범위 너무 넓음',owner:'검색서비스팀 → 카테고리 부스팅'},
+  {kw:'유기농 라면',cat:'식품',sqs:.33,delta:-8,pat:'C',ctr1:.15,ctr3:.31,spread:.41,zcr:.44,cor:.22,qrr:.29,acp:4.2,
+    reason:'키워드-카테고리 매핑 미스',owner:'검색서비스팀 → QIC 설정'},
+  {kw:'게이밍 노트북',cat:'컴퓨터',sqs:.39,delta:-6,pat:'D',ctr1:.27,ctr3:.49,spread:.55,zcr:.28,cor:.33,qrr:.14,acp:3.1,
+    reason:'구매 전환 저조 (가격·광고 등 확인)',owner:'검색서비스팀 → 가격·광고 요인 점검'},
+  {kw:'무선 이어폰',cat:'가전',sqs:.38,delta:-18,pat:'E',ctr1:.18,ctr3:.40,spread:.47,zcr:.38,cor:.31,qrr:.16,acp:4.0,
+    reason:'신규 상품 유입 랭킹 교란',owner:'검색서비스팀 → PS 점수'},
+  {kw:'로봇청소기',cat:'가전',sqs:.44,delta:-12,pat:'B',ctr1:.26,ctr3:.51,spread:.58,zcr:.31,cor:.36,qrr:.22,acp:3.4,
+    reason:'결과 범위 넓음',owner:'검색서비스팀 → 부스팅'},
+  {kw:'캠핑 의자',cat:'스포츠',sqs:.47,delta:-4,pat:'—',ctr1:.29,ctr3:.53,spread:.61,zcr:.27,cor:.39,qrr:.15,acp:2.9,
+    reason:'경계값 모니터링',owner:'—'},
+  {kw:'전기밥솥',cat:'가전',sqs:.52,delta:2,pat:'—',ctr1:.33,ctr3:.57,spread:.66,zcr:.23,cor:.42,qrr:.12,acp:2.4,
+    reason:'정상',owner:'—'},
+  {kw:'갤럭시S25',cat:'컴퓨터',sqs:.68,delta:2,pat:'—',ctr1:.41,ctr3:.58,spread:.70,zcr:.22,cor:.45,qrr:.12,acp:2.3,
+    reason:'정상',owner:'—'},
+  {kw:'아이폰16',cat:'컴퓨터',sqs:.71,delta:1,pat:'—',ctr1:.44,ctr3:.62,spread:.72,zcr:.19,cor:.48,qrr:.10,acp:2.1,
+    reason:'정상',owner:'—'},
+  {kw:'스탠딩책상',cat:'가구',sqs:.58,delta:-3,pat:'—',ctr1:.35,ctr3:.56,spread:.64,zcr:.24,cor:.41,qrr:.14,acp:2.6,
+    reason:'정상',owner:'—'},
+  {kw:'공기청정기',cat:'가전',sqs:.61,delta:5,pat:'—',ctr1:.37,ctr3:.59,spread:.67,zcr:.21,cor:.44,qrr:.11,acp:2.4,
+    reason:'정상 (개선)',owner:'—'},
+  {kw:'등산 스틱',cat:'스포츠',sqs:.49,delta:-9,pat:'B',ctr1:.28,ctr3:.52,spread:.57,zcr:.30,cor:.37,qrr:.21,acp:3.2,
+    reason:'결과 범위 넓음',owner:'검색서비스팀 → 부스팅'},
+  {kw:'유아 카시트',cat:'유아',sqs:.42,delta:-15,pat:'C',ctr1:.21,ctr3:.43,spread:.50,zcr:.35,cor:.29,qrr:.26,acp:3.7,
+    reason:'키워드-카테고리 매핑 미스',owner:'검색서비스팀 → QIC 설정'},
+  {kw:'블루투스 스피커',cat:'가전',sqs:.55,delta:-2,pat:'—',ctr1:.32,ctr3:.55,spread:.63,zcr:.25,cor:.40,qrr:.15,acp:2.7,
+    reason:'정상',owner:'—'},
+  {kw:'캠핑 텐트',cat:'스포츠',sqs:.46,delta:-11,pat:'E',ctr1:.22,ctr3:.44,spread:.49,zcr:.34,cor:.33,qrr:.17,acp:3.6,
+    reason:'신규 상품 유입 랭킹 교란',owner:'검색서비스팀 → PS 점수'},
+  {kw:'식기세척기',cat:'가전',sqs:.63,delta:3,pat:'—',ctr1:.38,ctr3:.60,spread:.68,zcr:.20,cor:.46,qrr:.11,acp:2.3,
+    reason:'정상',owner:'—'},
+];
+const weights={ctr3:.25,spread:.20,zcr:.20,cor:.15,qrr:.10,acp:.10};
+const metricInfo={ctr3:['CTR@3','≥55%'],spread:['Click Spread','≥65%'],zcr:['ZCR','≤25%'],
+  cor:['COR','≥40%'],qrr:['QRR','≤15%'],acp:['ACP','≤2.5']};
+const normVal={ctr3:v=>v,spread:v=>v,zcr:v=>1-v,cor:v=>v,qrr:v=>1-v,acp:v=>Math.max(0,Math.min(1,(10-v)/9))};
+const contribColors={ctr3:'#38bdf8',spread:'#818cf8',zcr:'#22c55e',cor:'#f59e0b',qrr:'#ec4899',acp:'#14b8a6'};
+const cats=[...new Set(keywords.map(k=>k.cat))];
+const catSQS={};cats.forEach(c=>{const a=keywords.filter(k=>k.cat===c);catSQS[c]=a.reduce((s,k)=>s+k.sqs,0)/a.length;});
+
+/* 검색횟수·상품클릭(가격비교/검색상품)·클릭아웃 집계 — 샘플 데이터, 지표값과 내부 정합 */
+function rawCounts(k){
+  let seed=0; for(const ch of k.kw) seed+=ch.charCodeAt(0);
+  const sc=1500+(seed%40)*350;              // 검색횟수
+  const top3=k.ctr3*sc;                      // 상위3 클릭수
+  const totalClk=Math.round(top3/k.spread);  // 전체 상품클릭수 (spread=상위3/전체)
+  const priceRatio=0.55+(seed%20)/100;       // 가격비교 비중 55~74%
+  const cp=Math.round(totalClk*priceRatio);  // 가격비교상품 클릭(합산)
+  const cs=totalClk-cp;                       // 검색상품 클릭(합산)
+  const clickout=Math.round(sc*k.cor);        // 클릭아웃수
+  return {sc,totalClk,cp,cs,clickout};
+}
+const cat2Map={'방한화':'신발','겨울패딩':'아우터','유기농 라면':'가공식품','게이밍 노트북':'노트북',
+  '무선 이어폰':'음향기기','로봇청소기':'생활가전','캠핑 의자':'캠핑용품','전기밥솥':'주방가전',
+  '갤럭시S25':'스마트폰','아이폰16':'스마트폰','스탠딩책상':'사무가구','공기청정기':'생활가전',
+  '등산 스틱':'등산용품','유아 카시트':'유아안전','블루투스 스피커':'음향기기','캠핑 텐트':'캠핑용품','식기세척기':'주방가전'};
+keywords.forEach(k=>{
+  k.cat2=cat2Map[k.kw]||'-';
+  const r=rawCounts(k);
+  k._sc=r.sc;k._cp=r.cp;k._cs=r.cs;k._clk=r.totalClk;k._co=r.clickout;
+  let s2=0; for(const ch of k.kw) s2+=ch.charCodeAt(0)*3;
+  const moR=0.55+(s2%25)/100;                    // 모바일 비중 55~79%
+  const split=n=>{const mo=Math.round(n*moR);return [n-mo,mo];}; // [PC, Mobile]
+  [k._scPC,k._scMo]=split(r.sc);
+  [k._cpPC,k._cpMo]=split(r.cp);
+  [k._csPC,k._csMo]=split(r.cs);
+  [k._clkPC,k._clkMo]=split(r.totalClk);
+  [k._coPC,k._coMo]=split(r.clickout);
+});
+const nf=n=>n.toLocaleString('ko-KR');
+// 전체 집계
+// 집계 범위(전체/상위 N)별 통계 — 샘플. 상위일수록 품질 높고 넓을수록 롱테일이 끌어내림
+const scopeMap={
+  top100:{label:'상위 100', kw:100,    sc:  920000, clk:  680000, cp:  450000, co:  440000, moR:0.66, avgSQS:0.74, bad:1,    drop:2,    zcr:0.17},
+  top1k: {label:'상위 1천', kw:1000,   sc: 4200000, clk: 2900000, cp: 1850000, co: 1850000, moR:0.67, avgSQS:0.68, bad:37,   drop:12,   zcr:0.24},
+  top5k: {label:'상위 5천', kw:5000,   sc: 9600000, clk: 6000000, cp: 3700000, co: 3800000, moR:0.68, avgSQS:0.61, bad:210,  drop:63,   zcr:0.29},
+  top10k:{label:'상위 1만', kw:10000,  sc:14200000, clk: 8500000, cp: 5100000, co: 5300000, moR:0.69, avgSQS:0.56, bad:540,  drop:150,  zcr:0.32},
+  all:   {label:'전체',     kw:842900, sc:37500000, clk:20000000, cp:11800000, co:12800000, moR:0.70, avgSQS:0.51, bad:9820, drop:2140, zcr:0.35},
+};
+let currentScope='all';
+function scopeAgg(sp,f=1){
+  const S=n=>Math.round(n*f);
+  const split=n=>{const mo=Math.round(n*sp.moR);return [n-mo,mo];};
+  const sc=S(sp.sc),clk=S(sp.clk),cp=S(sp.cp),co=S(sp.co),cs=clk-cp;
+  const [scPC,scMo]=split(sc),[clkPC,clkMo]=split(clk),[cpPC,cpMo]=split(cp),[csPC,csMo]=split(cs),[coPC,coMo]=split(co);
+  return {kw:sp.kw, sc,scPC,scMo, clk,clkPC,clkMo, cp,cpPC,cpMo, cs,csPC,csMo, co,coPC,coMo};
+}
+let agg=scopeAgg(scopeMap[currentScope]);
+const pct=(a,b)=>b?((a/b)*100).toFixed(1)+'%':'—';
+// 패턴별 움직인 지표(보통은 제외)
+const signalMap={
+  A:[['CTR@1','down'],['ZCR','up'],['Click Spread','down']],
+  B:[['ZCR','up'],['Click Spread','down'],['QRR','up']],
+  C:[['CTR@1','down'],['ZCR','up'],['Click Spread','down'],['QRR','up']],
+  D:[['COR','down']],
+  E:[['CTR@1','down'],['ZCR','up'],['Click Spread','down']],
+  '—':[]};
+const sigChips=(pat,small)=>(signalMap[pat]||[]).filter(s=>s[1]==='down').map(s=>
+  `<span class="pill b-bad" style="font-size:${small?'10px':'11px'};margin:1px 3px 1px 0;display:inline-block">${s[0]} ▼</span>`).join('');
+// 클릭된 상품의 물리 카테고리(대분류 › 중분류) 랭크 — 키워드별 결정적
+const primaryCatMap={'방한화':'패션잡화 › 방한화/부츠','겨울패딩':'패션의류 › 패딩/점퍼','유기농 라면':'식품 › 라면/면류','게이밍 노트북':'PC/노트북 › 게이밍노트북','무선 이어폰':'음향가전 › 블루투스이어폰','로봇청소기':'생활가전 › 로봇청소기','캠핑 의자':'캠핑용품 › 캠핑의자','전기밥솥':'주방가전 › 전기압력밥솥','갤럭시S25':'모바일 › 스마트폰','아이폰16':'모바일 › 스마트폰','스탠딩책상':'가구/인테리어 › 사무용책상','공기청정기':'생활가전 › 공기청정기','등산 스틱':'스포츠/레저 › 등산용품','유아 카시트':'유아동 › 카시트','블루투스 스피커':'음향가전 › 블루투스스피커','캠핑 텐트':'캠핑용품 › 텐트/타프','식기세척기':'주방가전 › 식기세척기'};
+const noiseCats=['PC 주요 부품 › RAM','생활가전 › 청소기','패션의류 › 아우터','식품 › 가공식품','음향가전 › 헤드폰','주방가전 › 믹서기','스포츠/레저 › 자전거','가구/인테리어 › 수납장','유아동 › 완구','디지털 › 액세서리'];
+function genCatRank(k){
+  let seed=0; for(const ch of k.kw) seed+=ch.charCodeAt(0);
+  const rnd=i=>{const x=Math.sin(seed+i*3.7)*10000;return x-Math.floor(x);};
+  const total=k._clk;
+  const conc=Math.max(0.4,Math.min(0.88,0.35+k.spread*0.6)); // 의도 카테고리 집중도
+  const primaryCnt=Math.round(total*conc);
+  let rem=total-primaryCnt;
+  const list=[{c:primaryCatMap[k.kw]||(k.cat+' › '+k.cat2),n:primaryCnt}];
+  const picks=[];
+  for(let i=0;i<noiseCats.length&&picks.length<5;i++){ if(rnd(i)<0.6) picks.push(noiseCats[(seed+i)%noiseCats.length]); }
+  const uniq=[...new Set(picks)];
+  const weights=uniq.map((_,i)=>rnd(i+20)+0.2);
+  const wsum=weights.reduce((a,b)=>a+b,0)||1;
+  uniq.forEach((c,i)=>{ if(rem>0){ list.push({c,n:Math.round(rem*weights[i]/wsum)}); }});
+  list.sort((a,b)=>b.n-a.n);
+  const top5=list.slice(0,5);
+  const etc=Math.max(0,total-top5.reduce((s,x)=>s+x.n,0));
+  return {top5,etc};
+}
+
+/* ---------- overview render ---------- */
+function lineChart(vals,w,h,thr){
+  const min=.25,max=.8,pad=6;
+  const x=i=>pad+i*(w-2*pad)/(vals.length-1);
+  const y=v=>h-pad-(v-min)/(max-min)*(h-2*pad);
+  const pts=vals.map((v,i)=>`${x(i)},${y(v)}`).join(' ');
+  const ty=y(thr);
+  const last=vals.length-1;
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}">
+    <line class="thr" x1="${pad}" y1="${ty}" x2="${w-pad}" y2="${ty}"/>
+    <text x="${w-pad}" y="${ty-4}" text-anchor="end">임계 ${thr}</text>
+    <polyline class="ln" points="${pts}"/>
+    <circle class="dot" cx="${x(last)}" cy="${y(vals[last])}" r="3.5"/>
+  </svg>`;
+}
+const trendVals=[.62,.64,.63,.66,.65,.67,.69,.68,.66,.64,.63,.65,.67,.68,.70,.69,.67,.66,.68,.69,.71,.70,.68,.67,.66,.68,.69,.67,.67,.68];
+document.getElementById('trend').innerHTML=lineChart(trendVals,520,150,.40);
+
+// 기간 선택 (일/주/월/년) — 카운트 지표를 기간 배수로 스케일
+let periodMul=1, periodType='day';
+const pInfo={day:['일간',1],week:['주간',7],month:['월간',30],year:['연간',365]};
+const sc0=n=>Math.round(n*periodMul);  // 기간 스케일 카운트
+function setPeriod(t,btn){
+  periodType=t; periodMul=pInfo[t][1];
+  document.querySelectorAll('.pbtn').forEach(b=>b.classList.toggle('active',b===btn));
+  renderPeriod();
+}
+function renderPeriod(){
+  const d=document.getElementById('datePick').value;
+  document.getElementById('periodLbl').textContent=`기간: ${d} (${pInfo[periodType][0]})`;
+  refresh();
+}
+// 선택 날짜 기반 변동 계수 (±12%) — 기준일마다 통계가 달라짐
+function dayFactor(){
+  const d=(document.getElementById('datePick')||{}).value||'';
+  let s=0; for(const c of d) s+=c.charCodeAt(0);
+  return 1+Math.sin(s*0.9)*0.12;
+}
+// 집계 범위 전환 — KPI 4종만 갱신 (전체 집계 표는 영향 없음)
+function setScope(s,btn){
+  currentScope=s;
+  document.querySelectorAll('.sbtn').forEach(b=>b.classList.toggle('active',b===btn));
+  renderScope(dayFactor());
+}
+function renderScope(f){
+  f=f||1;
+  const sp=scopeMap[currentScope];
+  document.getElementById('scopeTag').textContent='· '+sp.label;
+  document.getElementById('kSqs').textContent=(sp.avgSQS*(1+(f-1)*0.3)).toFixed(2);
+  document.getElementById('kBad').textContent=nf(Math.round(sp.bad*f))+'개';
+  document.getElementById('kDrop').textContent=nf(Math.round(sp.drop*f))+'개';
+  const zcr=Math.min(0.6,Math.max(0.05,sp.zcr*(1-(f-1)*0.4)));
+  document.getElementById('kZcr').textContent=(zcr*100).toFixed(0)+'%';
+  const zst=statusOf('zcr',zcr);
+  const zn=document.getElementById('kZcrNote');
+  zn.textContent=zst==='ok'?'정상 (≤25%)':zst==='warn'?'주의 (25~35%)':'이상 (>35%)';
+  zn.style.color=col[zst];
+}
+// 기준일부터 N일 이전 날짜 문자열
+function addDays(dstr,n){ const d=new Date(dstr); d.setDate(d.getDate()+n);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+// 기준일 기반 30일 SQS 추이 (마지막 점 = 기준일)
+function genTrend(dstr){
+  let s=0; for(const c of dstr) s+=c.charCodeAt(0);
+  const v=[];
+  for(let i=0;i<30;i++) v.push(0.6+Math.sin((s+i)*0.5)*0.06+Math.cos((s+i*2)*0.3)*0.03);
+  return v.map(x=>Math.max(.3,Math.min(.8,x)));
+}
+// 날짜 기준으로 갱신 — 집계 표는 항상 '전체', KPI는 선택 범위
+function refresh(){
+  const d=document.getElementById('datePick').value;
+  const f=dayFactor();
+  agg=scopeAgg(scopeMap['all'],f);   // 전체 집계 표: 범위와 무관, 항상 전체(사이트 전체)
+  renderScope(f); renderAgg(); renderAll();
+  // 기준일 반영 헤딩
+  document.getElementById('aggTitle').textContent=`전체 집계 (${d} 기준)`;
+  document.getElementById('metTitle').textContent=`③ 지표별 현황 (${d} 기준 전체 평균)`;
+  document.getElementById('trendTitle').textContent=`② 평균 SQS 추이 (${addDays(d,-29)} ~ ${d})`;
+  document.getElementById('trend').innerHTML=lineChart(genTrend(d),520,150,.40);
+  if(!document.getElementById('detail').classList.contains('hidden')&&curKw) openDetail(curKw);
+}
+renderScope();
+// 전체 집계 테이블
+function renderAgg(){
+  document.getElementById('aggBody').innerHTML=`
+  <tr><td>총 검색키워드수</td><td class="num-c"><b>${nf(agg.kw)}</b>개</td><td class="num-c" style="color:var(--mute)">—</td><td class="num-c" style="color:var(--mute)">—</td></tr>
+  <tr><td>총 검색횟수</td><td class="num-c"><b>${nf(sc0(agg.sc))}</b></td><td class="num-c">${nf(sc0(agg.scPC))}</td><td class="num-c">${nf(sc0(agg.scMo))}</td></tr>
+  <tr><td>총 상품클릭수</td><td class="num-c"><b>${nf(sc0(agg.clk))}</b></td><td class="num-c">${nf(sc0(agg.clkPC))}</td><td class="num-c">${nf(sc0(agg.clkMo))}</td></tr>
+  <tr><td style="padding-left:22px;color:var(--sub)">└ 가격비교상품</td><td class="num-c">${nf(sc0(agg.cp))}</td><td class="num-c">${nf(sc0(agg.cpPC))}</td><td class="num-c">${nf(sc0(agg.cpMo))}</td></tr>
+  <tr><td style="padding-left:22px;color:var(--sub)">└ 검색상품</td><td class="num-c">${nf(sc0(agg.cs))}</td><td class="num-c">${nf(sc0(agg.csPC))}</td><td class="num-c">${nf(sc0(agg.csMo))}</td></tr>
+  <tr><td>총 클릭아웃수</td><td class="num-c"><b>${nf(sc0(agg.co))}</b></td><td class="num-c">${nf(sc0(agg.coPC))}</td><td class="num-c">${nf(sc0(agg.coMo))}</td></tr>
+  <tr><td>COR (클릭아웃/검색)</td><td class="num-c"><b>${pct(agg.co,agg.sc)}</b></td><td class="num-c">${pct(agg.coPC,agg.scPC)}</td><td class="num-c">${pct(agg.coMo,agg.scMo)}</td></tr>`;
+}
+renderAgg();
+
+document.getElementById('catbars').innerHTML=cats.map(c=>{
+  const v=catSQS[c];const st=v>=.6?'ok':(v>=.45?'warn':'bad');
+  return `<div class="bar-row"><div class="name">${c}</div>
+    <div class="track"><div class="fill" style="width:${v*100}%;background:${col[st]}"></div></div>
+    <div class="num">${v.toFixed(2)}</div></div>`;
+}).join('');
+
+const avgMetrics={ctr3:.58,spread:.62,zcr:.24,cor:.45,qrr:.12,acp:2.3};
+document.getElementById('metbars').innerHTML=Object.keys(metricInfo).map(m=>{
+  const v=avgMetrics[m];const st=statusOf(m==='ctr3'?'ctr3':m,v);
+  const disp=(m==='acp')?v.toFixed(1):(v*100).toFixed(0)+'%';
+  const width=(m==='acp')?(normVal.acp(v)*100):v*100;
+  return `<div class="bar-row"><div class="name">${metricInfo[m][0]}</div>
+    <div class="track"><div class="fill" style="width:${Math.min(100,width)}%;background:${col[st]}"></div></div>
+    <div class="num">${disp}</div></div>`;
+}).join('');
+
+/* fill category filter */
+const fCat=document.getElementById('fCat');
+cats.forEach(c=>{const o=document.createElement('option');o.textContent=c;fCat.appendChild(o);});
+
+let sortKey='sqs',sortAsc=true;
+function sortBy(k){if(sortKey===k)sortAsc=!sortAsc;else{sortKey=k;sortAsc=true;}renderTable();}
+function renderTable(){
+  const fc=fCat.value,fp=document.getElementById('fPat').value;
+  let rows=keywords.filter(k=>(!fc||k.cat===fc)&&(!fp||k.pat===fp));
+  rows.sort((a,b)=>{let r=(a[sortKey]>b[sortKey]?1:a[sortKey]<b[sortKey]?-1:0);return sortAsc?r:-r;});
+  document.getElementById('tbody').innerHTML=rows.map(k=>{
+    const sSt=k.sqs<.4?'bad':(k.sqs<.5?'warn':'ok');
+    const c1=statusOf('ctr1',k.ctr1),zc=statusOf('zcr',k.zcr);
+    return `<tr onclick="openDetail('${k.kw}')">
+      <td><b>${k.kw}</b><br><span style="color:var(--sub);font-size:11px">${k.cat} › ${k.cat2}</span></td>
+      <td class="num-c"><span class="pill ${badge[sSt]}">${k.sqs.toFixed(2)}</span></td>
+      <td class="num-c ${k.delta<0?'down':'up'}">${k.delta<0?'▼':'▲'}${Math.abs(k.delta)}%</td>
+      <td>${k.pat==='—'?'<span class="pill b-mute">정상</span>':`<span class="pill b-pat">패턴 ${k.pat}</span><br>${sigChips(k.pat,true)}`}</td>
+      <td class="num-c" style="color:${col[c1]}">${(k.ctr1*100).toFixed(0)}%</td>
+      <td class="num-c" style="color:${col[zc]}">${(k.zcr*100).toFixed(0)}%</td>
+    </tr>`;
+  }).join('');
+}
+renderTable();
+
+/* ---------- all keywords ---------- */
+const aCat=document.getElementById('aCat');
+cats.forEach(c=>{const o=document.createElement('option');o.textContent=c;aCat.appendChild(o);});
+// datalist for detail search
+const kwList=document.getElementById('kwList');
+keywords.forEach(k=>{const o=document.createElement('option');o.value=k.kw;kwList.appendChild(o);});
+let aSortKey='_sc',aSortAsc=false;
+function sortAll(k){if(aSortKey===k)aSortAsc=!aSortAsc;else{aSortKey=k;aSortAsc=true;}renderAll();}
+function statOf(k){return k.sqs<.4?'bad':(k.sqs<.5?'warn':'ok');}
+function renderAll(){
+  const q=document.getElementById('aSearch').value.trim().toLowerCase();
+  const fc=aCat.value, fs=document.getElementById('aStat').value;
+  let rows=keywords.filter(k=>
+    (!q||k.kw.toLowerCase().includes(q))&&(!fc||k.cat===fc)&&(!fs||statOf(k)===fs));
+  rows.sort((a,b)=>{let r=(a[aSortKey]>b[aSortKey]?1:a[aSortKey]<b[aSortKey]?-1:0);return aSortAsc?r:-r;});
+  const body=document.getElementById('aBody');
+  if(!rows.length){body.innerHTML='<tr><td colspan="10" style="color:var(--sub);padding:20px">일치하는 키워드가 없습니다.</td></tr>';return;}
+  const cell2=(tot,pc,mo)=>`<b>${tot}</b><br><span style="color:var(--sub);font-size:11px;white-space:nowrap">PC ${pc}</span><br><span style="color:var(--sub);font-size:11px;white-space:nowrap">Mo ${mo}</span>`;
+  body.innerHTML=rows.map((k,i)=>{
+    const st=statOf(k),co=statusOf('cor',k.cor);
+    return `<tr onclick="openDetail('${k.kw}')">
+      <td class="num-c" style="color:var(--sub);font-weight:700">${i+1}</td>
+      <td><b>${k.kw}</b></td>
+      <td style="color:var(--sub);white-space:nowrap">${k.cat} <span style="opacity:.6">›</span> ${k.cat2}</td>
+      <td class="num-c">${cell2(nf(sc0(k._sc)),nf(sc0(k._scPC)),nf(sc0(k._scMo)))}</td>
+      <td class="num-c">${cell2(nf(sc0(k._cp)),nf(sc0(k._cpPC)),nf(sc0(k._cpMo)))}</td>
+      <td class="num-c">${cell2(nf(sc0(k._cs)),nf(sc0(k._csPC)),nf(sc0(k._csMo)))}</td>
+      <td class="num-c" style="color:${col[co]}">${cell2((k.cor*100).toFixed(0)+'%',pct(k._coPC,k._scPC),pct(k._coMo,k._scMo))}</td>
+      <td class="num-c"><span class="pill ${badge[st]}">${k.sqs.toFixed(2)}</span></td>
+      <td class="num-c ${k.delta<0?'down':'up'}">${k.delta<0?'▼':'▲'}${Math.abs(k.delta)}%</td>
+      <td>${k.pat==='—'?'<span class="pill b-mute">정상</span>':`<span class="pill b-pat">패턴 ${k.pat}</span>`}</td>
+    </tr>`;
+  }).join('');
+}
+renderAll();
+refresh(); // 날짜×범위 기준 초기 렌더
+// 전체 키워드 CSV 다운로드 (현재 필터·정렬·기간 반영)
+function downloadAllCSV(){
+  const q=document.getElementById('aSearch').value.trim().toLowerCase();
+  const fc=aCat.value, fs=document.getElementById('aStat').value;
+  let rows=keywords.filter(k=>(!q||k.kw.toLowerCase().includes(q))&&(!fc||k.cat===fc)&&(!fs||statOf(k)===fs));
+  rows.sort((a,b)=>{let r=(a[aSortKey]>b[aSortKey]?1:a[aSortKey]<b[aSortKey]?-1:0);return aSortAsc?r:-r;});
+  const cell=v=>`"${String(v).replace(/"/g,'""')}"`;
+  const head=['순위','키워드','대분류','중분류','검색횟수','검색_PC','검색_Mo','가격비교클릭','가격비교_PC','가격비교_Mo','검색상품클릭','검색상품_PC','검색상품_Mo','COR','SQS','전일비(%)','패턴'];
+  const lines=[head.map(cell).join(',')];
+  rows.forEach((k,i)=>{
+    lines.push([i+1,k.kw,k.cat,k.cat2,sc0(k._sc),sc0(k._scPC),sc0(k._scMo),sc0(k._cp),sc0(k._cpPC),sc0(k._cpMo),
+      sc0(k._cs),sc0(k._csPC),sc0(k._csMo),(k.cor*100).toFixed(1)+'%',k.sqs.toFixed(2),k.delta,(k.pat==='—'?'정상':'패턴 '+k.pat)].map(cell).join(','));
+  });
+  const csv='﻿'+lines.join('\r\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const d=document.getElementById('datePick').value;
+  a.href=url; a.download=`SQI_키워드_${d}_${pInfo[periodType][0]}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function jumpKeyword(){
+  const q=document.getElementById('dSearch').value.trim().toLowerCase();
+  const k=keywords.find(x=>x.kw.toLowerCase()===q)||keywords.find(x=>x.kw.toLowerCase().includes(q));
+  if(k) openDetail(k.kw);
+  else alert('해당 키워드를 찾을 수 없습니다: '+document.getElementById('dSearch').value);
+}
+
+/* ---------- detail render ---------- */
+let curKw=null;
+function openDetail(kw){
+  const k=keywords.find(x=>x.kw===kw); if(!k)return;
+  curKw=kw;
+  switchView('detail');
+  const sSt=k.sqs<.4?'bad':(k.sqs<.5?'warn':'ok');
+  document.getElementById('dTitle').innerHTML=
+    `<span>${k.kw}</span> <span class="pill ${badge[sSt]}" style="font-size:16px">SQS ${k.sqs.toFixed(2)}</span>
+     <span class="${k.delta<0?'down':'up'}" style="font-size:15px">${k.delta<0?'▼':'▲'}${Math.abs(k.delta)}% (전일)</span>`;
+  document.getElementById('dSub').innerHTML=
+    k.pat==='—'?'<span class="pill b-mute">정상</span>':`<span class="pill b-pat">패턴 ${k.pat}</span> ${sigChips(k.pat)}`;
+
+  // 원천 지표 (검색횟수·상품클릭 가격비교/검색·클릭아웃·COR) — PC/Mobile 분리
+  const co=statusOf('cor',k.cor);
+  const row=(name,tot,pc,mo,opt={})=>{
+    const ind=opt.sub?'padding-left:22px;color:var(--sub)':'';
+    const cc=opt.color||'';
+    return `<tr><td style="${ind}">${name}</td>
+      <td class="num-c"${cc?` style="color:${cc}"`:''}><b>${tot}</b></td>
+      <td class="num-c">${pc}</td><td class="num-c">${mo}</td></tr>`;
+  };
+  document.getElementById('dRaw').innerHTML=
+    row('검색횟수', nf(sc0(k._sc)), nf(sc0(k._scPC)), nf(sc0(k._scMo)))
+   +row('총 상품클릭수', nf(sc0(k._clk)), nf(sc0(k._clkPC)), nf(sc0(k._clkMo)))
+   +row('└ 가격비교상품', nf(sc0(k._cp)), nf(sc0(k._cpPC)), nf(sc0(k._cpMo)), {sub:1})
+   +row('└ 검색상품', nf(sc0(k._cs)), nf(sc0(k._csPC)), nf(sc0(k._csMo)), {sub:1})
+   +row('총 클릭아웃수', nf(sc0(k._co)), nf(sc0(k._coPC)), nf(sc0(k._coMo)))
+   +row('COR (클릭아웃/검색)', pct(k._co,k._sc), pct(k._coPC,k._scPC), pct(k._coMo,k._scMo), {color:col[co]});
+
+  // contribution stack
+  const contribs=Object.keys(weights).map(m=>{
+    const nv=normVal[m](k[m]); const c=weights[m]*nv; return {m,nv,c};
+  });
+  const total=contribs.reduce((s,x)=>s+x.c,0);
+  document.getElementById('dStack').innerHTML=contribs.map(x=>
+    `<div style="width:${x.c/total*100}%;background:${contribColors[x.m]}" title="${metricInfo[x.m][0]} ${x.c.toFixed(3)}"></div>`).join('');
+  document.getElementById('dLegend').innerHTML=contribs.map(x=>
+    `<span><i style="background:${contribColors[x.m]}"></i>${metricInfo[x.m][0]} ${x.c.toFixed(3)}</span>`).join('')
+    +`<span style="margin-left:auto;color:var(--text)"><b>합계 = ${total.toFixed(2)}</b></span>`;
+  document.getElementById('dContrib').innerHTML=contribs.map(x=>{
+    const st=statusOf(x.m,k[x.m]);
+    return `<div class="bar-row"><div class="name">${metricInfo[x.m][0]}</div>
+      <div class="track"><div class="fill" style="width:${x.c/0.25*100}%;background:${contribColors[x.m]}"></div></div>
+      <div class="num">${x.c.toFixed(3)}</div></div>`;
+  }).join('');
+
+  // detail trend (derive around sqs)
+  const base=k.sqs;
+  const dt=Array.from({length:30},(_,i)=>{
+    let v=base+0.12-(i/29)*0.02+Math.sin(i/3)*0.01;
+    if(i>22) v=base+ (0.10*(29-i)/7); // drop near end
+    return Math.max(.25,Math.min(.8,v));
+  });
+  dt[29]=base;
+  document.getElementById('dTrend').innerHTML=lineChart(dt,520,150,.40);
+
+  // metric cards
+  const order=['ctr1','ctr3','spread','zcr','cor','qrr'];
+  document.getElementById('dMcards').innerHTML=order.map(m=>{
+    const info=(m==='ctr1')?['CTR@1','≥30%']:metricInfo[m];
+    const v=k[m];const st=statusOf(m,v);
+    return `<div class="mcard"><div class="mn">${info[0]}</div>
+      <div class="mv" style="color:${col[st]}">${(v*100).toFixed(0)}%</div>
+      <div class="mr">정상 ${info[1]}</div>
+      <span class="pill ${badge[st]}" style="font-size:10px;margin-top:4px">${st==='ok'?'정상':st==='warn'?'주의':'이상'}</span></div>`;
+  }).join('') + (()=>{const st=statusOf('acp',k.acp);
+    return `<div class="mcard"><div class="mn">ACP</div>
+      <div class="mv" style="color:${col[st]}">${k.acp.toFixed(1)}</div>
+      <div class="mr">정상 ≤2.5</div>
+      <span class="pill ${badge[st]}" style="font-size:10px;margin-top:4px">${st==='ok'?'정상':st==='warn'?'주의':'이상'}</span></div>`;})();
+
+  // position distribution — worse keywords more spread
+  const spreadFactor=k.spread;
+  const dist=[.32,.16,.10,.08,.07,.07,.06,.055,.05,.045].map((base,i)=>{
+    if(i<3) return base*spreadFactor*1.4;
+    return base*(1.8-spreadFactor);
+  });
+  const mx=Math.max(...dist);
+  document.getElementById('dPos').innerHTML=dist.map((v,i)=>
+    `<div class="pb ${i>=3?'tail':''}" style="height:${v/mx*100}%"><span>${(v*100).toFixed(0)}</span></div>`
+  ).join('')+dist.map((v,i)=>`<div class="pl">${i+1}위</div>`).join('');
+
+  // snapshot + note
+  document.getElementById('dSnap').innerHTML=[1,2,3].map(i=>
+    `<div class="s"><b>${i}위 상품</b><br><span style="color:var(--sub)">상품 ID #${1000+i} · 클릭 ${(k[i===1?'ctr1':'ctr3']*100/i).toFixed(0)}%</span></div>`).join('');
+
+  // ⑦ 클릭 상품 물리 카테고리 랭크
+  const cr=genCatRank(k);
+  let cells='';
+  for(let i=0;i<5;i++){
+    const it=cr.top5[i];
+    cells+= it
+      ? `<td><b>${it.c}</b><br><span style="color:var(--sub)">(${nf(sc0(it.n))})</span></td>`
+      : `<td style="color:var(--mute)">-</td>`;
+  }
+  cells+= cr.etc>0
+    ? `<td>기타<br><span style="color:var(--sub)">(${nf(sc0(cr.etc))})</span></td>`
+    : `<td style="color:var(--mute)">-</td>`;
+  document.getElementById('dCatRank').innerHTML=`<tr>${cells}</tr>`;
+}
+
+/* ---------- view switch ---------- */
+function switchView(v){
+  ['overview','all','detail'].forEach(id=>
+    document.getElementById(id).classList.toggle('hidden',id!==v));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.view===v));
+  window.scrollTo(0,0);
+}
+// 키워드 상세 탭 클릭 시: 선택된 키워드(없으면 기본값)로 열기
+function openDetailTab(){ openDetail(curKw || '방한화'); }
+</script>
+</body>
+</html>
