@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>묵호 2박 3일 · 8.17—8.19</title>
+<style>
+  :root{
+    --ink:#10243A;
+    --ink-soft:#3D5670;
+    --paper:#EDF1EF;
+    --paper-2:#E2E8E6;
+    --card:#FBFCFB;
+    --rule:#C3CFCC;
+    --flag-red:#C1362C;
+    --flag-blue:#1F5FA8;
+    --flag-gold:#D99A1F;
+    --mono: ui-monospace, "SF Mono", "Roboto Mono", Menlo, Consolas, monospace;
+    --sans: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+            "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:780px;margin:0 auto;padding:0 20px 80px;}
+
+  /* ---------- 헤더 ---------- */
+  .masthead{padding:44px 0 26px;border-bottom:2px solid var(--ink);}
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin:0 0 18px;
+  }
+  h1{
+    margin:0;
+    font-size:clamp(38px,10vw,68px);
+    line-height:.94;
+    font-weight:800;
+    letter-spacing:-.035em;
+  }
+  h1 .dim{color:var(--ink-soft);font-weight:500;}
+  .subline{
+    margin:18px 0 0;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 22px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    letter-spacing:.04em;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- 항로 ---------- */
+  .course{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:20px 0;
+    border-bottom:1px solid var(--rule);
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.04em;
+    color:var(--ink-soft);
+    overflow-x:auto;
+    white-space:nowrap;
+  }
+  .course b{color:var(--ink);font-weight:700;}
+  .course .dash{flex:0 0 auto;width:26px;height:1px;background:var(--rule);}
+
+  /* ---------- 경보 ---------- */
+  .notice{
+    margin:28px 0 0;
+    border-left:4px solid var(--flag-red);
+    background:var(--card);
+    padding:18px 20px;
+  }
+  .notice h2{
+    margin:0 0 12px;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--flag-red);
+    font-weight:700;
+  }
+  .notice ul{margin:0;padding:0;list-style:none;}
+  .notice li{
+    display:flex;
+    gap:12px;
+    padding:7px 0;
+    font-size:14.5px;
+    border-top:1px solid var(--paper-2);
+  }
+  .notice li:first-child{border-top:0;}
+  .notice .who{
+    flex:0 0 128px;
+    font-weight:700;
+  }
+  @media(max-width:520px){
+    .notice li{flex-direction:column;gap:2px;}
+    .notice .who{flex:none;}
+  }
+
+  /* ---------- 요일 ---------- */
+  .day{margin-top:56px;}
+  .day-head{
+    display:flex;
+    align-items:flex-end;
+    gap:16px;
+    padding-bottom:12px;
+    border-bottom:2px solid var(--ink);
+  }
+  .pennant{
+    flex:0 0 auto;
+    width:56px;height:44px;
+    display:block;
+  }
+  .day-title{flex:1;min-width:0;}
+  .day-title .date{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.16em;
+    color:var(--ink-soft);
+    display:block;
+    margin-bottom:3px;
+  }
+  .day-title h2{
+    margin:0;
+    font-size:clamp(21px,5vw,27px);
+    font-weight:800;
+    letter-spacing:-.02em;
+  }
+
+  /* ---------- 스톱 ---------- */
+  .stops{margin:0;padding:0;list-style:none;}
+  .stop{
+    display:grid;
+    grid-template-columns:66px 1fr;
+    gap:0 16px;
+    padding:16px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  .time{
+    font-family:var(--mono);
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:.02em;
+    padding-top:2px;
+    color:var(--ink);
+  }
+  .name{
+    margin:0;
+    font-size:17.5px;
+    font-weight:700;
+    letter-spacing:-.01em;
+  }
+  .kind{
+    display:inline-block;
+    margin-left:9px;
+    font-family:var(--mono);
+    font-size:10.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    font-weight:600;
+    vertical-align:2px;
+    color:var(--ink-soft);
+  }
+  .kind.meal{color:var(--flag-red);}
+  .kind.cafe{color:var(--flag-blue);}
+  .kind.move{color:var(--flag-gold);}
+  .note{
+    margin:5px 0 0;
+    font-size:14.5px;
+    color:var(--ink-soft);
+    line-height:1.55;
+  }
+  .hours{
+    font-family:var(--mono);
+    font-size:12.5px;
+    letter-spacing:.02em;
+    color:var(--ink-soft);
+  }
+  .warn{color:var(--flag-red);font-weight:600;}
+  .stop.rest{background:transparent;}
+  .stop.rest .name{font-weight:600;color:var(--ink-soft);}
+  @media(max-width:520px){
+    .stop{grid-template-columns:56px 1fr;gap:0 12px;}
+    .time{font-size:13px;}
+    .name{font-size:16.5px;}
+  }
+
+  /* ---------- 전화 ---------- */
+  .calls{margin-top:56px;}
+  .calls h2{
+    margin:0 0 14px;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    font-weight:700;
+    padding-bottom:10px;
+    border-bottom:2px solid var(--ink);
+  }
+  .call{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    flex-wrap:wrap;
+    padding:13px 0;
+    border-bottom:1px solid var(--rule);
+  }
+  .call .label{font-weight:700;font-size:16px;flex:0 0 auto;}
+  .call .why{font-size:14px;color:var(--ink-soft);flex:1;min-width:120px;}
+  .call a{
+    font-family:var(--mono);
+    font-size:14px;
+    color:var(--flag-blue);
+    text-decoration:none;
+    border-bottom:1px solid rgba(31,95,168,.35);
+    white-space:nowrap;
+  }
+  .call a:hover,.call a:focus-visible{border-bottom-color:var(--flag-blue);}
+
+  footer{
+    margin-top:52px;
+    padding-top:20px;
+    border-top:1px solid var(--rule);
+    font-family:var(--mono);
+    font-size:11.5px;
+    letter-spacing:.06em;
+    color:var(--ink-soft);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+
+  a:focus-visible,summary:focus-visible{outline:2px solid var(--flag-blue);outline-offset:3px;}
+
+  @media print{
+    body{background:#fff;}
+    .day{page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">동해시 묵호 · 2박 3일</p>
+    <h1>묵호항<br><span class="dim">8.17 — 8.19</span></h1>
+    <div class="subline">
+      <span>성인 2인 · 자차</span>
+      <span>숙소 · HOTEL여기어때 묵호</span>
+      <span>체크인 16:00</span>
+    </div>
+  </header>
+
+  <div class="course">
+    <b>덕은동</b><span class="dash"></span>서울양양고속<span class="dash"></span>동홍천<span class="dash"></span>양양JC<span class="dash"></span>동해고속<span class="dash"></span><b>망상IC</b><span class="dash"></span>약 270km · 3시간 30분
+  </div>
+
+  <section class="notice">
+    <h2>먼저 확인할 것</h2>
+    <ul>
+      <li><span class="who">문어닭강정</span><span>수요일 휴무. 포장은 <b>화요일 저녁에만</b> 가능하고 20시에 닫습니다.</span></li>
+      <li><span class="who">어향</span><span>화요일 휴무. 그래서 수요일 점심으로 넣었습니다.</span></li>
+      <li><span class="who">도야하우스</span><span>수요일 휴무. 월요일 오후가 유일한 자리입니다.</span></li>
+      <li><span class="who">스카이밸리</span><span>월요일 휴무. 마지막 날 오전에 탑니다.</span></li>
+      <li><span class="who">거동탕수육</span><span>화요일 휴무. 월요일은 15:30에 닫고 <b>라스트오더 14:40</b>입니다.</span></li>
+    </ul>
+  </section>
+
+  <!-- DAY 1 -->
+  <section class="day">
+    <div class="day-head">
+      <svg class="pennant" viewBox="0 0 56 44" aria-hidden="true">
+        <path d="M0 0 H44 L56 22 L44 44 H0 Z" fill="#1F5FA8"/>
+        <circle cx="21" cy="22" r="11" fill="#FBFCFB"/>
+      </svg>
+      <div class="day-title">
+        <span class="date">DAY 1 · 8월 17일 월요일</span>
+        <h2>도착, 그리고 논골담길</h2>
+      </div>
+    </div>
+    <ul class="stops">
+      <li class="stop">
+        <span class="time">08:00</span>
+        <div><p class="name">덕은동 출발<span class="kind move">이동</span></p>
+        <p class="note">휴게소 한 번 들르는 기준. 월요일 오전이라 정체는 없습니다.</p></div>
+      </li>
+      <li class="stop">
+        <span class="time">11:30</span>
+        <div><p class="name">망상해변</p>
+        <p class="note">망상IC에서 5분. 긴 운전 끝에 다리 풀기 좋습니다. 주차 무료.</p></div>
+      </li>
+      <li class="stop">
+        <span class="time">12:20</span>
+        <div><p class="name">거동탕수육<span class="kind meal">점심</span></p>
+        <p class="note">문어탕수육과 문어짬뽕. 대기 20~40분을 감안해도 여유가 있습니다. 화요일 휴무라 오늘밖에 자리가 없습니다.<br><span class="hours">월요일 10:00–15:30 · <span class="warn">L.O 14:40</span></span></p></div>
+      </li>
+      <li class="stop">
+        <span class="time">13:40</span>
+        <div><p class="name">도야하우스<span class="kind cafe">카페 1</span></p>
+        <p class="note">블렌딩 티 전문점이라 커피는 없습니다. 하루 중 제일 더운 시간을 실내에서 보내는 자리.<br><span class="hours">10:00–19:00 · <span class="warn">수요일 휴무</span></span></p></div>
+      </li>
+      <li class="stop">
+        <span class="time">15:30</span>
+        <div><p class="name">묵호항 수변공원</p>
+        <p class="note">호텔 도보권. 체크인 시간까지 슬슬 걷습니다.</p></div>
+      </li>
+      <li class="stop rest">
+        <span class="time">16:00</span>
+        <div><p class="name">체크인 · HOTEL여기어때 묵호</p>
+        <p class="note">묵호역 도보 3분. 차는 여기 세우고 저녁까지 도보로 움직입니다.</p></div>
+      </li>
+      <li class="stop">
+        <span class="time">16:40</span>
+        <div><p class="name">논골담길 · 묵호등대</p>
+        <p class="note">계단 오르막이라 운동화. 이 시간이면 그늘이 지기 시작합니다.<br><span class="hours">등대 17:00 마감</span></p></div>
+      </li>
+      <li class="stop">
+        <span class="time">17:40</span>
+        <div><p class="name">말똥도나스<span class="kind cafe">카페 2</span></p>
+        <p class="note">바람의언덕 위, 등대에서 바로 이어집니다. 갈메기도너츠가 시그니처.<br><span class="hours">영업시간 미확인 · 닫혔으면 묵호287로</span></p></div>
+      </li>
+      <li class="stop">
+        <span class="time">18:40</span>
+        <div><p class="name">동해가리비 본점<span class="kind meal">저녁</span></p>
+        <p class="note">조개구이. 술자리로는 대게집보다 이쪽이 편합니다. 네이버 예약 권장.<br><span class="hours">12:00–22:00</span></p></div>
+      </li>
+      <li class="stop">
+        <span class="time">20:30</span>
+        <div><p class="name">도째비골 해랑전망대</p>
+        <p class="note">무료. 야간 조명이 들어와서 한잔하고 걷기 좋습니다.<br><span class="hours">21:00까지</span></p></div>
+      </li>
+      <li class="stop">
+        <span class="time">21:00</span>
+        <div><p class="name">이야기고래<span class="kind meal">2차</span></p>
+        <p class="note">묵호항에서 늦게까지 여는 몇 안 되는 집.</p></div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- DAY 2 -->
+  <section class="day">
+    <div class="day-head">
+      <svg class="pennant" viewBox="0 0 56 44" aria-hidden="true">
+        <path d="M0 0 H44 L56 22 L44 44 H0 Z" fill="#C1362C"/>
+        <path d="M0 0 H44 L50 11 H0 Z" fill="#FBFCFB"/>
+        <path d="M0 33 H50 L44 44 H0 Z" fill="#FBFCFB"/>
+      </svg>
+      <div class="day-title">
+        <span class="date">DAY 2 · 8월 18일 화요일</span>
+        <h2>해안도로와 문어</h2>
+      </div>
+    </div>
+    <ul class="stops">
+      <li class="stop">
+        <span class="time">08:30</span>
+        <div><p class="name">거북이횟집 곰치국<span class="kind meal">아침</span></p>
+        <p class="note">해장술 한 잔. 곰치국보다 곰치조림 평이 더 좋습니다.</p></div>
+      </li>
+      <li class="stop">
+        <span class="time">10:00</span>
+        <div><p class="name">어달해변 · 해안도로</p>
+        <p class="note">해변으로 내려가는 2차선 도로가 사진 스팟. 천천히 드라이브.</p></div>
+      </li>
+      <li class="stop">
+        <span class="time">12:00</span>
+        <div><p class="name">온다<span class="kind meal">점심</span></p>
+        <p class="note">문어해물철판. 국물이 반주를 부르는 맛입니다. 어달에서 해안도로 타고 내려오면 바로입니다.<br><span class="hours">11:00–21:00</span></p></div>
+      </li>
+      <li class="stop">
+        <span class="time">14:00</span>
+        <div><p class="name">작은 미유키 말차<span class="kind cafe">카페 1</span></p>
+        <p class="note">호텔 바로 옆. 기름진 탕수육 뒤에 말차가 정답입니다.</p></div>
+      </li>
+      <li class="stop">
+        <span class="time">16:30</span>
+        <div><p class="name">카페 한결<span class="kind cafe">카페 2</span></p>
+        <p class="note">2·3층 창가가 항구 뷰입니다. 노을 시간에 맞춰 앉으세요.<br><span class="hours">10:00–21:00</span></p></div>
+      </li>
+      <li class="stop">
+        <span class="time">17:40</span>
+        <div><p class="name">묵호항닭 문어닭강정<span class="kind meal">포장</span></p>
+        <p class="note">오늘 안 받으면 못 먹습니다. 오후에 전화로 픽업 시간 예약해두면 대기 없이 받습니다.<br><span class="hours">11:00–20:00 · <span class="warn">수요일 휴무</span></span></p></div>
+      </li>
+      <li class="stop">
+        <span class="time">18:30</span>
+        <div><p class="name">고려정한우촌<span class="kind meal">저녁</span></p>
+        <p class="note">차로 10분. 갈비보다 삼겹살 평이 좋습니다.<br><span class="hours">11:00–21:30</span></p></div>
+      </li>
+      <li class="stop rest">
+        <span class="time">21:00</span>
+        <div><p class="name">숙소 · 닭강정과 맥주</p>
+        <p class="note">오늘의 마무리.</p></div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- DAY 3 -->
+  <section class="day">
+    <div class="day-head">
+      <svg class="pennant" viewBox="0 0 56 44" aria-hidden="true">
+        <path d="M0 0 H44 L56 22 L44 44 H0 Z" fill="#D99A1F"/>
+        <path d="M0 0 H44 L56 22 L44 44 H0 Z" fill="none"/>
+        <rect x="0" y="15" width="52" height="14" fill="#10243A"/>
+      </svg>
+      <div class="day-title">
+        <span class="date">DAY 3 · 8월 19일 수요일</span>
+        <h2>스카이밸리, 그리고 귀가</h2>
+      </div>
+    </div>
+    <ul class="stops">
+      <li class="stop">
+        <span class="time">09:00</span>
+        <div><p class="name">라운드 어바웃<span class="kind cafe">카페 1</span></p>
+        <p class="note">호텔 도보 1분. 흑임자커피가 평이 좋습니다. 체크아웃 전 한 잔.</p></div>
+      </li>
+      <li class="stop">
+        <span class="time">10:10</span>
+        <div><p class="name">도째비골 스카이밸리</p>
+        <p class="note">오픈 직후가 대기 없습니다. 스카이사이클은 음주 시 탑승이 제한될 수 있어 오늘 타는 게 맞습니다.<br><span class="hours">10:00–18:00 · <span class="warn">월요일 휴무</span></span></p></div>
+      </li>
+      <li class="stop">
+        <span class="time">11:15</span>
+        <div><p class="name">묵호287<span class="kind cafe">카페 2</span></p>
+        <p class="note">스카이밸리 바로 위 언덕. 통창으로 액티비티가 내려다보입니다.</p></div>
+      </li>
+      <li class="stop">
+        <span class="time">12:15</span>
+        <div><p class="name">어향<span class="kind meal">점심</span></p>
+        <p class="note">생선구이 정식에 마지막 반주. 묵호역 근처라 먹고 바로 고속도로에 붙습니다.<br><span class="hours">10:00–21:00 · <span class="warn">화요일 휴무</span></span></p></div>
+      </li>
+      <li class="stop">
+        <span class="time">13:30</span>
+        <div><p class="name">출발<span class="kind move">이동</span></p>
+        <p class="note">동해고속 북상 → 강릉JC → 영동고속. 17시경 덕은동 도착.</p></div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="calls">
+    <h2>가기 전에 걸 전화</h2>
+    <div class="call">
+      <span class="label">거동탕수육</span>
+      <span class="why">월요일 점심 · 도착 전에 대기 상황만 확인</span>
+      <a href="tel:0335324778">033-532-4778</a>
+    </div>
+    <div class="call">
+      <span class="label">동해가리비 본점</span>
+      <span class="why">월요일 저녁 예약</span>
+      <a href="tel:050713930265">0507-1393-0265</a>
+    </div>
+    <div class="call">
+      <span class="label">고려정한우촌</span>
+      <span class="why">화요일 저녁 자리 확인</span>
+      <a href="tel:0335314800">033-531-4800</a>
+    </div>
+    <div class="call">
+      <span class="label">도야하우스</span>
+      <span class="why">좌석이 적은 편, 월요일 오후 확인</span>
+      <a href="tel:01066123313">010-6612-3313</a>
+    </div>
+    <div class="call">
+      <span class="label">어향</span>
+      <span class="why">수요일 점심 · 이른 시간 가능한지</span>
+      <a href="tel:0335328292">033-532-8292</a>
+    </div>
+    <div class="call">
+      <span class="label">문어닭강정</span>
+      <span class="why">화요일 오후 픽업 예약 · 매장에서 번호 확인</span>
+      <a href="tel:">묵호항닭</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>묵호 · 동해시 발한동</span>
+    <span>2박 3일 · 2인</span>
+  </footer>
+
+</div>
+</body>
+</html>
